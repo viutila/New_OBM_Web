@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/subMenu.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var setHx = new HandleXml();
+
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	setLanguage();
+	EFDEF_("^td_").className("menutxt_n")
+			.onmouseover(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_o";
+					}
+				})
+			.onmouseout(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_n";
+					}
+				})
+			.onclick(
+				function(){
+					subMenuSelect(this.id.split("_")[1].toInt());
+				});
+	setIdClass("td_0", "menutxt_a");
+}
+
+function subMenuSelect(idx){
+    if (parent.g_lock_menu == 0) {
+        EFDEF_("^td_").className("menutxt_n");
+        setIdClass("td_" + idx, "menutxt_a");
+
+        switch (idx) {
+            case 0:
+                if (setHx.getNode("CAMERASETTING"))
+                    parent.ifrm_View.location.replace("./BasicSetting.html");
+                else if(setHx.getNode("CAMERASTATUS"))
+                    parent.ifrm_View.location.replace("./ECameraStatus.html");
+                else if (setHx.getNode("AUTOSEARCH"))
+                    parent.ifrm_View.location.replace("./AutoSearch.html");
+                break;
+            case 1:
+                if (setHx.getNode("VIDEOADJUST"))
+                    parent.ifrm_View.location.replace("./VideoAdjust.html");
+                else if(setHx.getNode("BASIC"))
+                    parent.ifrm_View.location.replace("./EBasic.html");
+                else if(setHx.getNode("IPCAMBASICSETTING"))
+                    parent.ifrm_View.location.replace("./IPCamBasicSetting.html");
+                break;
+            case 2:
+                if (setHx.getNode("EVIDEOADJUST"))
+                    parent.ifrm_View.location.replace("./EVideoAdjust.html");
+                else if (setHx.getNode("ADVANCEDSETTING"))
+                    parent.ifrm_View.location.replace("./AdvanceSetting.html");
+                /*else if (setHx.getNode("EFBOX"))
+                    parent.ifrm_View.location.replace("./EFBox.html");*/
+                break;
+            case 3:
+                if (setHx.getNode("IPCAMBASICSETTING"))
+                    parent.ifrm_View.location.replace("./IPcamSetting.html");
+                break;
+            case 4:
+                if (setHx.getNode("EFBOX"))
+                    parent.ifrm_View.location.replace("./EFBox.html");
+                break;
+           
+
+        }
+    }
+}
+function setLanguage(){
+    if (setHx.getNode("CAMERASETTING")) {
+        setIdDisplay("td_0", "block");
+        setIdInnerHTML("td_0", hl.get("BASIC"));
+    } else if (setHx.getNode("AUTOSEARCH")) {
+        setIdDisplay("td_0", "block");
+        setIdInnerHTML("td_0", hl.get("AUTO_SEARCH"));
+    } else if (setHx.getNode("CAMERASTATUS")) {
+        setIdDisplay("td_0", "block");
+        setIdInnerHTML("td_0", hl.get("CAMERA_STATUS")); //multi-lang
+    }
+
+    if (setHx.getNode("VIDEOADJUST")) {
+        setIdDisplay("td_1", "block");
+        setIdInnerHTML("td_1", hl.get("ADJUST"));
+    } else if (setHx.getNode("BASIC")) {
+        setIdDisplay("td_1", "block");
+        setIdInnerHTML("td_1", hl.get("BASIC"));
+    } else if (setHx.getNode("IPCAMBASICSETTING")) {
+        setIdDisplay("td_1", "block");
+        cutLongStr("td_1", hl.get("WARNING_SENTENCE64"));
+    }
+
+    if (setHx.getNode("ADVANCEDSETTING")) {
+        setIdDisplay("td_2", "block");
+        setIdInnerHTML("td_2", hl.get("ADVANCED_SETTING"));
+    } else if (setHx.getNode("EVIDEOADJUST")) {
+        setIdDisplay("td_2", "block");
+        setIdInnerHTML("td_2", hl.get("ADJUST"));
+    } /*else if (setHx.getNode("EFBOX")) {
+        setIdDisplay("td_2", "block");
+        setIdInnerHTML("td_2", "EFBox");
+    }*/
+
+    if (setHx.getNode("IPCAMERASETTING")) {
+        setIdDisplay("td_3", "block");
+        setIdInnerHTML("td_3", hl.get("CAMERA_SETTING"));
+    }
+
+    if (setHx.getNode("EFBOX")) {
+        setIdDisplay("td_4", "block");
+        setIdInnerHTML("td_4", "EFBox");
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div id="td_0" style="margin-top: 45px; display:none;"></div>
+	<div id="td_1" style="display:none;"></div>
+    <div id="td_2" style="display:none;"></div>
+    <div id="td_3" style="display:none;"></div>
+    <div id="td_4" style="display:none;"></div>
+</body>
+</html>

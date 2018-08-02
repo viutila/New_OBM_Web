@@ -1,0 +1,128 @@
+<html>
+	<script>
+		var blnLoadImg = true;
+		var blnTimeout = false;
+		var gIntTime = 0;
+		var objImage = false;
+		var ch = "00";
+		
+		function reset_image()
+		{
+			var dt = new Date();
+			gIntTime = dt.getTime();
+			
+			if(blnLoadImg)
+			{
+				objImage.src =  "http://" + location.host + "/m/camera" + ch + ".jpg?imgID=" + Math.random();
+				
+				blnLoadImg = false;
+				if(blnTimeout)
+				{
+					setTimeout(reset_image, 100);
+					blnTimeout = false;
+				}
+				else
+				{
+				    setTimeout(reset_image, 200);
+				}
+			}
+			else
+			{
+				blnTimeout = true;
+				setTimeout(reset_image, 200);
+		    }
+		}
+		
+		function init_html()
+		{
+			objImage = document.getElementById("live_img0");
+			setTimeout(reset_image, 200);
+		}
+		
+		function check()
+		{
+			blnLoadImg = true;
+			
+			objImage.style.display = "";
+			
+			if(objImage.id == "live_img1")
+			{
+				objImage = document.getElementById("live_img0");
+			}
+			else if(objImage.id == "live_img0")
+			{
+				objImage = document.getElementById("live_img1");
+			}
+			objImage.style.display = "none";
+		}
+	</script>
+	<head>
+		<title>
+			camera01
+		</title>
+	</head>
+	<body onload="init_html();">
+		<center><img id="live_img0" onload="check()" onerror="blnLoadImg = 1;" style="display:none; width:352; height: 240"></center>
+		<center><img id="live_img1" onload="check()" onerror="blnLoadImg = 1;" style="display:none; width:352; height: 240" ></center>
+		<br>
+		<table align="center">
+			<tr>
+				<td>
+					<input type="button" value="CH01" onclick="ch='00'; blnLoadImg = 1; document.title = 'Camera01';">
+				</td>
+				<td>
+					<input type="button" value="CH02" onclick="ch='01'; blnLoadImg = 1; document.title = 'Camera02';">
+				</td>
+				<td>
+					<input type="button" value="CH03" onclick="ch='02'; blnLoadImg = 1; document.title = 'Camera03';">
+				</td>
+				<td>
+					<input type="button" value="CH04" onclick="ch='03'; blnLoadImg = 1; document.title = 'Camera04';">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="button" value="CH05" onclick="ch='04'; blnLoadImg = 1; document.title = 'Camera05';">
+				</td>
+				<td>
+					<input type="button" value="CH06" onclick="ch='05'; blnLoadImg = 1; document.title = 'Camera06';">
+				</td>
+				<td>
+					<input type="button" value="CH07" onclick="ch='06'; blnLoadImg = 1; document.title = 'Camera07';">
+				</td>
+				<td>
+					<input type="button" value="CH08" onclick="ch='07'; blnLoadImg = 1; document.title = 'Camera08';">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="button" value="CH09" onclick="ch='08'; blnLoadImg = 1; document.title = 'Camera09';">
+				</td>
+				<td>
+					<input type="button" value="CH10" onclick="ch='09'; blnLoadImg = 1; document.title = 'Camera10';">
+				</td>
+				<td>
+					<input type="button" value="CH11" onclick="ch='10'; blnLoadImg = 1; document.title = 'Camera11';">
+				</td>
+				<td>
+					<input type="button" value="CH12" onclick="ch='11'; blnLoadImg = 1; document.title = 'Camera12';">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="button" value="CH13" onclick="ch='12'; blnLoadImg = 1; document.title = 'Camera13';">
+				</td>
+				<td>
+					<input type="button" value="CH14" onclick="ch='13'; blnLoadImg = 1; document.title = 'Camera14';">
+				</td>
+				<td>
+					<input type="button" value="CH15" onclick="ch='14'; blnLoadImg = 1; document.title = 'Camera15';">
+				</td>
+				<td>
+					<input type="button" value="CH16" onclick="ch='15'; blnLoadImg = 1; document.title = 'Camera16';">
+				</td>
+			</tr>
+		</table>
+	</body>
+	
+</html>

@@ -1,0 +1,393 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var g_remote_id_max = 4;
+function init(){
+	setLanguage();
+	setHx.setUrl("../" + parent.g_device_xml_name);
+	GetXML();
+	initFunc();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+
+    funcNum = setHx.getNodeChildSize("IOCONTRL");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("IOCONTRL", Cnt)) {
+            case "RS232Type":
+                setIdDisplay("td_RS232", "table-cell");
+                setIdInnerHTML("td_RS232", "RS-232");
+                setIdDisplay("td_RS232_Type", "table-cell");
+                setIdInnerHTML("td_RS232_Type", hl.get("TYPE"));
+                setIdDisplay("sel_RS232_Type", "table-cell");
+                setIdDisplay("tr_RS232_Type", "table-row");
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRStwoType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_RS232_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i].toUpperCase()), i);
+                }
+                setIdValue("sel_RS232_Type", hx.getNodeValue("RS232", "RS232-1", "serialType"));
+                break;
+            case "RS232BaudRate":
+                setIdDisplay("td_RS232_BaudRate", "table-cell");
+                setIdDisplay("sel_RS232_BaudRate", "table-cell");
+                setIdInnerHTML("td_RS232_BaudRate", hl.get("BAUD_RATE"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRStwoBaudRate").split(",");
+                var hs = new HandleSelect("sel_RS232_BaudRate", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS232_BaudRate", hx.getNodeValue("RS232", "RS232-1", "baudRate"));
+                break;
+            case "RS232DataBit":
+                setIdDisplay("td_RS232_DataBit", "table-cell");
+                setIdDisplay("sel_RS232_DataBit", "table-cell");
+                setIdInnerHTML("td_RS232_DataBit", hl.get("DATA_BIT"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRStwoDateBit").split(",");
+                var hs = new HandleSelect("sel_RS232_DataBit", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS232_DataBit", hx.getNodeValue("RS232", "RS232-1", "dataBits"));
+                break;
+            case "RS232StopBit":
+                setIdDisplay("td_RS232_StopBit", "table-cell");
+                setIdDisplay("sel_RS232_StopBit", "table-cell");
+                setIdInnerHTML("td_RS232_StopBit", hl.get("STOP_BIT"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRStwoStopBit").split(",");
+                var hs = new HandleSelect("sel_RS232_StopBit", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS232_StopBit", hx.getNodeValue("RS232", "RS232-1", "stopBits"));
+                break;
+            case "RS232Parity":
+                setIdDisplay("td_RS232_Parity", "table-cell");
+                setIdDisplay("sel_RS232_Parity", "table-cell");
+                setIdInnerHTML("td_RS232_Parity", hl.get("PARITY"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRStwoParity").split(",");
+                var hs = new HandleSelect("sel_RS232_Parity", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), type[i].toLowerCase());
+                }
+                setIdValue("sel_RS232_Parity", hx.getNodeValue("RS232", "RS232-1", "parityType"));
+                break;
+            case "PTZProtocol":
+                setIdDisplay("td_RS485_PTZProtocol", "table-cell");
+                setIdDisplay("sel_RS485_PTZProtocol", "table-cell");
+                setIdInnerHTML("td_RS485_PTZProtocol", hl.get("PTZ_PROTOCOL"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRSfourPTZProtocol").split(",");
+                var hs = new HandleSelect("sel_RS485_PTZProtocol", 0);
+                for (i = 0; i < type.length; i++) {
+                    //********* Handling the value of the option with string "_"
+                    if (type[i].indexOf("_") > -1) {
+                        var str_idx = type[i].indexOf("_");
+                        var optionValue = type[i].substr(0, str_idx) + type[i].substr(str_idx + 1);
+                        hs.addOpt(i, type[i], optionValue);
+                    }
+                    else {
+                        if (i == 0) {
+                            hs.addOpt(i, hl.get(type[i].toUpperCase()), type[i]);
+                        } else {
+                            hs.addOpt(i, type[i], type[i]);
+                        }   
+                    }
+                }
+                setIdValue("sel_RS485_PTZProtocol", hx.getNodeValue("RS485", "RS485-1", "protocol"));
+                break;
+            case "RS485ID":
+                setIdDisplay("td_RS485", "table-cell");
+                setIdDisplay("txt_RS485_485ID", "table-cell");
+                setIdDisplay("td_RS485_485ID", "table-cell");
+                setIdInnerHTML("td_RS485_485ID", hl.get("ID485"));
+                setIdInnerHTML("td_RS485", "RS-485");
+                setIdValue("txt_RS485_485ID", hx.getNodeValue("RS485", "RS485-1", "id"));
+                break;
+            case "RS485BaudRate":
+                setIdDisplay("td_RS485_BaudRate", "table-cell");
+                setIdDisplay("sel_RS485_BaudRate", "table-cell");
+                setIdInnerHTML("td_RS485_BaudRate", hl.get("BAUD_RATE"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRSfourBaudRate").split(",");
+                var hs = new HandleSelect("sel_RS485_BaudRate", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS485_BaudRate", hx.getNodeValue("RS485", "RS485-1", "baudRate"));
+                break;
+            case "RS485DataBit":
+                setIdDisplay("td_RS485_DataBit", "table-cell");
+                setIdDisplay("sel_RS485_DataBit", "table-cell");
+                setIdInnerHTML("td_RS485_DataBit", hl.get("DATA_BIT"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRSfourDateBit").split(",");
+                var hs = new HandleSelect("sel_RS485_DataBit", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS485_DataBit", hx.getNodeValue("RS485", "RS485-1", "dataBits"));
+                break;
+            case "RS485StopBit":
+                setIdDisplay("td_RS485_StopBit", "table-cell");
+                setIdDisplay("sel_RS485_StopBit", "table-cell");
+                setIdInnerHTML("td_RS485_StopBit", hl.get("STOP_BIT"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRSfourStopBit").split(",");
+                var hs = new HandleSelect("sel_RS485_StopBit", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_RS485_StopBit", hx.getNodeValue("RS485", "RS485-1", "stopBits"));
+                break;
+            case "RS485Parity":
+                setIdDisplay("td_RS485_Parity", "table-cell");
+                setIdDisplay("sel_RS485_Parity", "table-cell");
+                setIdInnerHTML("td_RS485_Parity", hl.get("PARITY"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "IOControlRSfourParity").split(",");
+                var hs = new HandleSelect("sel_RS485_Parity", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), type[i].toLowerCase());
+                }
+                setIdValue("sel_RS485_Parity", hx.getNodeValue("RS485", "RS485-1", "parityType"));
+                break;
+            case "Control":
+                setIdDisplay("td_Control", "table-cell");
+                setIdInnerHTML("td_Control", hl.get("CONTROL"));
+            case "IRReomteID":
+                setIdInnerHTML("td_Remote_Id", hl.get("IR_REMOTE_ID"));
+                setIdDisplay("td_Remote_Id", "table-cell");
+                setIdDisplay("txt_Remote", "table-cell");
+                setIdValue("txt_Remote", hx.getNodeValue("remoteID"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/IO.xml");
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+
+	funcNum = setHx.getNodeChildSize("IOCONTRL");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("IOCONTRL", Cnt)) {
+	        case "RS232Type":
+	            hx.setNodeValue(getIdValue("sel_RS232_Type"), "RS232", "RS232-1", "serialType");
+	            break;
+	        case "RS232BaudRate":
+	            hx.setNodeValue(getIdValue("sel_RS232_BaudRate"), "RS232", "RS232-1", "baudRate");
+	            break;
+	        case "RS232DataBit":
+	            hx.setNodeValue(getIdValue("sel_RS232_DataBit"), "RS232", "RS232-1", "dataBits");
+	            break;
+	        case "RS232StopBit":
+	            hx.setNodeValue(getIdValue("sel_RS232_StopBit"), "RS232", "RS232-1", "stopBits");
+	            break;
+	        case "RS232Parity":
+	            hx.setNodeValue(getIdValue("sel_RS232_Parity"), "RS232", "RS232-1", "parityType");
+	            break;
+	        case "PTZProtocol":
+	            hx.setNodeValue(getIdValue("sel_RS485_PTZProtocol"), "RS485", "RS485-1", "protocol");
+	            break;
+	        case "RS485ID":
+	            hx.setNodeValue(getIdValue("txt_RS485_485ID"), "RS485", "RS485-1", "id");
+	            break;
+	        case "RS485BaudRate":
+	            hx.setNodeValue(getIdValue("sel_RS485_BaudRate"), "RS485", "RS485-1", "baudRate");
+	            break;
+	        case "RS485DataBit":
+	            hx.setNodeValue(getIdValue("sel_RS485_DataBit"), "RS485", "RS485-1", "dataBits");
+	            break;
+	        case "RS485StopBit":
+	            hx.setNodeValue(getIdValue("sel_RS485_StopBit"), "RS485", "RS485-1", "stopBits");
+	            break;
+	        case "RS485Parity":
+	            hx.setNodeValue(getIdValue("sel_RS485_Parity"), "RS485", "RS485-1", "parityType");
+	            break;
+	        case "Control":
+	            break;
+	        case "IRReomteID":
+	            hx.setNodeValue(getIdValue("txt_Remote"), "MCU", "remoteID");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/IO.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+    parent.showMsg(hx.getXml().xml, "xml");
+}
+function checkRemoteId(obj){
+	CheckCharKeyin(obj,0,1,g_remote_id_max);
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdValue("btn_Save",hl.get("SAVE"));
+}
+function selProduct() {
+	g_remote_id_max = 99;
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <table border="0" cellspacing="5" cellpadding="0">
+        <tr>
+            <td valign="top">
+                <table id="tbl_rs232" border="0" cellspacing="5" cellpadding="0">
+			        <tr>
+				        <td id="td_RS232" width="auto" style="display: none;"></td>
+				        <td width="auto"></td>
+			        </tr>
+			        <tr id="tr_RS232_Type" style="display: none;">
+				        <td id="td_RS232_Type" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS232_Type" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS232_BaudRate" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS232_BaudRate" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS232_DataBit" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS232_DataBit" style="width:100px; display:none;">
+						        <option value="7">7</option>
+						        <option value="8">8</option>
+					        </select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS232_StopBit" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS232_StopBit" style="width:100px; display: none;">
+						        <option value="1">1</option>
+						        <option value="2">2</option>
+					        </select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS232_Parity" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS232_Parity" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+                </table>
+            </td>
+            <td>
+                <table id="tbl_rs485" border="0" cellspacing="5" cellpadding="0">
+			        <tr>
+				        <td id="td_RS485" width="auto" style="display: none;"></td>
+				        <td width="130px"><select id="sel_RS485_Type" style="width:auto;display: none;"></select></td>
+			        </tr>
+			        <tr style="display: none;">
+				        <td id="td_RS485_Type"></td>
+				        <td>
+					
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS485_PTZProtocol" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS485_PTZProtocol" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS485_485ID" style="display: none;"></td>
+				        <td align="left">
+					        <input type="text" id="txt_RS485_485ID" maxlength="3" style="width:50px; display: none;" onblur="CheckCharKeyin(this,0,1,127);"/>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS485_BaudRate" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS485_BaudRate" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>	
+			        <tr>
+				        <td id="td_RS485_DataBit" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS485_DataBit" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS485_StopBit" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS485_StopBit" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+			        <tr>
+				        <td id="td_RS485_Parity" style="display: none;"></td>
+				        <td align="left">
+					        <select id="sel_RS485_Parity" style="width:100px; display: none;"></select>
+				        </td>
+			        </tr>
+		        </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="tbl_control" border="0" cellspacing="5" cellpadding="0">
+			        <tr>
+				        <td id="td_Control" style="display: none;"></td>
+			        </tr>
+			        <tr>
+				        <td id="td_Remote_Id" style="display: none;"></td>
+				        <td>
+					        <input type="text" id="txt_Remote" maxLength="2" value="" style="width:40px; display: none;" onblur="checkRemoteId(this);"/>
+				        </td>
+			        </tr>
+		        </table>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

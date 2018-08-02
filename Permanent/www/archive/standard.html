@@ -1,0 +1,544 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/Calendar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/TimeControl.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ProcessBar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript" src="../include/js/Calendar.js"></script>
+<script type="text/javascript" src="../include/js/TimeControl.js"></script>
+<script type="text/javascript" src="../include/js/ProcessBar.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/cgi.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var cgi;
+var pb1; 	//ProcessBar
+var pb2; 	//ProcessBar
+var sm;     //ScreenMask
+var cal1;	//calendar
+var cal2;	//calendar
+var tc1;	//TimeControl
+var tc2;	//TimeControl
+
+var timeoutFlag = 0;
+var video_type = 0;
+var filename_0 = "";
+function init(){
+	cgi = new cgi();
+	pb1 = new ProcessBar("d", "pb1", '', '', 150, 15);
+	setIdDisplay("tr_ipcam","none");
+	
+	pb1.show();
+	sm = new ScreenMask("m", "sm");
+	pb2 = new ProcessBar("sd", "pb2", 200, 200, 370, 20, "Process Bar", 180, 330);
+
+	setIdZIndex("pb_div0", "-1");
+	setIdPosition("pb_div0","relative");
+	initArchiveCamera();
+    setLanguage();
+    initSelectDate();
+    onTCChange();
+    setTimeout('showQuerySize()', 1500);
+}
+function initArchiveCamera(){
+	var ht = new HandleTable("tbl_Camera");
+	ht.insertRow();	
+		ht.insertCell().width(10);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		if(i>0 && (i%8 == 0)){
+			ht.insertRow();	
+				ht.insertCell().width(10);
+		}
+		ht.insertCell().width(30)
+				.className("txtRight")
+				.innerHTML(i + 1);
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch" + i + "' onclick='syncBtn(0);showQuerySize();'/>");
+		setIdChecked("chk_ch" + i, 1); //select default
+    }
+}
+function syncBtn(type){   //0:camera  1:ipcam
+	var allFlag = 1;
+	var objs = EFDEF_("^chk_ch").obj;
+	if (type == 0) {
+	    for (var i = 0; i < parent.g_total_ch_num; i++) {
+	        if (!getIdChecked(objs[i])) {
+	            allFlag = 0;
+	        }
+	    }
+	} else {
+	    for (var i = parent.g_ch_num; i < parent.g_total_ch_num; i++) {
+	        if (!getIdChecked(objs[i])) {
+	            allFlag = 0;
+	        }
+	    }
+    }
+
+	if (allFlag == 1) {
+        if(type==0)
+            setIdChecked("chk_all", 1);
+    } else {
+        if(type ==0)
+            setIdChecked("chk_all", 0);
+	}
+}
+function selAllChk(){
+	var tmpCheck;
+	if(getIdChecked("chk_all")){
+		tmpCheck = 1;
+	}else{
+		tmpCheck = 0;
+    }
+    for (var cnt = 0; cnt < parent.g_total_ch_num; cnt++)
+        setIdChecked("chk_ch"+cnt,tmpCheck);
+        //EFDEF_("^chk_ch").checked(tmpCheck);
+}
+function initSelectDate() {
+    cal1 = new Calendar('bids', 'cal1', 'SysDate1', parent.g_date_fmt_ary[parent.g_date_fmt], '', '', '', '', 184, 140);
+    cal2 = new Calendar('bids', 'cal2', 'SysDate2', parent.g_date_fmt_ary[parent.g_date_fmt], '', '', '', '', 184, 140);
+	tc1 = new TimeControl("","tc1",parent.g_time_fmt,"hM",80,20);
+	tc2 = new TimeControl("","tc2",parent.g_time_fmt,"hM",80,20);
+
+	//Handle Time==================
+	var tmpHx = new HandleXml();
+	tmpHx.setUrl("../cgi-bin/DateTime.xml");
+	g_receive_time = tmpHx.getNodeValue("currentTime").toInt();
+	var g_time_zone = tmpHx.getNodeValue("DateTime", "timeZone");
+	parent.GetTimeZone();
+
+	cal1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000 - 3600000, true);
+	tc1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000 - 3600000, true);
+
+	cal2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+	tc2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+	
+	//=============================
+}
+
+function ArchiveFile(){
+    parent.g_lock_menu = 1;
+	var tmpCam = 0;
+	for (var i = 0; i < parent.g_total_ch_num; i++) {   //20120322  julia add for ipcam
+		if(getIdChecked("chk_ch" + i)){
+			tmpCam += i.toPow(2);
+		}
+    }
+	var sTime = getTimeSec(	cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+	var eTime = getTimeSec(	cal2.getYear(),
+				cal2.getMonth(),
+				cal2.getDay(),
+				tc2.getHr(),
+				tc2.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+
+    var archive_DST_file_name_type;
+    var adjustTime = parent.adjustDSTTime();
+    if (parent.checkDSTparTrue(sTime)==true){
+        if (parent.checkDSTparTrue(eTime)==true){
+            archive_DST_file_name_type = 3;
+        }else{
+            archive_DST_file_name_type = 1;
+        }
+    }else{
+        if (parent.checkDSTparTrue(eTime)==true){
+            archive_DST_file_name_type = 2;
+        }else{
+            archive_DST_file_name_type = 0;
+        }
+    }
+
+	sTime = parent.checkDSTpar(sTime);
+	eTime = parent.checkDSTpar(eTime);
+
+    var ar_type = 0;
+    parent.applet.StandardArchive(parent.g_ip, parent.g_port, tmpCam, sTime, eTime, ar_type, getIdValue("sel_DataType"), null, archive_DST_file_name_type, adjustTime);
+    setIdDisabled("btn_copy_1", true);
+    pb1.show().setValue(0);
+    timeoutFlag = setTimeout("getProcessStatus();",100);
+
+
+}
+function getProcessStatus() {
+    var tmpStatus = 0;
+    tmpStatus = parent.archive_progress;
+
+    if (tmpStatus == "-1") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert("Can't Get Session ID");
+        //pb1.setValue(0);
+        //ReleaseArchive();
+        ReleaseArchiveSuccess();
+        return;
+    }
+    else if (tmpStatus == "-2") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert(hl.get("CANT_FIND_DATA"));
+        //pb1.setValue(0);
+        //ReleaseArchive();
+        ReleaseArchiveSuccess();
+        return;
+    }
+    else if (tmpStatus == "-3") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        //alert(hl.get("CANT_FIND_DATA"));
+        //pb1.setValue(0);
+        ReleaseArchiveSuccess();
+        return;
+    }
+
+    showMsg("Progress:" + tmpStatus);
+    if (tmpStatus >= 100) {
+        tmpStatus = 100;
+        clearTimeout(timeoutFlag);
+        pb1.setValue(tmpStatus);
+        setIdDisabled("btn_copy_1", false);
+        alert(hl.get("SUCCESS"));
+        parent.g_lock_menu = 0;
+        ReleaseArchiveSuccess();
+    } else if (tmpStatus == -1) {
+        cancel();
+        alert(hl.get("FAIL"));
+    } else {
+        timeoutFlag = setTimeout("getProcessStatus();", 100);
+        pb1.setValue(tmpStatus);
+    }
+}
+function ReleaseArchive(){
+	clearTimeout(timeoutFlag);
+	setIdDisabled("btn_copy_1",false);
+	pb1.setValue(0);
+	parent.g_lock_menu = 0;
+	//cgi.cancelArchive();
+	parent.archive_progress = -99;
+	parent.applet.CancelArchive();
+	alert(hl.get("ARCHIVE_ABORT"));
+}
+function ReleaseArchiveSuccess() {
+    clearTimeout(timeoutFlag);
+    setIdDisabled("btn_copy_1", false);
+    pb1.setValue(0);
+    parent.g_lock_menu = 0;
+    //cgi.cancelArchive();
+    parent.archive_progress = -99;
+    parent.applet.CancelArchive();
+    //alert(hl.get("ARCHIVE_ABORT"));
+}
+function cancel(){
+	if(parent.g_lock_menu == 1){
+		var msg = hl.get("ARE_YOU_SURE");
+		if(window.confirm(msg)){
+			ReleaseArchive();
+		}
+	}
+}
+function Fail(){
+	if(parent.g_lock_menu == 1){
+			ReleaseArchive();
+	}
+}
+function ArchiveDecision() {
+    //alert(cgi.MediaStatus());
+    var mstmp = BreakResult(cgi.MediaStatus(), "result");
+    if (mstmp == 1) {
+        var tmpData = cgi.MediaStatus();
+        hx.setXml(tmpData);
+        var msvalue = hx.getNodeValue("archive_result", "media_status").toInt();
+        var mttmp = hx.getNodeValue("archive_result", "media_type").toInt();
+        var mdstmp = hx.getNodeValue("archive_result", "media_size").toInt();
+        var dstmp = hx.getNodeValue("archive_result", "data_size").toInt();
+
+        setIdInnerHTML("td_Value", dstmp + " MB");
+
+        switch (msvalue) {
+
+            case -2:
+                //alert("No Media");
+                setIdInnerHTML("td_Copy_S", "No Media");
+				alert("No available media. Insert media with at least " + dstmp + " MB of free space");
+                parent.g_lock_menu = 0;
+                break;
+            case 0:
+                //alert("Media Ready");
+                if (mdstmp < 3 || dstmp < 1) {//20100929 Ruby media size < 3M || data size = 0M
+                    alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                    setIdInnerHTML("td_Copy_S", "");
+                    parent.g_lock_menu = 0;
+                }
+                else {
+                    setIdInnerHTML("td_Copy_S", "");
+                    sm.open();
+                    pb2.show()
+		                    .setValue(0)
+		                    .setProcessFlag(0)
+		                    .setMsg("Copying....")
+		                    .setFinishFn(function () {
+		                        alert(hl.get("SUCCESS"));
+		                    });
+                    CopyAdvance();
+                    setIdInnerHTML("td_Copy_S", mdstmp + " MB Free"); 
+                }
+                break;
+            case -3:
+                //alert("No Enough Space");
+                alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                setIdInnerHTML("td_Copy_S", "No Space");
+                parent.g_lock_menu = 0;
+                break;
+            case -4:
+                //alert("No Space");
+                alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                setIdInnerHTML("td_Copy_S", "No Space");
+                parent.g_lock_menu = 0;
+                break;
+            case -1:
+                //alert("Under Search");
+                setIdInnerHTML("td_Copy_S", "Checking...");
+                setTimeout("ArchiveDecision()", 1000);
+
+        }
+    }
+    else {
+        parent.g_lock_menu = 0;
+        alert("MediaStatus Fail");
+    }
+}
+function BreakResult(strtag, str) {
+    hx.setXml(strtag);
+    return hx.getNodeValue(str).toInt();
+}
+function CopyAdvance() {
+    var tmpData = BreakResult(cgi.ArchiveStatus(), "result");
+    window.status = "Copy:" + tmpData;
+    if (tmpData != -1) {
+        pb2.setValue(tmpData);
+        if (tmpData >= 100) {
+            parent.g_lock_menu = 0;
+            sm.close();
+            pb2.hide();
+        } else {
+            setTimeout("CopyAdvance()", 1000);
+        }
+    } else {
+        parent.g_lock_menu = 0;
+        alert("Local Interrupted");
+        sm.close();
+        pb2.hide();
+    }
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+    setIdInnerHTML("leg_Camera", hl.get("CAMERA"));
+	setIdInnerHTML("td_Start_Date_Time"	,hl.get("START_DATE_TIME"));
+	setIdInnerHTML("td_End_Date_Time"	,hl.get("END_DATE_TIME"));
+	setIdInnerHTML("td_Copy_Now"		,hl.get("COPY_NOW"));
+	setIdInnerHTML("span_select_all", hl.get("SEL_ALL"));
+	
+	setIdInnerHTML("td_Copy_Type"		,hl.get("COPY_TYPE"));
+	setIdValue("btn_copy_1"				,hl.get("COPY"));
+	setIdValue("btn_cancel"				,hl.get("CANCEL"));
+	setIdValue("btn_Player", hl.get("DOWNLOAD_PLAYER"));
+	
+	var hs = new HandleSelect("sel_Copy_Type", 0);
+	hs.addOpt(0, hl.get("REMOTE"), "0");
+
+	setIdInnerHTML("td_Data_Size", hl.get("DATA_SIZE"));
+	setIdChecked("chk_all", 1); //select all default
+
+	setIdInnerHTML("td_DataType", hl.get("DATA_TYPE"));
+	var hs = new HandleSelect("sel_DataType", 0);
+	hs.addOpt(0, hl.get("MAIN_STREAM"), "0")
+	  .addOpt(1, hl.get("SUB_STREAM"), "1");
+}
+function getQuerySize() {
+    var tmpCam = 0;
+    for (var i = 0; i < parent.g_total_ch_num; i++) {   //20120322  julia add for ipcam
+        if (getIdChecked("chk_ch" + i)) {
+            tmpCam += i.toPow(2);
+        }
+    }
+    var sTime = getTimeSec(cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+    var eTime = getTimeSec(cal2.getYear(),
+				cal2.getMonth(),
+				cal2.getDay(),
+				tc2.getHr(),
+				tc2.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+
+    sTime = parent.checkDSTpar(sTime);
+    eTime = parent.checkDSTpar(eTime);
+
+    var size = parent.applet.GetQuerySize(parent.g_ip, parent.g_port, tmpCam, sTime, eTime, getIdValue("sel_DataType"));
+    return size;
+}
+function showQuerySize() {
+    var size = getQuerySize().toString() + " MB";
+    setIdInnerHTML("td_Copy_Size_Val", size);
+}
+function onTCChange() {
+    EFDEF_id("tc_hr0").onchange = function () {
+        setTimeout('showQuerySize()',1000);
+    };
+    EFDEF_id("tc_min0").onchange = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("tc_up0").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("tc_down0").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+
+    EFDEF_id("tc_hr1").onchange = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("tc_min1").onchange = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("tc_up1").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("tc_down1").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+
+    EFDEF_id("SysDate1").onchange = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+    EFDEF_id("SysDate2").onchange = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+
+    EFDEF_id("cal_tab0").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+
+    EFDEF_id("cal_tab1").onclick = function () {
+        setTimeout('showQuerySize()', 1000);
+    };
+}
+</script>
+</head>
+<body onload="init();" onkeydown="controller(event);">
+	<div class="ClientFrame">
+    <div style="width:700px" align="left">
+		<table border="0" cellspacing="0" cellpadding="0" style="height: 130px;">
+            <tr id="tr_ipcam">
+				<td width="500" id="td_ipcam">
+                        <span id="leg_Ipcam"></span>
+						<table id="tbl_Ipcam" border="0" cellspacing="0" cellpadding="0"></table>
+				</td>
+			</tr>
+			<tr>
+				<td width="500">
+
+                        <span id="leg_Camera" class="txtLeft"></span>
+						<table id="tbl_Camera"  border="0" cellspacing="0" cellpadding="0"></table>
+						<span style="width: 40px;">&nbsp;</span>
+				</td>
+                <td>
+                    <input type="checkbox" id="chk_all" onclick="selAllChk();"/>
+					<span id="span_select_all" class="txtRight" width="100"></span>
+                </td>
+			</tr>
+            <tr>
+                <td></td>
+            </tr>
+		</table>
+
+	<table border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<td id="td_DataType" width="220px" ></td>
+			<td width="100">
+				<select id="sel_DataType" style="width:auto;" onchange="showQuerySize();"></select>
+			</td>
+            <td>
+			</td>
+		</tr>
+		<tr>
+			
+		</tr>
+		<tr>
+			<td id="td_Start_Date_Time" width="220"></td>
+			<td id="cal1" width="140">
+				<input type="text" id="SysDate1" disabled="disabled" size="12" style="width:100px;" readonly="readonly" onchange="showQuerySize();"/>
+			</td>
+            <td><div id="tc1"></div></td>
+		</tr>
+		
+		<tr>
+			<td id="td_End_Date_Time"></td>
+			<td id="cal2">
+				<input type="text" id="SysDate2" disabled="disabled" size="12" style="width:100px;" readonly="readonly" onchange="showQuerySize();"/>
+			</td>
+            <td>
+				<div id="tc2"></div>
+			</td>
+		</tr>
+		<tr>
+			<td id="td_Copy_Type"></td>
+			<td>
+			    <select id="sel_Copy_Type" style="width:110px;" name="Copy_Type"></select>
+			</td>
+	    </tr>
+        <tr>
+            <td id="td_Data_Size"></td>
+            <td id="td_Copy_Size_Val"></td>
+            <td><div id="pb1"></div></td>
+        </tr>
+        <tr>
+        	<td colspan="3">
+        		<div id="table1">
+			        <table >
+						<tr>
+			
+							<td id="td_Copy_Now" width="210px"></td>
+							<td>
+								<input type="button" id="btn_copy_1" class="btnStyle" value="" style="width:80px;" onclick="ArchiveFile();"/>
+			                    &nbsp;&nbsp;&nbsp;
+								<input type="button" id="btn_cancel" class="btnStyle" value="" style="width:80px;" onclick="cancel();"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+							</td>
+							<td>
+								<input type="button" id="btn_Player" class="btnStyle" value="" style="width:180px;" onclick="reloadPage('../' + parent.g_player_name);"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+        	</td>
+        </tr>
+	 </table>
+
+
+	</div>
+    </div>
+	    
+	
+    <div id="sm"></div>
+	<div id="pb2"></div>
+</body>
+</html>

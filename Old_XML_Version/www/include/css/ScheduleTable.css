@@ -1,0 +1,109 @@
+.st_tab{
+	background-color: #000000;
+}
+.st_tab td{
+	height: 20px;
+}
+.st_tab_info{
+	background-color: #000000;
+}
+.st_tab_info td{
+	height: 20px;
+}
+.st_tab_edit{
+	border: solid 2px #CCCCCC;
+	background-color: #8B8B8B;
+}
+.st_tab_td_edit{
+	color: #FFFFFF;
+}
+.st_tab_td_edit_No{
+	text-align: center;
+	color: #FFFFFF;
+}
+.st_bar{
+	height: 25px;
+	text-align: center;
+	color: #FFFFFF;
+	background: url(../../img/title_blue_bg.jpg) repeat-x;
+}
+.st_tab_Sub{
+	border: solid 2px #000000;
+}
+.st_tab_Sub_Sel{
+	border: solid 2px #FF0000;
+}
+.st_info{
+	color: #FFFFFF;
+}
+.st_info_No_Rec{
+	text-align: center;
+	color: #000000;
+	background-color: #979797;
+}
+.st_info_Event{
+	text-align: center;
+	color: #000000;
+	background-color: #CE8F8A;
+}
+.st_info_Normal_Event{
+	text-align: center;
+	color: #000000;
+	background-color: #8DB6B2;
+}
+.st_img{
+/*
+this width = .st_tabSub width * 2
+*/
+	border: solid 4px #000000;
+}
+.st_td_Left{
+	text-align: center;
+	width: 100px;
+	color: #FFFFFF;
+	background-color: #808080;
+	border: solid 2px #000000;
+	font-size: 12px;  /*Add for TradChinese lang */
+}
+.st_td_Left_Up{
+	width: 100px;
+	color: #FFFFFF;
+	background-color: #000000;
+	border: solid 2px #000000;
+}
+.st_td_No_Rec{
+	text-align: center;
+	font-size: 12px;
+	cursor: default;
+	background-color: #969696;
+}
+.st_td_Event{
+	text-align: center;
+	font-size: 12px;
+	cursor: default;
+	background-color: #CE8F8A;
+}
+.st_td_Normal_Event{
+	text-align: center;
+	font-size: 12px;
+	cursor: default;
+	background-color: #8DB6B2;
+}
+.st_btn{
+	background-color: #808080;
+	color: #FFFFFF;
+}
+.st_aim{
+	width: 1px;
+	height: 270px;
+	top: 50px;
+	border: solid 1px #FFFFFF;
+	background-color: #FFFFFF;
+}
+.st_block{
+	font-size: 0px;
+	width: 10px;
+	height: 20px;
+	border: solid 1px #FF0000;
+	cursor: default;
+}

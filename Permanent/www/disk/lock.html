@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var rsHx = new HandleXml();
+var maxLockArray;
+
+function init(){
+	setLanguage();
+	
+	GetXML();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Disk.xml");
+	setIdValue("sel_Max_Lock", hx.getNodeValue("Disk", "maxLock"));
+	setIdInnerHTML("txt_cur", hx.getNodeValue("Disk", "currentLock") + "%");
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+
+	hx.setNodeValue(getIdValue("sel_Max_Lock"), "Disk", "maxLock");
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Disk.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_Max_Lock"		,hl.get("MAX_LOCK"));
+	setIdInnerHTML("td_Current_Lock"	,hl.get("CURRENT_LOCK"));
+	
+	setIdValue("btn_Unlock_All"		,hl.get("UNLOCK_ALL"));
+	setIdValue("btn_Delete_All", hl.get("DELETE_ALL"));
+	setIdValue("btn_Format", hl.get("FORMAT") + " " + hl.get("DISK"));
+	
+	setIdValue("btn_Save"			,hl.get("SAVE"));
+
+
+	maxLockArray = parent.SetHx.getNodeValue("DiskSetting", "Maximum").split(",");
+	var hs = new HandleSelect("sel_Max_Lock", 0);
+	for (var i = 0; i < maxLockArray.length; i++) {
+	    if (i == 0) {
+	        hs.addOpt(i, hl.get(maxLockArray[i].toUpperCase()), i);
+	    } else {
+	        hs.addOpt(i, maxLockArray[i], i);
+        }
+    }
+		
+	setIdOnclick("btn_Unlock_All",function(){
+	                    var msg = hl.get("ARE_YOU_SURE");
+						if(window.confirm(msg)){
+							var tmpStr = parent.cgi.diskUnlock();
+							rsHx.setXml(tmpStr);
+							if(rsHx.getNodeValue("result") == "1"){
+								alert(hl.get("SUCCESS"));
+							}else{
+								alert(hl.get("FAIL"));
+							}
+						}
+					});
+	setIdOnclick("btn_Delete_All",function(){
+	                    var msg = hl.get("ARE_YOU_SURE");
+						if(window.confirm(msg)){
+							var tmpStr = parent.cgi.diskDelete();
+							rsHx.setXml(tmpStr);
+							if(rsHx.getNodeValue("result") == "1"){
+								alert(hl.get("SUCCESS"));
+							}else{
+								alert(hl.get("FAIL"));
+							}
+						}
+					});
+	setIdOnclick("btn_Format",function(){
+	                    var msg = hl.get("WARNING_SENTENCE28");
+						if(window.confirm(msg)){
+							var tmpStr = parent.cgi.diskFormat();
+							rsHx.setXml(tmpStr);
+							if(rsHx.getNodeValue("result") == "1"){
+								alert(hl.get("SUCCESS"));
+							}else{
+								alert(hl.get("FAIL"));
+							}
+						}
+					});
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Max_Lock" width="220" nowrap></td>
+				<td align="left">
+					<select id="sel_Max_Lock" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Current_Lock" nowrap></td>
+				<td id="txt_cur" class="txtLeft"></td>
+			</tr>
+        </table>
+        
+    </div>
+	<div class="applyFrm" style="top:200px; left:240px;">
+        <table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td></td>
+				<td>
+					<input type="button" id="btn_Unlock_All" class="btnStyle" value="" style="width:160px;"/>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="button" id="btn_Delete_All" class="btnStyle" value="" style="width:160px;"/>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="button" id="btn_Format" class="btnStyle" value="" style="width:160px;"/>
+				</td>
+			</tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" id="btn_Save" class="btnStyle" value="" style="width:160px;" onclick="SetXML();">
+                </td>
+            </tr>
+		</table>
+	</div>
+</body>
+</html>

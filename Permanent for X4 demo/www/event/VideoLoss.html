@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+
+	sm = new ScreenMask("m","sm");
+	mc_apply = new MultipleCheckbox("d","mc_apply",hl.get("CAMERA"),120,200,hl);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		g_cam_ary.push(i + 1);
+	}
+	GetXML();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+    setIdInnerHTML("td_Cam", hl.get("CAMERA"));
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    funcNum = setHx.getNodeChildSize("VIDEOLOSS");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (setHx.getNodeChildName("VIDEOLOSS", Cnt)) {
+            case "Enable":
+                setIdInnerHTML("td_Enable",hl.get("ENABLE"));
+                setIdDisplay("tr_Enable", "table-row");
+                break;
+            case "PreAlarmRecord":
+                setIdInnerHTML("td_Prealarm_REC", hl.get("PRE_ALARM_RECORD"));
+                setIdDisplay("tr_Prealarm_REC", "table-row");
+                break;
+            case "EmailNotify":
+                setIdInnerHTML("td_Email_Notify",hl.get("EMAIL_NOTIFY"));
+                setIdDisplay("tr_Email_Notify", "table-row");
+                break;
+            case "Log":
+                setIdInnerHTML("td_Log",hl.get("LOG"));
+                setIdDisplay("tr_Log", "table-row");
+                break;
+            case "Buzzer":
+                setIdInnerHTML("td_Buzzer",hl.get("BUZZER"));
+                setIdDisplay("tr_Buzzer", "table-row");
+                break;
+            case "NetworkAlarm":
+                setIdInnerHTML("td_Network_Alarm", hl.get("NETWORK_ALARM"));
+                setIdDisplay("tr_Network_Alarm", "table-row");
+                break;
+            case "AlarmOutput":
+                setIdInnerHTML("td_Alarm_Output",hl.get("ALARM_OUTPUT"));
+                setIdDisplay("tr_Alarm_Output", "table-row");
+                parent.setSelectOutput(EFDEF_id("sel_Alarm_Output"), parent.g_OutputSum);
+                break;
+            case "OutputType":
+                setIdInnerHTML("td_Output_Type",hl.get("OUTPUT_TYPE"));
+                setIdInnerHTML("td_Timeout_Dur",hl.get("TIMEOUT_DURATION"));
+                setIdDisplay("tr_Output_Type", "table-row");
+                setIdDisplay("tr_Timeout_Dur", "table-row");
+                var type = parent.SetHx.getNodeValue("EventSetting", "VideoLossAlarmType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Output_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), type[i].toLowerCase());
+                }
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+           
+        }
+    }
+    var hs = new HandleSelect("sel_cam", 0);
+    for (var i = 0; i < parent.g_total_ch_num; i++) {
+        hs.addOpt(i, i + 1, i);
+    }
+}
+
+function selectCamera(){
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+
+    if (setHx.getNode("VIDEOLOSS", "Enable"))
+        setIdChecked("chk_Enable", hx.getNodeValue(str, "enable"));
+    if (setHx.getNode("VIDEOLOSS", "PreAlarmRecord"))
+        setIdChecked("chk_Prealarm_REC", hx.getNodeValue(str, "preAlarmRecord"));
+    if (setHx.getNode("VIDEOLOSS", "EmailNotify"))
+        setIdChecked("chk_Email_Notify", hx.getNodeValue(str, "emailNotify"));
+    if (setHx.getNode("VIDEOLOSS", "Log"))
+        setIdChecked("chk_Log", hx.getNodeValue(str, "log"));
+    if (setHx.getNode("VIDEOLOSS", "Buzzer"))
+        setIdChecked("chk_Buzzer", hx.getNodeValue(str, "buzzer"));
+    if (setHx.getNode("VIDEOLOSS", "NetworkAlarm"))
+        setIdChecked("chk_Network_Alarm", hx.getNodeValue(str, "networkAlarm"));
+    if (setHx.getNode("VIDEOLOSS", "AlarmOutput"))
+        setIdValue("sel_Alarm_Output", hx.getNodeValue(str, "alarmOutput"));
+    if (setHx.getNode("VIDEOLOSS", "OutputType")) {
+        setIdValue("sel_Output_Type", hx.getNodeValue(str, "alarmOutputType"));
+        setIdValue("txt_Timeout_Dur", hx.getNodeValue(str, "timeoutDuration"));
+    }
+    //setIdValue("btn_save"			,hl.get("SAVE") + " CH" + getIdSelectText("sel_cam"));
+    setIdValue("btn_save", hl.get("SAVE"));
+	chgOutputType();
+}
+function chgOutputType(){
+    if (getIdValue("sel_Output_Type") == "timeout" || getIdValue("sel_Output_Type") == "trans+timeout") {
+		setIdDisplay("tr_Timeout_Dur","table-row");
+	}else{
+        setIdDisplay("tr_Timeout_Dur","none");
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/VideoLoss.xml");
+	selectCamera();
+}
+function syncData(){
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+    hx.setNodeValue(1, str, "modified");
+	if (setHx.getNode("VIDEOLOSS", "Enable"))
+        hx.setNodeValue(getIdChecked("chk_Enable")	,str,"enable");
+	if (setHx.getNode("VIDEOLOSS", "PreAlarmRecord"))
+	    hx.setNodeValue(getIdChecked("chk_Prealarm_REC"),str, "preAlarmRecord");
+	if (setHx.getNode("VIDEOLOSS", "EmailNotify"))
+	    hx.setNodeValue(getIdChecked("chk_Email_Notify"),str, "emailNotify");
+	if (setHx.getNode("VIDEOLOSS", "Log"))
+	    hx.setNodeValue(getIdChecked("chk_Log"),str, "log");
+	if (setHx.getNode("VIDEOLOSS", "Buzzer"))
+	    hx.setNodeValue(getIdChecked("chk_Buzzer"),str, "buzzer");
+	if (setHx.getNode("VIDEOLOSS", "NetworkAlarm"))
+	    hx.setNodeValue(getIdChecked("chk_Network_Alarm"),str, "networkAlarm");
+	if (setHx.getNode("VIDEOLOSS", "AlarmOutput"))
+	    hx.setNodeValue(getIdValue("sel_Alarm_Output"), str, "alarmOutput");
+	if (setHx.getNode("VIDEOLOSS", "OutputType")) {
+	    hx.setNodeValue(getIdValue("sel_Output_Type"), str, "alarmOutputType");
+	    hx.setNodeValue(getIdValue("txt_Timeout_Dur"),str, "timeoutDuration");
+	}
+}
+function SetXML(){
+	syncData();
+	
+	var hx2 = new HandleXml();
+	//var newxml = hx.getXml().xml.replace(/\t/g, "");
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/VideoLoss.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function applyToAll(){
+	syncData();
+	var fromNode = "camera" + getIdSelectText("sel_cam").toFill(2);
+	var toNode = "";
+	for(var i = 0;i < mc_apply.aryChecked.length;i++){
+		if(mc_apply.aryChecked[i]){
+		    toNode = "camera" + (i + 1).toFill(2);
+		    hx.setNodeValue(1, toNode, "modified");
+		    if (setHx.getNode("VIDEOLOSS", "Enable"))
+		        hx.setNodeValue(hx.getNodeValue(fromNode,"enable"),toNode,"enable");
+
+		    if (setHx.getNode("VIDEOLOSS", "PreAlarmRecord"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"preAlarmRecord"),toNode,"preAlarmRecord");
+
+		    if (setHx.getNode("VIDEOLOSS", "EmailNotify"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"emailNotify")		,toNode,"emailNotify");
+
+		    if (setHx.getNode("VIDEOLOSS", "Log"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"log")		,toNode,"log");
+
+		    if (setHx.getNode("VIDEOLOSS", "Buzzer"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"buzzer")		,toNode,"buzzer");
+
+		    if (setHx.getNode("VIDEOLOSS", "NetworkAlarm"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"networkAlarm")		,toNode,"networkAlarm");
+
+		    if (setHx.getNode("VIDEOLOSS", "AlarmOutput"))
+                hx.setNodeValue(hx.getNodeValue(fromNode,"alarmOutput")		,toNode,"alarmOutput");
+
+		    if (setHx.getNode("VIDEOLOSS", "OutputType")) {
+                hx.setNodeValue(hx.getNodeValue(fromNode,"alarmOutputType")		,toNode,"alarmOutputType");
+                hx.setNodeValue(hx.getNodeValue(fromNode,"timeoutDuration")		,toNode,"timeoutDuration");
+		    }
+			
+		}
+	}
+	SetXML();
+	closeApplyEdit();
+}
+function closeApplyEdit(){
+	sm.close();
+	mc_apply.close();
+}
+function openApplyEdit(){
+	mc_apply.setAry(g_cam_ary)
+		.setCols(4)
+		.setSelectedText(getIdValue("sel_cam").toInt() + 1)
+		.createList()
+		.setFuncOk(applyToAll)
+		.setFuncCancel(closeApplyEdit);
+	sm.open();
+	mc_apply.open();
+}
+
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Cam"  width="100"></td>
+				<td width="150">
+					<select id="sel_cam" style="width:100px;" onChange="selectCamera();"></select>
+				</td>
+			</tr>
+		</table>
+		<table border="0" cellspacing="8" cellpadding="0" width="300">
+			<tr id="tr_Enable" style="display:none;">
+                <td id="td_Enable"></td>
+				<td width="30px">
+					<input type="checkbox" id="chk_Enable"/>
+				</td>
+			</tr>
+            <tr id="tr_Log" style="display:none;">
+                <td id="td_Log"></td>
+				<td>
+					<input type="checkbox" id="chk_Log"/>
+				</td>
+			</tr>
+            <tr id="tr_Prealarm_REC" style="display:none;">
+                <td id="td_Prealarm_REC"></td>
+				<td>
+					<input type="checkbox" id="chk_Prealarm_REC"/>
+				</td>
+			</tr>
+            <tr id="tr_Buzzer" style="display:none;">
+                <td id="td_Buzzer"></td>
+				<td>
+					<input type="checkbox" id="chk_Buzzer"/>
+				</td>
+			</tr>
+            <tr id="tr_Email_Notify" style="display:none;">
+                <td id="td_Email_Notify"></td>
+				<td>
+					<input type="checkbox" id="chk_Email_Notify"/>
+				</td>
+			</tr>
+            <tr id="tr_Network_Alarm" style="display:none;">	
+                <td id="td_Network_Alarm"></td>
+				<td>
+					<input type="checkbox" id="chk_Network_Alarm"/>
+				</td>
+			</tr>
+		</table>
+			<table border="0" cellspacing="8" cellpadding="0">
+			<tr id="tr_Alarm_Output" style="display:none;">
+				<td id="td_Alarm_Output"></td>
+				<td>
+					<select id="sel_Alarm_Output" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Output_Type" style="display:none;">
+				<td id="td_Output_Type"></td>
+				<td>
+					<select id="sel_Output_Type" style="width:180px;" onchange="chgOutputType();"></select>
+				</td>
+			</tr>
+			<tr id="tr_Timeout_Dur" style="display:none;">
+				<td id="td_Timeout_Dur"></td>
+				<td>
+					<input type="text" id="txt_Timeout_Dur" maxlength="16" style="width:60px;" onblur="CheckCharKeyin(this,0,10,150);"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Apply_To" class="btnStyle" value="" style="width:120px;" onclick="openApplyEdit();"/>
+		<br />
+		<br />
+		<input type="button" id="btn_save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+	<div id="sm"></div>
+	<div id="mc_apply"></div>
+</body>
+</html>

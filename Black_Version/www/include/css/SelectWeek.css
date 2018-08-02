@@ -1,0 +1,19 @@
+.sw_tab{
+	background-color: #0A0B0B;
+	border: solid 1px #CCCCCC;
+}
+.sw_tab td{
+	width: 200px;
+	height: 30px;
+}
+.sw_bar{
+	text-align: -moz-center;
+	#text-align: center;
+	color: #FFFFFF;
+	background: url(../../img/title_blue_bg.jpg) repeat-x;
+}
+.sw_btn{
+	width: 80px;
+	background-color: #808080;
+	color: #FFFFFF;
+}

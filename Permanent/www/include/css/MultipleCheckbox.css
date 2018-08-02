@@ -1,0 +1,26 @@
+.mc_tbl{
+	background-color: #000000;
+	width: 300px;
+	z-index: 120;
+}
+.mc_bar{
+	height: 25px;
+	text-align: center;
+	color: #FFFFFF;
+	background: url(../../img/title_blue_bg.jpg) repeat-x;
+}
+.mc_btn{
+	background-color: #808080;
+	color: #FFFFFF;
+	width: 100px;
+}
+.mc_tblChk{
+	margin: 5px;
+	color: #000000;
+}
+.mc_tblChkTd{
+	text-align: right;
+	color: #FFFFFF;
+	width: 50px;
+	height: 30px;
+}

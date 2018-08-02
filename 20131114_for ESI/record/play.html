@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+
+function init(){
+	setLanguage();
+	
+	GetXML();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Express.xml");
+
+    setIdChecked("chk_QPlayback", hx.getNodeValue("quickPlayback"));
+    setIdValue("input_QPlayback_time", hx.getNodeValue("quickPlaybackTime"));
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+
+	hx.setNodeValue(getIdChecked("chk_QPlayback"), "quickPlayback")
+		.setNodeValue(getIdValue("input_QPlayback_time"), "quickPlaybackTime");
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Express.xml", newxml);
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_Quick_Playback"	,hl.get("QUICK_PLAYBACK"));
+	setIdInnerHTML("td_Playback_From"	,hl.get("PLAYBACK_FROM"));
+	setIdInnerHTML("td_seconds_ago"		,hl.get("SECONDS_AGO"));
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Quick_Playback" width="200" class="txtLeft"></td>
+				<td class="txtLeft">
+					<input type="checkbox" id="chk_QPlayback"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Playback_From" class="txtLeft"></td>
+				<td class="txtLeft">
+					<input type="text" id="input_QPlayback_time" maxlength="16" style="width:60px;" onblur="CheckCharKeyin(this,0,60,600);"/>
+				</td>
+				<td id="td_seconds_ago"></td>
+			</tr>	
+		</table>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+.cal_div{
+	z-index: 100;
+	background-color: #797979;
+	display:none;
+}
+.cal_div td{
+	height: 16px;
+}
+.cal_bar{
+	text-align: center;
+	color: #FFFFFF;
+	background: url(../../img/title_blue_bg.jpg) repeat-x;
+}
+.cal_td{
+	font-size: 10px;
+	font-family: verdana;
+	color: #000000;
+	background-color: #0A0B0B;
+	height: 16px;
+	width: 20px;
+	text-align: center;
+}
+
+.cal_title{
+	font-family: verdana;
+	font-size: 10px;
+	font-weight: normal;
+	text-align: center;
+	color: #FFFFFF;
+	text-decoration: none;
+	background-color: #0A0B0B;
+}
+.cal_today{
+	font-family: verdana;
+	font-size: 9px;
+	color: #0066FF;
+	background-color: #0A0B0B;
+	text-align: center;
+}
+
+.cal_weekday{
+	font-family: verdana;
+	font-size: 9px;
+	color: #FFFFFF;
+	background-color: #0A0B0B;
+	text-align: center;
+}
+.cal_sat{
+	font-family: verdana;
+	font-size: 9px;
+	color:#FF0000;
+	text-decoration: none;
+	background-color: #0A0B0B;
+	text-align: center;
+}
+
+.cal_sun{
+	font-family: verdana;
+	font-size: 9px;
+	color: #FF0000;
+	text-decoration: none;
+	background-color: #0A0B0B;
+	text-align: center;
+}
+
+.cal_button{
+	font-family: Webdings;
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-decoration: none;
+	cursor:pointer;
+}

@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css" />
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	setLanguage();
+	GetXML();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Info.xml");
+    initDiskStatus();
+    initFunc();
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    funcNum = setHx.getNodeChildSize("SYSTEM");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("SYSTEM", Cnt)) {
+
+            case "Version":
+                setIdDisplay("tr_Version","table-row");
+                setIdInnerHTML("Version_val", hx.getNodeValue("Version"));
+                setIdInnerHTML("td_Version", hl.get("VERSION"));
+                break;
+            case "Model":
+                setIdDisplay("tr_Model", "table-row");
+                setIdInnerHTML("Model_val", hx.getNodeValue("Model"));
+                setIdInnerHTML("td_Model", hl.get("MODEL"));
+                break;
+            case "NTSC_PAL":
+                setIdDisplay("tr_NTSC_PAL", "table-row");
+                setIdInnerHTML("NTSC_PAL_val", hx.getNodeValue("VideoType"));
+                setIdInnerHTML("td_NTSC_PAL", "NTSC/PAL");
+                break;
+            case "WebVersion":
+                setIdDisplay("tr_web_Version", "table-row");
+                if (parent.g_model_name_int == 1)
+                    setIdInnerHTML("web_Version_val", parent.g_NVR_web_ver);
+                else if (parent.g_model_name_int == 2)
+                    setIdInnerHTML("web_Version_val", parent.g_ENVR_web_ver);
+                else
+                    setIdInnerHTML("web_Version_val", parent.g_DVR_web_ver);
+                setIdInnerHTML("td_web_Version", hl.get("WEB_VERSION"));
+                break;
+            case "IP1":
+                setIdDisplay("tr_IP1", "table-row");
+                setIdInnerHTML("IP_val1", hx.getNodeValue("networkInterface1", "IP"));
+                if (parent.g_nic_num == 1) {
+                    setIdInnerHTML("td_IP1", hl.get("IP"));
+                } else {
+                    setIdInnerHTML("td_IP1", hl.get("IP") + " 1");
+                }
+
+                break;
+            case "IP2":
+                setIdDisplay("tr_IP2", "table-row");
+                setIdInnerHTML("IP_val2", hx.getNodeValue("networkInterface2", "IP"));
+                setIdInnerHTML("td_IP2", hl.get("IP") + " 2");
+                break;
+            case "MAC1":
+                setIdDisplay("tr_MAC1", "table-row");
+                setIdInnerHTML("MAC_val1", hx.getNodeValue("networkInterface1", "Mac"));
+                
+                if (parent.g_nic_num == 1) {
+                    setIdInnerHTML("td_MAC1", "MAC");
+                } else {
+                    setIdInnerHTML("td_MAC1", "MAC 1");
+                }
+                break;
+            case "MAC2":
+                setIdDisplay("tr_MAC2", "table-row");
+                setIdInnerHTML("MAC_val2", hx.getNodeValue("networkInterface2", "Mac"));
+                setIdInnerHTML("td_MAC2", "MAC 2");
+                break;
+            case "DVRName":
+                setIdDisplay("tr_DVR_Name", "table-row");
+                setIdInnerHTML("DVR_Name_val", hx.getNodeValue("DeviceName"));
+                setIdInnerHTML("td_DVR_Name", hl.get("DVR_NAME"));
+                break;
+            case "NVRNAME":
+                setIdDisplay("tr_DVR_Name", "table-row");
+                setIdInnerHTML("DVR_Name_val", hx.getNodeValue("DeviceName"));
+                setIdInnerHTML("td_DVR_Name", "NVR Name");
+                break;
+            case "NetworkID":
+                setIdDisplay("tr_Network_ID", "table-row");
+                setIdInnerHTML("Network_ID_val", hx.getNodeValue("NetworkID"));
+                setIdInnerHTML("td_Network_ID", hl.get("NETWORK_ID"));
+                break;
+            case "Disk":
+                break;
+            case "Fans":
+                break;
+            case "SN":
+                setIdDisplay("tr_SN", "table-row");
+                setIdInnerHTML("td_SN", hl.get("SN"));
+                setIdInnerHTML("SN_val", hx.getNodeValue("serialnum"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    setIdInnerHTML("leg_Status", hl.get("STATUS"));
+    setIdInnerHTML("leg_System", hl.get("SYSTEM"));
+    setIdInnerHTML("leg_Lan", hl.get("LAN"));
+}
+
+function initDiskStatus(){
+    ////var tmpNo = hx.getItemSize("Disk") > hx.getItemSize("Fan") ? hx.getItemSize("Disk") : hx.getItemSize("Fan");
+
+    if (setHx.getNode("SYSTEM", "Disk")) {
+        var internalNo = parseInt(hx.getNodeValue("InternalDisks"));
+        var ht = new HandleTable("tbl_status");
+        ht.insertRow();
+        ht.insertCell().className("txtCenter")
+			.width(100)
+			.innerHTML("&nbsp;");
+        for (var i = 0; i < hx.getItemSize("Disk"); i++) {
+            if (hx.getItemValue(i, "Disk") == "1") {
+                ht.insertCell().className("txtCenter").width(80).innerHTML(i + 1);
+            }
+            else {
+            }
+        }
+        for (var i = 0; i < hx.getItemSize("Disk"); i++) {
+            if (i == 0) {
+                ht.insertRow();
+                ht.insertCell().className("txtCenter")
+						.width(100)
+						.innerHTML(hl.get("DISK"));
+            }
+            if (hx.getItemValue(i, "Disk") == "1") {
+                var tmpInfo = "";
+                if (hx.getItemValue(i, "Disk") == "1") {
+                    tmpInfo = hl.get("OK");
+                } else {
+                    tmpInfo = hl.get("FAIL");
+                }
+                ht.insertCell().className("txtCenter")
+					.width(80)
+					.innerHTML(tmpInfo);
+            }
+            else {
+
+            }
+        }
+    }
+
+    if (setHx.getNode("SYSTEM", "Fans")) {
+        ht.insertRow();
+        ht.insertCell().className("txtCenter")
+			.width(100)
+			.innerHTML("&nbsp;");
+        for (var i = 0; i < hx.getItemSize("Fan"); i++) {
+            ht.insertCell().className("txtCenter")
+			.width(80)
+			.innerHTML(i + 1);
+        }
+        for (var i = 0; i < hx.getItemSize("Fan"); i++) {
+            var tmpInfo = "";
+            if (hx.getItemValue(i, "Fan") == "1") {
+                tmpInfo = hl.get("OK");
+            } else {
+                tmpInfo = hl.get("FAIL");
+            }
+            if (i == 0) {
+                ht.insertRow();
+                ht.insertCell().className("txtCenter")
+					.width(100)
+						.innerHTML(hl.get("FANS"));
+            }
+            ht.insertCell().className("txtCenter")
+				.width(80)
+				.innerHTML(tmpInfo);
+        }
+    }
+}
+
+function setLanguage(){
+
+	EFDEF_("^td_").className("txtLeft");
+	
+	
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div style="text-align:left">
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+                    <fieldset class="fieldsetStyle" >
+                    <legend id="leg_System" class="legStyle"></legend>
+                    <table border="0" cellspacing="0" cellpadding="6" style="position:relative; width: auto;";>
+						<tr id="tr_Version" style="display:none;">
+							<td id="td_Version"></td>
+							<td id="Version_val" class="txtLeft"></td>
+						</tr>
+						<tr id="tr_Model" style="display:none;">
+							<td id="td_Model"></td>
+							<td id="Model_val" class="txtLeft"></td>
+						</tr>
+						<tr id="tr_NTSC_PAL" style="display:none;">
+							<td id="td_NTSC_PAL"></td>
+							<td id="NTSC_PAL_val" class="txtLeft"></td>
+						</tr>
+						<tr id="tr_web_Version" style="display:none;">
+							<td id="td_web_Version"></td>
+							<td id="web_Version_val" class="txtLeft"></td>
+						</tr>
+                        <tr id="tr_SN" style="display:none;">
+							<td id="td_SN"></td>
+							<td id="SN_val" class="txtLeft"></td>
+						</tr>
+					</table>
+                    </fieldset>
+				</td>
+				<td width="50"></td>
+				<td>
+                    <fieldset class="fieldsetStyle" >
+                    <legend id="leg_Lan" class="legStyle"></legend>
+						<table border="0" cellspacing="0" cellpadding="6" style="position:relative; width: auto;";>
+							<tr id="tr_IP1" style="display:none;">
+								<td id="td_IP1"></td>
+								<td id="IP_val1" class="txtLeft"></td>
+							</tr>
+							<tr id="tr_MAC1" style="display:none;">
+								<td id="td_MAC1"></td>
+								<td id="MAC_val1" class="txtLeft"></td>
+							</tr>
+                            <tr id="tr_IP2" style="display:none;">
+								<td id="td_IP2"></td>
+								<td id="IP_val2" class="txtLeft"></td>
+							</tr>
+							<tr id="tr_MAC2" style="display:none;">
+								<td id="td_MAC2"></td>
+								<td id="MAC_val2" class="txtLeft"></td>
+							</tr>
+							<tr id="tr_DVR_Name" style="display:none;">
+								<td id="td_DVR_Name"></td>
+								<td id="DVR_Name_val" class="txtLeft"></td>
+							</tr>
+							<tr id="tr_Network_ID" style="display:none;">
+								<td id="td_Network_ID"></td>
+								<td id="Network_ID_val" class="txtLeft"></td>
+							</tr>
+
+                        </table>
+                    </fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td height="50"></td>
+                <td></td>
+                <td></td>
+			</tr>
+            <tr>
+                <td colspan="3">
+                    <fieldset class="fieldsetStyle" >
+                    <legend id="leg_Status" class="legStyle"></legend>
+                    <table border="0" cellspacing="0" cellpadding="6" style="position:relative;">
+                        <tr>
+                            <td id="leg_Status" colspan="3" class="txtLeft"></td>
+                        </tr>
+			            <tr>
+				            <td colspan="3" width="780">
+				                <table id="tbl_status" border="0" cellspacing="0" cellpadding="0"></table>
+				            </td>
+			            </tr>
+                    </table>
+                    </fieldset>
+                </td>
+            </tr>
+		</table>
+    </div>
+    </div>
+</body>
+</html>

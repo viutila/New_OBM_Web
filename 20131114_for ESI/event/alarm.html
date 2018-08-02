@@ -1,0 +1,672 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hx1 = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var mc;
+var mc_apply;
+var g_cam_ary = new Array();
+var g_apply_ary = new Array();
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+	sm = new ScreenMask("m","sm");
+	mc = new MultipleCheckbox("","mc",hl.get("CAMERA"),120,200,hl);
+	mc_apply = new MultipleCheckbox("d","mc_apply",hl.get("CAMERA"),120,200,hl);
+	for (var i = 0; i < (parent.g_Num_alarm_in); i++) {
+	    g_apply_ary.push(i + 1);
+	}
+
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+        g_cam_ary.push(i + 1);
+    }
+	mc.setAry(g_cam_ary)
+		.setCols(4)
+		.createList()
+		.setFuncOk(closeEdit)
+		.setFuncCancel(closeEdit);
+	GetXML();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+    setIdInnerHTML("td_Alarm", hl.get("ALARM"));
+    setIdValue("btn_cam", hl.get("CAMERAS"));
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    funcNum = setHx.getNodeChildSize("ALARM");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("ALARM", Cnt)) {
+
+            case "Enable":
+                setIdInnerHTML("td_Enable", hl.get("ENABLE"));
+                setIdDisplay("td_Enable", "table-cell");
+                setIdDisplay("chk_Enable", "inline");
+                break;
+            case "PreAlarmRecord":
+                setIdInnerHTML("td_Prealarm_REC", hl.get("PRE_ALARM_RECORD"));
+                setIdDisplay("td_Prealarm_REC", "table-cell");
+                setIdDisplay("chk_Prealarm_REC", "inline");
+                break;
+            case "EmailNotify":
+                setIdInnerHTML("td_Email_Notify", hl.get("EMAIL_NOTIFY"));
+                setIdDisplay("td_Email_Notify", "table-cell");
+                setIdDisplay("chk_Email_Notify", "inline");
+                break;
+            case "Log":
+                setIdInnerHTML("td_Log", hl.get("LOG"));
+                setIdDisplay("td_Log", "table-cell");
+                setIdDisplay("chk_Log", "inline");
+                break;
+            case "Buzzer":
+                setIdInnerHTML("td_Buzzer", hl.get("BUZZER"));
+                setIdDisplay("td_Buzzer", "table-cell");
+                setIdDisplay("chk_Buzzer", "inline");
+               
+                break;
+            case "NetworkAlarm":
+                setIdInnerHTML("td_Network_Alarm", hl.get("NETWORK_ALARM"));
+                setIdDisplay("td_Network_Alarm", "table-cell");
+                setIdDisplay("chk_Network_Alarm", "inline");
+               
+                break;
+            case "AutoLock":
+                setIdInnerHTML("td_Auto_Lock", hl.get("AUTO_LOCK"));
+                setIdDisplay("td_Auto_Lock", "table-cell");
+                setIdDisplay("chk_Auto_Lock", "inline");
+                
+                break;
+            case "FTPUpload":
+                setIdInnerHTML("td_Ftp_Upload", hl.get("FTP_UPLOAD"));
+                setIdDisplay("td_Ftp_Upload", "table-cell");
+                setIdDisplay("chk_Ftp_Upload", "inline");
+               
+                break;
+            case "AlarmOutput":
+                setIdInnerHTML("td_Alarm_Output", hl.get("ALARM_OUTPUT"));
+                setIdDisplay("td_Alarm_Output", "table-cell");
+                setIdDisplay("sel_Alarm_Output", "inline");
+
+                parent.setSelectOutput(EFDEF_id("sel_Alarm_Output"), parent.g_OutputSum);
+                break;
+            case "CallMonitor":
+                setIdInnerHTML("td_Call_Monitor", hl.get("CALL_MONITOR"));
+                setIdDisplay("td_Call_Monitor", "table-cell");
+                setIdDisplay("sel_Call_Monitor", "inline");
+                var type = parent.SetHx.getNodeValue("EventSetting", "AlarmCallMonitor").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Call_Monitor", 0);
+                for (i = 0; i < type.length; i++) {
+                    type[i] = type[i].replace(/\+/g, "_");
+                    type[i] = type[i].replace(/[ ]/g, "_");
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                
+                break;
+            case "OutputType":
+                setIdInnerHTML("td_Output_Type", hl.get("OUTPUT_TYPE"));
+                setIdDisplay("td_Output_Type", "table-cell");
+                setIdDisplay("sel_Output_Type", "inline");
+
+                var type = parent.SetHx.getNodeValue("EventSetting", "AlarmAlarmType").split(",");
+                var hs = new HandleSelect("sel_Output_Type", 0);
+                var tArray = parent.transLangArray(type);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), type[i].toLowerCase());
+                }
+                break;
+            case "MainMonitor":
+                setIdInnerHTML("td_Main_Monitor", hl.get("MAIN_MONITOR"));
+                setIdDisplay("td_Main_Monitor", "table-cell");
+                setIdDisplay("sel_Main_Monitor", "inline");
+                var type = parent.SetHx.getNodeValue("EventSetting", "AlarmMainMonitor").split(",");
+                var hs = new HandleSelect("sel_Main_Monitor", 0);
+                var tArray = parent.transLangArray(type);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+               
+                break;
+            case "TimeoutDuration":
+                setIdInnerHTML("td_Timeout_Dur", hl.get("TIMEOUT_DURATION"));
+                break;
+            case "Record":
+                setIdInnerHTML("td_Rec", hl.get("RECORD"));
+                setIdDisplay("td_Rec", "table-cell");
+                setIdDisplay("btn_cam", "inline");
+                setIdValue("btn_cam", hl.get("CAMERAS"));
+               
+                break;
+            case "PTZPreset":
+                setIdInnerHTML("td_PTZ_Preset", hl.get("PTZ"));
+                setIdDisplay("td_PTZ_Preset", "table-cell");
+                setIdDisplay("sel_Ptz", "inline");
+                var hs = new HandleSelect("sel_Ptz", 0);
+                var ptz = parent.SetHx.getNodeValue("EventSetting", "AlarmPTZ").split(",");
+                for (i = 0; i < ptz.length; i++) {
+                    hs.addOpt(i, hl.get(ptz[i].toUpperCase()), ptz[i].toLowerCase());
+                }
+                break;
+            case "InputType":
+                setIdInnerHTML("td_Input_Type", hl.get("INPUT_TYPE"));
+                setIdDisplay("td_Input_Type", "table-cell");
+                setIdDisplay("sel_Input_Type", "inline");
+                var hs = new HandleSelect("sel_Input_Type", 0);
+                var type = parent.SetHx.getNodeValue("EventSetting", "InputType").split(",");
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                break;
+            case "ActiveCamera":
+                setIdInnerHTML("td_Active_Cam", hl.get("ACTIVE_CAMERA"));
+                setIdDisplay("td_Active_Cam", "table-cell");
+                setIdDisplay("sel_Active_Cam", "inline");
+                
+                var hs = new HandleSelect("sel_Active_Cam", 0);
+                for (i = 1; i <= parent.g_total_ch_num; i++) {
+                    hs.addOpt(i,i, i);
+                }
+                break;
+            case "FTPUploadFileType":
+                setIdInnerHTML("td_Ftp_Upload_File_Type", hl.get("FTP_UPLOAD_FILE_TYPE"));
+                setIdDisplay("td_Ftp_Upload_File_Type", "table-cell");
+                setIdDisplay("sel_Ftp_Upload_File_Type", "inline");
+
+                var hs = new HandleSelect("sel_Ftp_Upload_File_Type", 0);
+                var type = parent.SetHx.getNodeValue("EventSetting", "AlarmFTPUploadFileType").split(",");
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i],type[i]);
+                }
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }
+    }
+    initCameraList();
+}
+function initCameraList(){
+	var s1 = new HandleSelect("sel_Alarm",0);
+	var s2 = new HandleSelect("sel_Active_Cam",0);
+
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+	    s2.addOpt(i, i + 1, i);
+	}
+	for (var i = 0; i < (parent.g_Num_alarm_in); i++) {
+		s1.addOpt(i,i + 1,i);
+	}
+}
+function selectEventAlarm(){
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+    var str = "AlarmIn" + getIdSelectText("sel_Alarm").toFill(2);
+	EFDEF_("^td_").className("txtLeft");
+
+	funcNum = setHx.getNodeChildSize("ALARM");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("ALARM", Cnt)) {
+
+	        case "Enable":
+	            setIdChecked("chk_Enable", hx.getNodeValue(str, "enable"));
+	            break;
+	        case "PreAlarmRecord":
+	            setIdChecked("chk_Prealarm_REC", hx.getNodeValue(str, "preAlarmRecord"));
+	            break;
+	        case "EmailNotify":
+	            setIdChecked("chk_Email_Notify", hx.getNodeValue(str, "emailNotify"));
+	            break;
+	        case "Log":
+	            setIdChecked("chk_Log", hx.getNodeValue(str, "log"));
+	            break;
+	        case "Buzzer":
+	            setIdChecked("chk_Buzzer", hx.getNodeValue(str, "buzzer"));
+	            break;
+	        case "NetworkAlarm":
+	            setIdChecked("chk_Network_Alarm", hx.getNodeValue(str, "networkAlarm")); 
+	            break;
+	        case "AutoLock":
+	            setIdChecked("chk_Auto_Lock", hx.getNodeValue(str, "autoLock"));
+	            break;
+	        case "FTPUpload":
+	            setIdChecked("chk_Ftp_Upload", hx.getNodeValue(str, "ftpUpload"));
+	            break;
+	        case "AlarmOutput":
+	            setIdValue("sel_Alarm_Output", hx.getNodeValue(str, "alarmOutput"));
+	            break;
+	        case "CallMonitor":
+	            setIdValue("sel_Call_Monitor", hx.getNodeValue(str, "callScreenType"));
+	            break;
+	        case "OutputType":
+	            setIdValue("sel_Output_Type", hx.getNodeValue(str, "alarmOutputType"));
+	            break;
+	        case "MainMonitor":
+	            setIdValue("sel_Main_Monitor", hx.getNodeValue(str, "mainScreenType"));
+	            break;
+	        case "TimeoutDuration":
+	            setIdValue("txt_TimeoutDur", hx.getNodeValue(str, "timeoutDuration"));
+	            break;
+	        case "Record":
+	            var actAry = hx.getNodeValue(str, "recordCameras").split(";");
+	            var actAry2 = new Array(parent.g_total_ch_num);
+	            //var actAry2 = new Array(parent.g_Num_alarm_in);
+	            for (var i = 0; i < actAry2.length; i++) {
+	                actAry2[i] = 0;
+	            }
+	            for (var i = 0; i < actAry.length; i++) {
+	                actAry2[actAry[i]] = 1;
+	            }
+	            mc.setValue(actAry2);
+	            break;
+	        case "PTZPreset":
+	            setIdValue("sel_Ptz", hx.getNodeValue(str, "ptzPreset"));
+	            setIdValue("txt_PTZ_ID", hx.getNodeValue(str, "ptzPresetValue"));
+	            break;
+	        case "InputType":
+	            setIdValue("sel_Input_Type", hx.getNodeValue(str, "inputType"));
+	            break;
+	        case "ActiveCamera":
+	            setIdValue("sel_Active_Cam", hx.getNodeValue(str, "activeCamera"));
+	            break;
+	        case "FTPUploadFileType":
+	            setIdValue("sel_Ftp_Upload_File_Type", hx.getNodeValue(str, "ftpUploadFileType"));
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+
+	    }
+	}
+	//setIdValue("btn_save", hl.get("SAVE") + " CH" + getIdSelectText("sel_Alarm"));
+	setIdValue("btn_save", hl.get("SAVE"));
+	chgOutputType();
+	chgPTZ();
+	
+}
+function chgOutputType(){
+	if(getIdValue("sel_Output_Type") == "timeout" || getIdValue("sel_Output_Type") == "trans+timeout"){
+		setIdVisibility("td_Timeout_Dur",1);
+		setIdVisibility("txt_TimeoutDur",1);
+	}else{
+		setIdVisibility("td_Timeout_Dur",0);
+		setIdVisibility("txt_TimeoutDur",0);
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/AlarmIn.xml");
+	selectEventAlarm();
+}
+function chgPTZ(){
+	if(getIdValue("sel_Ptz") == "off" || getIdValue("sel_Ptz") == "autopan"){
+		setIdDisplay("txt_PTZ_ID","none");
+	}else{
+		setIdDisplay("txt_PTZ_ID","inline");
+	}
+}
+
+function syncData(){
+	var tmpVal = "";
+	for(var i = 0;i < mc.aryChecked.length;i++){
+	    if (mc.aryChecked[i]) {
+	        if (tmpVal != "") {
+	            tmpVal += ";";
+	        }
+	        tmpVal += i.toString();
+		}
+	}
+	var str = "AlarmIn" + getIdSelectText("sel_Alarm").toFill(2);
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var str = "AlarmIn" + getIdSelectText("sel_Alarm").toFill(2);
+    EFDEF_("^td_").className("txtLeft");
+    hx.setNodeValue(1, str, "modified");
+    funcNum = setHx.getNodeChildSize("ALARM");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("ALARM", Cnt)) {
+
+            case "Enable":
+                hx.setNodeValue(getIdChecked("chk_Enable"),str, "enable");
+                break;
+            case "PreAlarmRecord":
+                hx.setNodeValue(getIdChecked("chk_Prealarm_REC"), str, "preAlarmRecord");
+                break;
+            case "EmailNotify":
+                hx.setNodeValue(getIdChecked("chk_Email_Notify"),str, "emailNotify");
+                break;
+            case "Log":
+                hx.setNodeValue(getIdChecked("chk_Log" ),str, "log");
+                break;
+            case "Buzzer":
+                 hx.setNodeValue(getIdChecked("chk_Buzzer"),str, "buzzer");
+                break;
+            case "NetworkAlarm":
+                hx.setNodeValue(getIdChecked("chk_Network_Alarm" ),str, "networkAlarm");
+                break;
+            case "AutoLock":
+                hx.setNodeValue(getIdChecked("chk_Auto_Lock"),str, "autoLock");
+                break;
+            case "FTPUpload":
+                hx.setNodeValue(getIdChecked("chk_Ftp_Upload" ),str, "ftpUpload");
+                break;
+            case "AlarmOutput":
+                hx.setNodeValue(getIdValue("sel_Alarm_Output"), str, "alarmOutput");
+                break;
+            case "CallMonitor":
+                hx.setNodeValue(getIdValue("sel_Call_Monitor"), str, "callScreenType");
+                break;
+            case "OutputType":
+                hx.setNodeValue(getIdValue("sel_Output_Type"), str, "alarmOutputType");
+                break;
+            case "MainMonitor":
+                hx.setNodeValue(getIdValue("sel_Main_Monitor"), str, "mainScreenType");
+                break;
+            case "TimeoutDuration":
+                hx.setNodeValue(getIdValue("txt_TimeoutDur"), str, "timeoutDuration");
+                break;
+            case "Record":
+                hx.setNodeValue( tmpVal, str, "recordCameras");
+                break;
+            case "PTZPreset":
+                hx.setNodeValue(getIdValue("sel_Ptz"),str, "ptzPreset");
+                hx.setNodeValue(getIdValue("txt_PTZ_ID"), str, "ptzPresetValue");
+                break;
+            case "InputType":
+                hx.setNodeValue(getIdValue("sel_Input_Type"), str, "inputType");
+                break;
+            case "ActiveCamera":
+                hx.setNodeValue(getIdValue("sel_Active_Cam" ),str, "activeCamera");
+                break;
+            case "FTPUploadFileType":
+                 hx.setNodeValue(getIdValue("sel_Ftp_Upload_File_Type"),str, "ftpUploadFileType");
+                 break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }
+    }
+}
+function SetXML(){
+	syncData();
+	var hx2 = new HandleXml();
+	//var newxml = hx.getXml().xml.replace(/\t/g, "");
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/AlarmIn.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function closeEdit(){
+	sm.close();
+	mc.close();
+}
+function openEdit(){
+	sm.open();
+	mc.open();
+}
+function applyToAll(){
+	syncData();
+	var fromNode = "AlarmIn" + getIdSelectText("sel_Alarm").toFill(2);
+	var toNode = "";
+	var funcNum;
+	for(var i = 0;i < mc_apply.aryChecked.length;i++){
+		if(mc_apply.aryChecked[i]){
+		    toNode = "AlarmIn" + (i + 1).toFill(2);
+		    funcNum = setHx.getNodeChildSize("ALARM");
+		    hx.setNodeValue(1, toNode, "modified");
+		    for (var Cnt = 0; Cnt < funcNum; Cnt++) {
+
+		        switch (setHx.getNodeChildName("ALARM", Cnt)) {
+
+		            case "Enable":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "enable"), toNode, "enable");
+		                break;
+		            case "PreAlarmRecord":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "preAlarmRecord"), toNode, "preAlarmRecord");
+		                break;
+		            case "EmailNotify":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "emailNotify"), toNode, "emailNotify");
+		                break;
+		            case "Log":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "log"), toNode, "log");
+		                break;
+		            case "Buzzer":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "buzzer"), toNode, "buzzer");
+		                break;
+		            case "NetworkAlarm":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "networkAlarm"), toNode, "networkAlarm");
+		                break;
+		            case "AutoLock":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "autoLock"), toNode, "autoLock");
+		                break;
+		            case "FTPUpload":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "ftpUpload"), toNode, "ftpUpload");
+		                break;
+		            case "AlarmOutput":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "alarmOutput"), toNode, "alarmOutput");
+		                break;
+		            case "CallMonitor":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "callScreenType"), toNode, "callScreenType");
+		                break;
+		            case "OutputType":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "alarmOutputType"), toNode, "alarmOutputType");
+		                break;
+		            case "MainMonitor":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "mainScreenType"), toNode, "mainScreenType");
+		                break;
+		            case "TimeoutDuration":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "timeoutDuration"), toNode, "timeoutDuration");
+		                break;
+		            case "Record":  //Record not sync
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "recordCameras"), toNode, "recordCameras");
+		                break;
+		            case "PTZPreset":  //PTZ not sync
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "ptzPreset"), toNode, "ptzPreset");
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "ptzPresetValue"), toNode, "ptzPresetValue");
+		                break;
+		            case "InputType":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "inputType"), toNode, "inputType");
+		                break;
+		            case "ActiveCamera":    //ActiveCamera not sync
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "activeCamera"), toNode, "activeCamera");
+		                break;
+		            case "FTPUploadFileType":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "ftpUploadFileType"), toNode, "ftpUploadFileType");
+		                break;
+		            case "#text":   //******* for chrome
+		                funcNum++;
+		                break;
+
+		        }
+		    }
+		}
+	}
+	SetXML();
+	closeApplyEdit();
+}
+function closeApplyEdit(){
+	sm.close();
+	mc_apply.close();
+}
+function openApplyEdit(){
+    mc_apply.setAry(g_apply_ary)
+		.setCols(4)
+		.setSelectedText(getIdValue("sel_Alarm").toInt() + 1)
+		.createList()
+		.setFuncOk(applyToAll)
+		.setFuncCancel(closeApplyEdit);
+	sm.open();
+	mc_apply.open();
+}
+
+
+//-->
+</script>
+</head>
+<body onload="init();">	
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Alarm" style="width:120px;"></td>
+				<td width="150">
+					<select id="sel_Alarm" style="width:100px;" onChange="selectEventAlarm();"></select>
+				</td>
+			</tr>
+		</table>
+		<table border="0" cellspacing="5" cellpadding="0" width="850">
+			<tr>
+                <td id="td_Enable" style="display:none"></td>
+				<td>
+					<input type="checkbox" id="chk_Enable"  style="display:none"/>
+				</td>
+				<td id="td_Main_Monitor" style="display:none;"></td>
+				<td style="width:220px;">
+					<select id="sel_Main_Monitor" style="width:auto;display:none;"></select>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Log" style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Log" style="display:none"/>
+				</td>
+				<td id="td_Call_Monitor" style="display:none;"></td>
+				<td >
+					<select id="sel_Call_Monitor" style="width:auto; display:none;"></select>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Prealarm_REC" style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Prealarm_REC" style="display:none"/>
+				</td>
+				<td id="td_Rec" style="display:none;"></td>
+				<td >
+					<input type="button" id="btn_cam" class="btnStyle" style="display:none;" value="" onclick="openEdit();"/>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Buzzer" style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Buzzer" style="display:none"/>
+				</td>
+				<td id="td_Input_Type" style="display:none"></td>
+				<td >
+					<select id="sel_Input_Type" style="width:120px;display:none;"></select>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Email_Notify" style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Email_Notify" style="display:none"/>
+				</td>
+				<td id="td_Active_Cam" style="display:none;"></td>
+				<td >
+					<select id="sel_Active_Cam" style="width:120px;display:none;"></select>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Network_Alarm" style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Network_Alarm" style="display:none"/>
+				</td>
+				<td id="td_PTZ_Preset" style="display:none"></td>
+				<td >
+					<select id="sel_Ptz" style="width:auto;display:none;" onchange="chgPTZ();" ></select>
+					<input type="text" id="txt_PTZ_ID" maxlength="3" value="" style="width:30px;display: none;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Auto_Lock"  style="display:none"></td>
+                <td>
+					<input type="checkbox" id="chk_Auto_Lock"  style="display:none"/>
+				</td>
+				<td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="td_Ftp_Upload"></td>
+                <td>
+                    <input type="checkbox" id="chk_Ftp_Upload"/>
+                </td>
+                <td></td>
+                <td></td>
+			</tr>
+            <tr>
+                <td id="td_Ftp_Upload_File_Type" style="display:none"></td>
+                <td  ><select id="sel_Ftp_Upload_File_Type"  style="width:120px; display:none;"></select></td>
+                <td></td>
+                <td></td>
+			</tr>
+            <tr>
+				<td id="td_Alarm_Output" style="display:none"></td>
+				<td>
+					<select id="sel_Alarm_Output" style="width:120px; display:none;"></select>
+				</td>
+                <td></td>
+                <td></td>
+			</tr>
+            <tr >
+				<td id="td_Output_Type" style="display:none"></td>
+				<td>
+					<select id="sel_Output_Type" style="width:auto; display:none;" onchange="chgOutputType();"></select>
+				</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="td_Timeout_Dur" ></td>
+				<td>
+					<input type="text" id="txt_TimeoutDur" maxlength="16" style="width:60px;" onblur="CheckCharKeyin(this,0,10,150);"/>
+				</td>
+                <td></td>
+                <td></td>
+			</tr>
+		</table>
+	</div>
+    </div>
+	<div class="applyFrm">
+		<input type="button" id="btn_Apply_To" class="btnStyle" value="" style="width:120px;" onclick="openApplyEdit();"/>
+		<br /><br />
+		<input type="button" id="btn_save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+	<div id="sm"></div>
+	<div id="mc"></div>
+	<div id="mc_apply"></div>
+</body>
+</html>

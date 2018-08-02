@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/Calendar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/TimeControl.css">
+<link href="../include/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript" src="../include/js/Calendar.js"></script>
+<script type="text/javascript" src="../include/js/TimeControl.js"></script>
+<script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="../include/js/jquery-ui.custom.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var cal1;	//calendar
+var tc1; //TimeControl
+var setHx = new HandleXml();
+
+var g_receive_time;
+
+function init(){
+	setLanguage();
+	parent.GetTimeZone();
+	cal1 = new Calendar('bids','calendar','SysDate',parent.g_date_fmt_ary[parent.g_date_fmt],10,360,10,387,184,140);
+	tc1 = new TimeControl("s", "TimeControl", parent.g_time_fmt, "hM", 100, 20);
+	setHx.setUrl("../" + parent.g_device_xml_name);
+	parent.checkDST_NV();
+    GetXML();
+	initFunc();
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var str = "DateTime";
+    EFDEF_("^td_").className("txtLeft");
+
+    funcNum = setHx.getNodeChildSize("DATETIME");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("DATETIME", Cnt)) {
+            case "Date":
+                setIdDisplay("td_Date", "table-cell");
+                setIdDisplay("SysDate", "table-cell");
+                setIdInnerHTML("td_Date", hl.get("DATE"));
+
+                g_receive_time = hx.getNodeValue("currentTime").toInt();
+                cal1.setDateFormat(parent.g_date_fmt_ary[parent.g_date_fmt]);
+                cal1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+                break;
+            case "Time":
+                setIdDisplay("td_Time", "table-cell");
+                setIdDisplay("TimeControl", "table-cell");
+                setIdInnerHTML("td_Time", hl.get("TIME"));
+                tc1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+                break;
+            case "DateFormat":
+                setIdDisplay("td_Date_Format", "table-cell");
+                setIdDisplay("sel_Date_Format", "table-cell");
+                setIdInnerHTML("td_Date_Format", hl.get("DATE_FORMAT"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DateTimeDateFormat").split(",");
+                var hs = new HandleSelect("sel_Date_Format", 0);
+                for (i = 0; i < type.length; i++) {
+                    var str = "";
+                    if (type[i] == "yyyy/mm/dd") {
+                        str = "Y/M/D";
+                    } else if (type[i] == "dd/mm/yyyy") {
+                        str = "D/M/Y";
+                    } else if (type[i] == "mm/dd/yyyy") {
+                        str = "M/D/Y";
+                    }
+                    hs.addOpt(i, type[i], str);
+                }
+                setIdValue("sel_Date_Format", hx.getNodeValue("DateTime", "dateFormat"));
+                break;
+            case "TimeFormat":
+                setIdDisplay("td_Time_Format", "table-cell");
+                setIdDisplay("sel_Time_Format", "table-cell");
+                setIdInnerHTML("td_Time_Format", hl.get("TIME_FORMAT"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DateTimeTimeFormat").split(",");
+                var hs = new HandleSelect("sel_Time_Format", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get("H" + type[i].replace("H","")), type[i]);
+                }
+                setIdValue("sel_Time_Format", hx.getNodeValue("DateTime", "timeFormat"));
+                break;
+            case "TimeZone":
+                setIdDisplay("td_Time_Zone", "table-cell");
+                setIdDisplay("sel_Time_Zone", "table-cell");
+                setIdInnerHTML("td_Time_Zone", hl.get("TIME_ZONE"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DateTimeTimeZone").split(",");
+                var hs = new HandleSelect("sel_Time_Zone", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_Time_Zone", hx.getNodeValue("DateTime", "timeZone"));
+                break;
+            case "NTPServer":
+                setIdDisplay("td_NTP_Server", "table-cell");
+                setIdDisplay("txt_NTP_Server", "table-cell");
+                setIdInnerHTML("td_NTP_Server", hl.get("NTP_SERVER"));
+                setIdValue("txt_NTP_Server", hx.getNodeValue("DateTime", "NtpServer", "ipAddress"));
+
+                break;
+            case "NTP":
+                setIdDisplay("td_NTP", "table-cell");
+                setIdDisplay("sel_NTP", "table-cell");
+                setIdInnerHTML("td_NTP", "NTP");
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DateTimeNTP").split(",");
+                var hs = new HandleSelect("sel_NTP", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                setIdValue("sel_NTP", hx.getNodeValue("DateTime", "NtpServer", "enabled"));
+                break;
+            case "NTPUPdateInterval":
+                setIdDisplay("td_NTP_Update", "table-cell");
+                setIdDisplay("sel_NTP_Update", "table-cell");
+                setIdInnerHTML("td_NTP_Update", hl.get("NTP_UPDATE"));
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DateTimeNTPUpdateInterval").split(",");
+                var hs = new HandleSelect("sel_NTP_Update", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                setIdValue("sel_NTP_Update", hx.getNodeValue("DateTime", "NtpServer", "syncInterval"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    chgNtpStatus();
+}
+
+function GetXML(){
+	//handle time==================
+    hx.setUrl("../cgi-bin/DateTime.xml");
+	
+	/*
+	var tmpDate = new Date(g_receive_time * 1000);
+	alert(tmpDate.format("yyyy-mm-dd hh:MM:ss",true));
+	*/
+	//=============================	
+	
+}
+function chgNtpStatus(){
+	if(getIdValue("sel_NTP") == 0){
+		setIdVisibility(cal1.imgId,1);
+		tc1.setDisabled(0);
+	}else{
+		cal1.closeCalendar();
+		setIdVisibility(cal1.imgId,0);
+		tc1.setDisabled(1);
+	}
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var str = "DateTime";
+	var str1 = "NtpServer";
+	
+	var submitTime = getTimeSec(	cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				tc1.getSec()) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+
+	funcNum = setHx.getNodeChildSize("DATETIME");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("DATETIME", Cnt)) {
+	        case "Date":
+
+	            break;
+	        case "Time":
+	            hx.setNodeValue(submitTime, str, "currentTime");
+	            break;
+	        case "DateFormat":
+	            hx.setNodeValue(getIdValue("sel_Date_Format"), str, "dateFormat");
+	            break;
+	        case "TimeFormat":
+	            hx.setNodeValue(getIdValue("sel_Time_Format"), str, "timeFormat");
+	            break;
+	        case "TimeZone":
+	            hx.setNodeValue(getIdValue("sel_Time_Zone"), str, "timeZone");
+	            break;
+	        case "NTPServer":
+	            hx.setNodeValue(getIdValue("txt_NTP_Server"), str, str1, "ipAddress");
+	            break;
+	        case "NTP":
+	            hx.setNodeValue(getIdValue("sel_NTP"), str, str1, "enabled");
+	            break;
+	        case "NTPUPdateInterval":
+	            hx.setNodeValue(getIdValue("sel_NTP_Update"), str, str1, "syncInterval");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/DateTime.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+	    parent.GetTimeZone();
+	    parent.applet.setTimeZone(parent.g_time_zone);
+	    parent.applet.setTimeInfo(parent.g_date_fmt, parent.g_time_fmt);
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg("<SYSTEM>" + hx.getNode("DATETIME_SETTING").xml + "</SYSTEM>","xml");
+}
+function setDateFormat() {
+    var type;
+    if (getIdValue("sel_Date_Format") == "D/M/Y") {
+        type = "dd/mm/yyyy";
+    }
+    else if (getIdValue("sel_Date_Format") == "Y/M/D") {
+        type = "yyyy/mm/dd";
+    }
+    else if (getIdValue("sel_Date_Format") == "M/D/Y") {
+        type = "mm/dd/yyyy";
+    }
+    cal1.setDateFormat(type);
+}
+function setTimeFormat() {
+    tc1.setType(EFDEF_id("sel_Time_Format").selectedIndex);
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+/*
+$(function () {
+    $("input:text").addClass("ui-widget ui-widget-content ui-widget-header ui-corner-all");
+    $(function () {
+        $("input[type=button], a, button")
+      .button()
+      .click(function (event) {
+          event.preventDefault();
+      });
+    });
+});*/
+</script>
+
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Date" width="245" style="display: none;"></td>
+				<td id="calendar" width="150" align="left">
+					<input type="text" id="SysDate" disabled="false" size="12" style="width:100px; display:none;" readonly="readonly"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Time" style="display: none;"></td>
+				<td align="left">
+					<div id="TimeControl" style="display: none;"></div>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Date_Format" style="display: none;"></td>
+				<td align="left">
+					<select id="sel_Date_Format" style="width:125px; display:none;" onchange="setDateFormat();"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Time_Format" style="display: none;"></td>
+				<td align="left">
+					<select id="sel_Time_Format" style="width:125px; display:none;" onchange="setTimeFormat();"></select>
+				</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td id="td_Time_Zone" style="display: none;"></td>
+				<td align="left">
+					<select id="sel_Time_Zone" style="width:125px; display:none;"></select>
+				</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td id="td_NTP" style="display: none;"></td>
+				<td align="left">
+					<select id="sel_NTP" style="width:100px; display:none;" onchange="chgNtpStatus();"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_NTP_Server" style="display: none;"></td>
+				<td align="left">
+					<input type="text" id="txt_NTP_Server" value="" style="width:150px; display:none;" maxLength="64" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>			
+			<tr>
+				<td id="td_NTP_Update" style="display: none; width: 200px;"></td>
+				<td align="left">
+					<select id="sel_NTP_Update" style="width:125px; display:none;"></select>
+				</td>
+			</tr>
+		</table>		
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

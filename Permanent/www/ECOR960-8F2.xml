@@ -1,0 +1,402 @@
+<ECOR960-8F2>
+<ALARM>
+    <Enable></Enable>
+    <PreAlarmRecord></PreAlarmRecord>
+    <EmailNotify></EmailNotify>
+    <Log></Log>
+    <Buzzer></Buzzer>
+    <NetworkAlarm></NetworkAlarm>
+    <AutoLock></AutoLock>
+    <FTPUpload></FTPUpload>
+    <AlarmOutput></AlarmOutput>
+    <OutputType></OutputType>
+    <MainMonitor></MainMonitor>
+    <CallMonitor></CallMonitor>
+    <TimeoutDuration></TimeoutDuration>
+    <Record></Record>
+    <PTZPreset></PTZPreset>
+    <InputType></InputType>
+    <ActiveCamera></ActiveCamera>
+    <FTPUploadFileType></FTPUploadFileType>
+</ALARM>
+<ALARMSERVER>
+    <HostName></HostName>
+    <UserName></UserName>
+    <Password></Password>
+</ALARMSERVER>
+<CAMERASETTING>
+    <Install></Install>
+    <Covert></Covert>
+    <Title></Title>
+    <RecordDualStream></RecordDualStream>
+    <RecoedMode></RecoedMode>
+    <MainstreamResolution></MainstreamResolution>
+    <MainstreamRecordQuality></MainstreamRecordQuality>
+    <MainstreamNormalSpeed></MainstreamNormalSpeed>
+    <MainstreamEventSpeed></MainstreamEventSpeed>
+    <SubstreamResolution></SubstreamResolution>
+    <SubstreamRecordQuality></SubstreamRecordQuality>
+    <SubstreamNormalSpeed></SubstreamNormalSpeed>
+    <SubstreamEventSpeed></SubstreamEventSpeed>
+    <RecordAudio></RecordAudio>
+    <PTZID></PTZID>
+</CAMERASETTING>
+<DATETIME>
+    <Date></Date>
+    <Time></Time>
+    <DateFormat></DateFormat>
+    <TimeFormat></TimeFormat>
+    <TimeZone></TimeZone>
+    <NTPServer></NTPServer>
+    <NTP></NTP>
+    <NTPUPdateInterval></NTPUPdateInterval>
+</DATETIME>
+<DAYLIGHTSAV>
+    <StartDate></StartDate>
+    <StartTime></StartTime>
+    <SetTo></SetTo>
+    <EndDate></EndDate>
+    <EndTime></EndTime>
+</DAYLIGHTSAV>
+<DISK></DISK>
+<EMAIL></EMAIL>
+<EVENT>
+    <Fan>
+        <Log></Log>
+        <Buzzer></Buzzer>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+    </Fan>
+    <DiskTemperature>
+        <Log></Log>
+        <Buzzer></Buzzer>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+        <StopRecord></StopRecord>
+        <TempLimit></TempLimit>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+    </DiskTemperature>
+    <DiskFail>
+        <Log></Log>
+        <Buzzer></Buzzer>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+    </DiskFail>
+    <DiskFull>
+        <Log></Log>
+        <Buzzer></Buzzer>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+        <TimeoutDuration></TimeoutDuration>
+    </DiskFull>
+    <DiskOff>
+        <Buzzer></Buzzer>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+        <TimeoutDuration></TimeoutDuration>
+    </DiskOff>
+    <PowerLoss>
+        <Log></Log>
+        <EmailNotify></EmailNotify>
+        <NetworkAlarm></NetworkAlarm>
+    </PowerLoss>
+    <NetworkLoss>
+        <Log></Log>
+        <Buzzer></Buzzer>
+        <AlarmOutput></AlarmOutput>
+        <OutputType></OutputType>
+        <TimeoutDuration></TimeoutDuration>
+    </NetworkLoss>
+</EVENT>
+<EVENTSEARCH>
+    <FromDate></FromDate>
+    <ToDate></ToDate>
+    <FromTime></FromTime>
+    <ToTime></ToTime>
+    <Camera></Camera>
+    <Alarm></Alarm>
+    <Motion></Motion>
+    <VideoLoss></VideoLoss>
+</EVENTSEARCH>
+<EXPRESS>
+    <Date></Date>
+    <Time></Time>
+    <RecordMode></RecordMode>
+    <RecordDualStream></RecordDualStream>
+    <EstimateEvent></EstimateEvent>
+    <MainResolution></MainResolution>
+    <SubResolution></SubResolution>
+    <RecordWidth></RecordWidth>
+    <Misc></Misc>
+    <QuickPlayback></QuickPlayback>
+    <PlaybackFrom></PlaybackFrom>
+</EXPRESS>
+<EXPRESSSETUP>
+    <WeekendStart></WeekendStart>
+    <WeekendEnd></WeekendEnd>
+    <DaytimeStart></DaytimeStart>
+    <DaytimeEnd></DaytimeEnd>
+    <WeekendRecordType></WeekendRecordType>
+    <WeekdayDaytimeRecordType></WeekdayDaytimeRecordType>
+    <WeekdayNighttimeRecordType></WeekdayNighttimeRecordType>
+    <HolidayRecordType></HolidayRecordType>
+    <OtherRecordType></OtherRecordType>
+    <WeekendNormal></WeekendNormal>
+    <WeekdayDaytimeNormal></WeekdayDaytimeNormal>
+    <WeekdayNighttimeNormal></WeekdayNighttimeNormal>
+    <HolidayNormal></HolidayNormal>
+    <OtherNormal></OtherNormal>
+    <WeekendEvent></WeekendEvent>
+    <WeekdayDaytimeEvent></WeekdayDaytimeEvent>
+    <WeekdayNighttimeEvent></WeekdayNighttimeEvent>
+    <HolidayEvent></HolidayEvent>
+    <OtherEvent></OtherEvent>
+    <WeekendAction></WeekendAction>
+    <WeekdayDaytimeAction></WeekdayDaytimeAction>
+    <WeekdayNighttimeAction></WeekdayNighttimeAction>
+    <HolidayAction></HolidayAction>
+    <OtherAction></OtherAction>
+</EXPRESSSETUP>
+<FTP>
+    <ServerIP></ServerIP>
+    <Port></Port>
+    <UserName></UserName>
+    <Password></Password>
+    <FileName></FileName>
+</FTP>
+<HOLIDAY></HOLIDAY>
+<IOCONTRL>
+    <PTZProtocol></PTZProtocol>
+    <RS485ID></RS485ID>
+    <RS485BaudRate></RS485BaudRate>
+    <RS485DataBit></RS485DataBit>
+    <RS485StopBit></RS485StopBit>
+    <RS485Parity></RS485Parity>
+    <Control></Control>
+    <IRReomteID></IRReomteID>
+</IOCONTRL>
+<LAN>
+    <NetworkType>
+        <DHCP>
+            <IP></IP>
+            <SubnetMask></SubnetMask>
+            <Gateway></Gateway>
+            <DDNS1></DDNS1>
+            <DDNS2></DDNS2>
+        </DHCP>
+        <StaticIP>
+            <IP></IP>
+            <SubnetMask></SubnetMask>
+            <Gateway></Gateway>
+            <DDNS1></DDNS1>
+            <DDNS2></DDNS2>
+        </StaticIP>
+        <PPPoE>
+            <IP></IP>
+            <SubnetMask></SubnetMask>
+            <Gateway></Gateway>
+            <DDNS1></DDNS1>
+            <DDNS2></DDNS2>
+            <UserName></UserName>
+            <Password></Password>
+        </PPPoE>
+    </NetworkType>
+    <HTTPPort></HTTPPort>
+    <Bandwidth></Bandwidth>
+</LAN>
+<LOG>
+    <FromDate></FromDate>
+    <ToDate></ToDate>
+    <FromTime></FromTime>
+    <ToTime></ToTime>
+    <User></User>
+    <Event></Event>
+    <Configurations></Configurations>
+    <Record></Record>
+    <Operation></Operation>
+    <ExportLog></ExportLog>
+</LOG>
+<LOCKFORMAT>
+    <MaximumLock></MaximumLock>
+    <UnlockAll></UnlockAll>
+    <DeleteAll></DeleteAll>
+    <Format></Format>
+</LOCKFORMAT>
+<MENU>
+    <Live></Live>
+    <Express></Express>
+    <Camera></Camera>
+    <RecordAndPlay></RecordAndPlay>
+    <AlarmAndEvent></AlarmAndEvent>
+    <Disk></Disk>
+    <Display></Display>
+    <Network></Network>
+    <Schedule></Schedule>
+    <System></System>
+    <Infotmation></Infotmation>
+    <Copy></Copy>
+    <Search></Search>
+    <PTZ></PTZ>
+</MENU>
+<MOTION>
+    <Enable></Enable>
+    <PreAlarmRecord></PreAlarmRecord>
+    <EmailNotify></EmailNotify>
+    <Log></Log>
+    <Buzzer></Buzzer>
+    <NetworkAlarm></NetworkAlarm>
+    <AutoLock></AutoLock>
+    <FTPUpload></FTPUpload>
+    <FTPUploadFileType></FTPUploadFileType>
+    <AlarmOutput></AlarmOutput>
+    <OutputType></OutputType>
+    <TimeoutDuration></TimeoutDuration>
+    <MainMonitor></MainMonitor>
+    <CallMonitor></CallMonitor>
+    <MotionGrid></MotionGrid>
+</MOTION>
+<MONITOROSD>
+    <MainCameraTitle></MainCameraTitle>
+    <MainDateTime></MainDateTime>
+    <MainEventStatus></MainEventStatus>
+    <MainHDDStatus></MainHDDStatus>
+    <MainPlaybackDateTime></MainPlaybackDateTime>
+    <MainPlaybackStatus></MainPlaybackStatus>
+    <MainScreenMode></MainScreenMode>
+    <CallCameraTitle></CallCameraTitle>
+    <CallDateTime></CallDateTime>
+    <CallEventStatus></CallEventStatus>
+    <TVFormat></TVFormat>
+    <RecordingFormat></RecordingFormat>
+</MONITOROSD>
+<MAINMTSEQ></MAINMTSEQ>
+<MISC>
+	<Poweroff></Poweroff>
+</MISC>
+<PTZ></PTZ>
+<RAID></RAID>
+<RECORDER>
+    <Overwrite></Overwrite>
+    <ScheduleRecord></ScheduleRecord>
+    <RelayOutput></RelayOutput>
+    <AutoErase></AutoErase>
+    <Estimation></Estimation>
+</RECORDER>
+<SCHEDULE>
+    <Resolution></Resolution>
+    <NormalRate></NormalRate>
+    <EventRate></EventRate>
+    <Action></Action>
+</SCHEDULE>
+<STANDARDCOPY>
+    <Camera></Camera>
+    <CopyDataType></CopyDataType>
+    <StartTime></StartTime>
+    <EndTime></EndTime>
+    <CopyType></CopyType>
+    <DownloadPlayer></DownloadPlayer>
+</STANDARDCOPY>
+<SYSTEM>
+    <Version></Version>
+    <Model></Model>
+    <NTSC_PAL></NTSC_PAL>
+    <WebVersion></WebVersion>
+    <IP1></IP1>
+    <MAC1></MAC1>
+    <DVRName></DVRName>
+    <NetworkID></NetworkID>
+    <Disk></Disk>
+    <Fans></Fans>
+</SYSTEM>
+<SMARTSEARCH></SMARTSEARCH>
+<TIMESEARCH>
+    <Date></Date>
+    <Time></Time>
+</TIMESEARCH>
+<USER>
+    <Login></Login>
+    <Autologoff></Autologoff>
+</USER>
+<USERGROUP>
+    <OwnLevel></OwnLevel>
+    <ClearLog></ClearLog>
+    <FirmwareUpgrade></FirmwareUpgrade>
+    <DiskSetting></DiskSetting>
+    <RecordSetting></RecordSetting>
+    <LiveAudio></LiveAudio>
+    <PlaybackAudio></PlaybackAudio>
+    <ArchivalFunction></ArchivalFunction>
+    <SystemLogView></SystemLogView>
+    <UserManagement></UserManagement>
+    <DateTimeSetting></DateTimeSetting>
+    <DisplaySetting></DisplaySetting>
+    <NetworkSetting></NetworkSetting>
+    <ScheduleSetting></ScheduleSetting>
+    <AlarmEventSetting></AlarmEventSetting>
+    <CameraSetting></CameraSetting>
+    <PlaybackSearch></PlaybackSearch>
+    <OSDDisplayMode></OSDDisplayMode>
+    <PTZ></PTZ>
+    <ChangOwnPassword></ChangOwnPassword>
+</USERGROUP>
+<USERMANAGEMENT>
+    <OwnLevel></OwnLevel>
+    <ClearLog></ClearLog>
+    <FirmwareUpgrade></FirmwareUpgrade>
+    <DiskSetting></DiskSetting>
+    <RecordSetting></RecordSetting>
+    <LiveAudio></LiveAudio>
+    <PlaybackAudio></PlaybackAudio>
+    <ArchivalFunction></ArchivalFunction>
+    <SystemLogView></SystemLogView>
+    <UserManagement></UserManagement>
+    <DateTimeSetting></DateTimeSetting>
+    <DisplaySetting></DisplaySetting>
+    <NetworkSetting></NetworkSetting>
+    <ScheduleSetting></ScheduleSetting>
+    <AlarmEventSetting></AlarmEventSetting>
+    <CameraSetting></CameraSetting>
+    <PlaybackSearch></PlaybackSearch>
+    <OSDDisplayMode></OSDDisplayMode>
+    <PTZ></PTZ>
+    <ChangOwnPassword></ChangOwnPassword>
+    <LocalAccess></LocalAccess>
+</USERMANAGEMENT>
+<VIDEOADJUST>
+    <Brightness></Brightness>
+    <Contrast></Contrast>
+    <Color></Color>
+</VIDEOADJUST>
+<VIDEOLOSS>
+    <Enable></Enable>
+    <PreAlarmRecord></PreAlarmRecord>
+    <EmailNotify></EmailNotify>
+    <Log></Log>
+    <Buzzer></Buzzer>
+    <NetworkAlarm></NetworkAlarm>
+    <AlarmOutput></AlarmOutput>
+    <OutputType></OutputType>
+</VIDEOLOSS>
+<LIVESUBMENU>
+    <Mainsub></Mainsub>
+    <Sound></Sound>
+    <Audiobroadcast></Audiobroadcast>
+    <Snapshot></Snapshot>
+</LIVESUBMENU>
+<!--
+<QUICKARCHIVE>
+    <CopyType></CopyType>
+    <DataSize></DataSize>
+</QUICKARCHIVE>
+-->
+<EKB200></EKB200>
+</ECOR960-8F2>

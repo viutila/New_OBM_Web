@@ -1,0 +1,23 @@
+.sm_container{
+	z-index: 90;
+	width: 100%;
+	height: 100%;
+	opacity: 0.6;
+}
+.sm_div{
+	position: absolute;
+	top: 50%; 
+	left: 50%;
+	text-align: center;
+	z-index: 91;
+}
+.sm_btn{
+	background-color: #808080;
+	color: #FFFFFF;
+}
+.sm_ifr{
+	position: relative;
+	z-index: 89;
+	width: 100%;
+	height: 100%;
+}

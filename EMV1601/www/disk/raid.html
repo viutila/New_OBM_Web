@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var rsHx = new HandleXml();
+var setHx = new HandleXml();
+
+function init() {
+	setLanguage();
+	GetXML();
+	initFunc();
+	getRAIDStatus();
+}
+function getRAIDStatus() {
+    setIdInnerHTML("td_raid_Status", hx.getNodeValue("Disk", "raidStatus"));
+    setIdInnerHTML("td_raid_StatusError", hx.getNodeValue("Disk", "raidStatusError"));
+}
+function initFunc() {
+    var type = parent.SetHx.getNodeValue("DiskSetting", "RAIDType").split(",");
+    var hs = new HandleSelect("sel_raid", 0);
+    for (var i = 0; i < type.length; i++) {
+        if (i == 0) {
+            hs.addOpt(i, hl.get(type[i].toUpperCase()), IgnoreSpaces(type[i].toLowerCase()));
+        } else {
+            hs.addOpt(i, type[i], IgnoreSpaces(type[i].toLowerCase()));
+        }
+    }
+    setIdValue("sel_raid", hx.getNodeValue("Disk", "raidType"));
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Disk.xml");
+}
+function SetXML() {
+    var str = "Disk";
+    hx.setNodeValue(getIdValue("sel_raid"), str, "raidType");
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/Disk.xml", newxml);
+    var hx2 = new HandleXml();
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+}
+function setLanguage() {
+    EFDEF_("^td_").className("txtLeft");
+    setIdValue("btn_Save", hl.get("SAVE"));
+    setIdInnerHTML("td_raidType", hl.get("RAID_TYPE"));
+    setIdInnerHTML("td_raid_Status_txt", hl.get("RAID_STATE"));
+}
+function IgnoreSpaces(Str) {
+    var ResultStr = "";
+    Temp = Str.split(" ");
+    for (var i = 0; i < Temp.length; i++) {
+        ResultStr += Temp[i];
+    }
+    return ResultStr;
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+            <tr>
+                <td id = "td_raidType" class="txtLeft" style="width:150px;"></td>
+                <td><select id="sel_raid"></select></td>
+            </tr>
+            <tr>
+                <td id = "td_raid_Status_txt" class="txtLeft"></td>
+                <td id="td_raid_Status"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="td_raid_StatusError"></td>
+            </tr>
+		</table>
+    </div>
+
+    <div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

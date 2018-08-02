@@ -1,0 +1,666 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/TimeControl.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/TimeControl.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var tc_ws;	//weekend start
+var tc_we;	//weekend end
+var tc_ds;	//daytime start
+var tc_de;	//daytime end
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	initFunc();	
+	GetXML();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+
+    funcNum = setHx.getNodeChildSize("EXPRESSSETUP");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("EXPRESSSETUP", Cnt)) {
+            case "WeekendStart":
+                setIdDisplay("tr_WE_Start", "table-row");
+                setIdInnerHTML("td_WE_Start", hl.get("WEEKEND_START"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupWeekendStart").split(",");
+                var hs = new HandleSelect("sel_WE_Start", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                tc_ws = new TimeControl("d", "tc_ws", parent.g_time_fmt, "hM", 100, 20, null, null, 1800);
+                break;
+            case "WeekendEnd":
+                setIdDisplay("tr_WE_End", "table-row");
+                setIdInnerHTML("td_WE_End", hl.get("WEEKEND_END"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupWeekendEnd").split(",");
+                var hs = new HandleSelect("sel_WE_End", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                tc_we = new TimeControl("d", "tc_we", parent.g_time_fmt, "hM", 100, 20, null, null, 1800);
+                break;
+            case "DaytimeStart":
+                setIdDisplay("tr_Daytime_Start", "table-row");
+                setIdInnerHTML("td_Daytime_Start", hl.get("DAYTIME_START"));
+                tc_ds = new TimeControl("d", "tc_ds", parent.g_time_fmt, "hM", 100, 20, null, null, 1800);
+                break;
+            case "DaytimeEnd":
+                setIdDisplay("tr_Daytime_End", "table-row");
+                setIdInnerHTML("td_Daytime_End", hl.get("DAYTIME_END"));
+                tc_de = new TimeControl("d", "tc_de", parent.g_time_fmt, "hM", 100, 20, null, null, 1800);
+                break;
+            case "WeekendRecordType":
+                setIdDisplay("td_Record_Type", "table-cell");
+                setIdDisplay("td_Weekend", "table-cell");
+                setIdDisplay("sel_Weekend_Rec_Type", "table-cell");
+                setIdInnerHTML("td_Record_Type", hl.get("RECORD_TYPE"));
+                setIdClass("td_Record_Type","txtCenter");
+                setIdInnerHTML("td_Weekend", hl.get("WEEKEND"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupWeekendRecordType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Weekend_Rec_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "WeekdayDaytimeRecordType":
+                setIdDisplay("td_Record_Type", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("sel_Daytime_Rec_Type", "table-cell");
+                setIdInnerHTML("td_Record_Type", hl.get("RECORD_TYPE"));
+                setIdClass("td_Record_Type", "txtCenter");
+                setIdInnerHTML("td_Weekday_Daytime", hl.get("WEEKDAY_DAYTIME"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupWeekdayDaytimeRecordType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Daytime_Rec_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "WeekdayNighttimeRecordType":
+                setIdDisplay("td_Record_Type", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("sel_Nighttime_Rec_Type", "table-cell");
+                setIdInnerHTML("td_Record_Type", hl.get("RECORD_TYPE"));
+                setIdClass("td_Record_Type", "txtCenter");
+                setIdInnerHTML("td_Weekday_Nighttime", hl.get("WEEKDAY_NIGHTTIME"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupWeekdayNighttimeRecordType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Nighttime_Rec_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "HolidayRecordType":
+                setIdDisplay("td_Record_Type", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("sel_Holiday_Rec_Type", "table-cell");
+                setIdInnerHTML("td_Record_Type", hl.get("RECORD_TYPE"));
+                setIdClass("td_Record_Type", "txtCenter");
+                setIdInnerHTML("td_Holiday", hl.get("HOLIDAYS"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupHolidaysRecordType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Holiday_Rec_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "OtherRecordType":
+                setIdDisplay("td_Record_Type", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("sel_Other_Rec_Type", "table-cell");
+                setIdInnerHTML("td_Record_Type", hl.get("RECORD_TYPE"));
+                setIdClass("td_Record_Type", "txtCenter");
+                setIdInnerHTML("td_Other", hl.get("OTHERS"));
+                var type = parent.SetHx.getNodeValue("ScheduleSetting", "ExpressSetupOthersRecordType").split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Other_Rec_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "WeekendNormal":
+                setIdDisplay("td_Weekend", "table-cell");
+                setIdDisplay("td_Normal", "table-cell");
+                setIdDisplay("td_Weekend_Normal", "table-cell");
+                setIdDisplay("sel_Weekend_Normal", "table-cell");
+                setIdInnerHTML("td_Weekend", hl.get("WEEKEND"));
+                setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+                setIdClass("td_Normal", "txtCenter");
+                var hs = new HandleSelect("sel_Weekend_Normal", 0);
+                for (i = 0; i < parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekdayDaytimeNormal":
+                setIdDisplay("td_Normal", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("td_Daytime_Normal", "table-cell");
+                setIdDisplay("sel_Daytime_Normal", "table-cell");
+                setIdInnerHTML("td_Weekday_Daytime", hl.get("WEEKDAY_DAYTIME"));
+                setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+                setIdClass("td_Normal", "txtCenter");
+                var hs = new HandleSelect("sel_Daytime_Normal", 0);
+                for (i = 0; i < parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekdayNighttimeNormal":
+                setIdDisplay("td_Weekday_Nighttime", "table-cell");
+                setIdDisplay("td_Normal", "table-cell");
+                setIdDisplay("td_Nighttime_Normal", "table-cell");
+                setIdDisplay("sel_Nighttime_Normal", "table-cell");
+                setIdInnerHTML("td_Weekday_Nighttime", hl.get("WEEKDAY_NIGHTTIME"));
+                setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+                setIdClass("td_Normal", "txtCenter");
+                var hs = new HandleSelect("sel_Nighttime_Normal", 0);
+                for (i = 0; i < parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "HolidayNormal":
+                setIdDisplay("td_Holiday", "table-cell");
+                setIdDisplay("td_Normal", "table-cell");
+                setIdDisplay("td_Holiday_Normal", "table-cell");
+                setIdDisplay("sel_Holiday_Normal", "table-cell");
+                setIdInnerHTML("td_Holiday", hl.get("HOLIDAY"));
+                setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+                setIdClass("td_Normal", "txtCenter");
+                var hs = new HandleSelect("sel_Holiday_Normal", 0);
+                for (i = 0; i < parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "OtherNormal":
+                setIdDisplay("td_Other", "table-cell");
+                setIdDisplay("td_Normal", "table-cell");
+                setIdDisplay("td_Other_Normal", "table-cell");
+                setIdDisplay("sel_Other_Normal", "table-cell");
+                setIdInnerHTML("td_Other", hl.get("OTHERS"));
+                setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+                setIdClass("td_Normal", "txtCenter");
+                var hs = new HandleSelect("sel_Other_Normal", 0);
+                for (i = 0; i < parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekendEvent":
+                setIdDisplay("td_Weekend", "table-cell");
+                setIdDisplay("td_Event", "table-cell");
+                setIdDisplay("td_Weekend_Event", "table-cell");
+                setIdDisplay("sel_Weekend_Event", "table-cell");
+                setIdInnerHTML("td_Weekend", hl.get("WEEKEND"));
+                setIdInnerHTML("td_Event", hl.get("EVENT"));
+                setIdClass("td_Event", "txtCenter");
+                var hs = new HandleSelect("sel_Weekend_Event", 0);
+                for (i = 0; i < parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekdayDaytimeEvent":
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("td_Event", "table-cell");
+                setIdDisplay("td_Daytime_Event", "table-cell");
+                setIdDisplay("sel_Daytime_Event", "table-cell");
+                setIdInnerHTML("td_Weekday_Daytime", hl.get("WEEKDAY_DAYTIME"));
+                setIdInnerHTML("td_Event", hl.get("EVENT"));
+                setIdClass("td_Event", "txtCenter");
+                var hs = new HandleSelect("sel_Daytime_Event", 0);
+                for (i = 0; i < parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekdayNighttimeEvent":
+                setIdDisplay("td_Weekday_Nighttime", "table-cell");
+                setIdDisplay("td_Event", "table-cell");
+                setIdDisplay("td_Nighttime_Event", "table-cell");
+                setIdDisplay("sel_Nighttime_Event", "table-cell");
+                setIdInnerHTML("td_Weekday_Nighttime", hl.get("WEEKDAY_NIGHTTIME"));
+                setIdInnerHTML("td_Event", hl.get("EVENT"));
+                setIdClass("td_Event", "txtCenter");
+                var hs = new HandleSelect("sel_Nighttime_Event", 0);
+                for (i = 0; i < parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "HolidayEvent":
+                setIdDisplay("td_Holiday", "table-cell");
+                setIdDisplay("td_Event", "table-cell");
+                setIdDisplay("td_Holiday_Event", "table-cell");
+                setIdDisplay("sel_Holiday_Event", "table-cell");
+                setIdInnerHTML("td_Holiday", hl.get("HOLIDAY"));
+                setIdInnerHTML("td_Event", hl.get("EVENT"));
+                setIdClass("td_Event", "txtCenter");
+                var hs = new HandleSelect("sel_Holiday_Event", 0);
+                for (i = 0; i < parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "OtherEvent":
+                setIdDisplay("td_Other", "table-cell");
+                setIdDisplay("td_Event", "table-cell");
+                setIdDisplay("td_Other_Event", "table-cell");
+                setIdDisplay("sel_Other_Event", "table-cell");
+                setIdInnerHTML("td_Other", hl.get("OTHERS"));
+                setIdInnerHTML("td_Event", hl.get("EVENT"));
+                setIdClass("td_Event", "txtCenter");
+                var hs = new HandleSelect("sel_Other_Event", 0);
+                for (i = 0; i < parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "WeekendAction":
+                setIdDisplay("td_Event_Action", "table-cell");
+                setIdDisplay("td_Weekend", "table-cell");
+                setIdDisplay("chk_Weekend_Event_Action", "table-cell");
+                setIdInnerHTML("td_Weekend", hl.get("WEEKEND"));
+                setIdInnerHTML("td_Event_Action", hl.get("ACTION"));
+                setIdClass("td_Event_Action", "txtCenter");            
+                break;
+            case "WeekdayDaytimeAction":
+                setIdDisplay("td_Event_Action", "table-cell");
+                setIdDisplay("td_Weekday_Daytime", "table-cell");
+                setIdDisplay("chk_Daytime_Event_Action", "table-cell");
+                setIdInnerHTML("td_Weekday_Daytime", hl.get("WEEKDAY_DAYTIME"));
+                setIdInnerHTML("td_Event_Action", hl.get("ACTION"));
+                setIdClass("td_Event_Action", "txtCenter");
+                break;
+            case "WeekdayNighttimeAction":
+                setIdDisplay("td_Event_Action", "table-cell");
+                setIdDisplay("td_Weekday_Nighttime", "table-cell");
+                setIdDisplay("chk_Nighttime_Event_Action", "table-cell");
+                setIdInnerHTML("td_Weekday_Nighttime", hl.get("WEEKDAY_NIGHTTIME"));
+                setIdInnerHTML("td_Event_Action", hl.get("ACTION"));
+                setIdClass("td_Event_Action", "txtCenter");
+                break;
+            case "HolidayAction":
+                setIdDisplay("td_Event_Action", "table-cell");
+                setIdDisplay("td_Holiday", "table-cell");
+                setIdDisplay("chk_Holiday_Event_Action", "table-cell");
+                setIdInnerHTML("td_Holiday", hl.get("HOLIDAY"));
+                setIdInnerHTML("td_Event_Action", hl.get("ACTION"));
+                setIdClass("td_Event_Action", "txtCenter");
+                break;
+            case "OtherAction":
+                setIdDisplay("td_Event_Action", "table-cell");
+                setIdDisplay("td_Other", "table-cell");
+                setIdDisplay("chk_Other_Event_Action", "table-cell");
+                setIdInnerHTML("td_Other", hl.get("OTHERS"));
+                setIdInnerHTML("td_Event_Action", hl.get("ACTION"));
+                setIdClass("td_Event_Action", "txtCenter");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    setIdValue("btn_Save", hl.get("SAVE"));
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/ScheduleExpress.xml");
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    funcNum = setHx.getNodeChildSize("EXPRESSSETUP");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("EXPRESSSETUP", Cnt)) {
+            case "WeekendStart":
+                setIdValue("sel_WE_Start", hx.getNodeValue("weekendStartDay"));
+                tc_ws.setTime(1970, 0, 1, hx.getNodeValue("weekendStartHour"), hx.getNodeValue("weekendStartMin"), 0);
+                break;
+            case "WeekendEnd":
+                setIdValue("sel_WE_End", hx.getNodeValue("weekendEndDay"));
+                tc_we.setTime(1970, 0, 1, hx.getNodeValue("weekendEndHour"), hx.getNodeValue("weekendEndMin"), 0);
+                break;
+            case "DaytimeStart":
+                tc_ds.setTime(1970, 0, 1, hx.getNodeValue("daytimeStartsHour"), hx.getNodeValue("daytimeStartsMin"), 0);
+                break;
+            case "DaytimeEnd":
+                tc_de.setTime(1970, 0, 1, hx.getNodeValue("daytimeEndHour"), hx.getNodeValue("daytimeEndMin"), 0);
+                break;
+            case "WeekendRecordType":
+                setIdValue("sel_Weekend_Rec_Type", hx.getNodeValue("weekendRecType"));
+                break;
+            case "WeekdayDaytimeRecordType":
+                setIdValue("sel_Daytime_Rec_Type", hx.getNodeValue("weekdayDayRecType"));
+                break;
+            case "WeekdayNighttimeRecordType":
+                setIdValue("sel_Nighttime_Rec_Type", hx.getNodeValue("weekdayNightRecType"));
+                break;
+            case "HolidayRecordType":
+                setIdValue("sel_Holiday_Rec_Type", hx.getNodeValue("holidayRecType"));
+                break;
+            case "OtherRecordType":
+                setIdValue("sel_Other_Rec_Type", hx.getNodeValue("otherRecType"));
+                break;
+            case "WeekendNormal":
+                setIdValue("sel_Weekend_Normal", hx.getNodeValue("weekendNfps"));
+                break;
+            case "WeekdayDaytimeNormal":
+                setIdValue("sel_Daytime_Normal", hx.getNodeValue("weekdayDayNfps"));
+                break;
+            case "WeekdayNighttimeNormal":
+                setIdValue("sel_Nighttime_Normal", hx.getNodeValue("weekdayNightNfps"));
+                break;
+            case "HolidayNormal":
+                setIdValue("sel_Holiday_Normal", hx.getNodeValue("holidayNfps"));
+                break;
+            case "OtherNormal":
+                setIdValue("sel_Other_Normal", hx.getNodeValue("otherNfps"));
+                break;
+            case "WeekendEvent":
+                setIdValue("sel_Weekend_Event", hx.getNodeValue("weekendEfps"));
+                break;
+            case "WeekdayDaytimeEvent":
+                setIdValue("sel_Daytime_Event", hx.getNodeValue("weekdayDayEfps"));
+                break;
+            case "WeekdayNighttimeEvent":
+                setIdValue("sel_Nighttime_Event", hx.getNodeValue("weekdayNightEfps"));
+                break;
+            case "HolidayEvent":
+                setIdValue("sel_Holiday_Event", hx.getNodeValue("holidayEfps"));
+                break;
+            case "OtherEvent":
+                setIdValue("sel_Other_Event", hx.getNodeValue("otherEfps"));
+                break;
+            case "WeekendAction":
+                setIdChecked("chk_Weekend_Event_Action", hx.getNodeValue("weekendAction"));
+                break;
+            case "WeekdayDaytimeAction":
+                setIdChecked("chk_Daytime_Event_Action", hx.getNodeValue("weekdayDayAction"));
+                break;
+            case "WeekdayNighttimeAction":
+                setIdChecked("chk_Nighttime_Event_Action", hx.getNodeValue("weekdayNightAction"));
+                break;
+            case "HolidayAction":
+                setIdChecked("chk_Holiday_Event_Action", hx.getNodeValue("holidayAction"));
+                break;
+            case "OtherAction":
+                setIdChecked("chk_Other_Event_Action", hx.getNodeValue("otherAction"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }
+    }
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+	funcNum = setHx.getNodeChildSize("EXPRESSSETUP");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("EXPRESSSETUP", Cnt)) {
+	        case "WeekendStart":
+	            hx.setNodeValue(getIdValue("sel_WE_Start"), "weekendStartDay")
+		            .setNodeValue(tc_ws.getHr(), "weekendStartHour")
+		            .setNodeValue(tc_ws.getMin(), "weekendStartMin");
+	            
+	            break;
+	        case "WeekendEnd":
+	            hx.setNodeValue(getIdValue("sel_WE_End"), "weekendEndDay")
+		            .setNodeValue(tc_we.getHr(), "weekendEndHour")
+		            .setNodeValue(tc_we.getMin(), "weekendEndMin");
+
+	            break;
+	        case "DaytimeStart":
+	            hx.setNodeValue(tc_ds.getHr(), "daytimeStartsHour")
+		            .setNodeValue(tc_ds.getMin(), "daytimeStartsMin");
+	            break;
+	        case "DaytimeEnd":
+	            hx.setNodeValue(tc_de.getHr(), "daytimeEndHour")
+		            .setNodeValue(tc_de.getMin(), "daytimeEndMin");
+	            break;
+	        case "WeekendRecordType":
+	             hx.setNodeValue(getIdValue("sel_Weekend_Rec_Type"),"weekendRecType");
+	            break;
+	        case "WeekdayDaytimeRecordType":
+	            hx.setNodeValue(getIdValue("sel_Daytime_Rec_Type"), "weekdayDayRecType");
+	            break;
+	        case "WeekdayNighttimeRecordType":
+	            hx.setNodeValue(getIdValue("sel_Nighttime_Rec_Type"),"weekdayNightRecType");
+	            break;
+	        case "HolidayRecordType":
+	            hx.setNodeValue(getIdValue("sel_Holiday_Rec_Type"), "holidayRecType");
+	            break;
+	        case "OtherRecordType":
+	            hx.setNodeValue(getIdValue("sel_Other_Rec_Type"), "otherRecType");
+	            break;
+	        case "WeekendNormal":
+	            hx.setNodeValue(getIdValue("sel_Weekend_Normal"), "weekendNfps");
+	            break;
+	        case "WeekdayDaytimeNormal":
+	            hx.setNodeValue(getIdValue("sel_Daytime_Normal"), "weekdayDayNfps");
+	            break;
+	        case "WeekdayNighttimeNormal":
+	            hx.setNodeValue(getIdValue("sel_Nighttime_Normal"), "weekdayNightNfps");
+	            break;
+	        case "HolidayNormal":
+	            hx.setNodeValue(getIdValue("sel_Holiday_Normal"), "holidayNfps");
+	            break;
+	        case "OtherNormal":
+	            hx.setNodeValue(getIdValue("sel_Other_Normal"), "otherNfps");
+	            break;
+	        case "WeekendEvent":
+	            hx.setNodeValue(getIdValue("sel_Weekend_Event"), "weekendEfps");
+	            break;
+	        case "WeekdayDaytimeEvent":
+	            hx.setNodeValue(getIdValue("sel_Daytime_Event"), "weekdayDayEfps");
+	            break;
+	        case "WeekdayNighttimeEvent":
+	            hx.setNodeValue(getIdValue("sel_Nighttime_Event"), "weekdayNightEfps");
+	            break;
+	        case "HolidayEvent":
+	            hx.setNodeValue(getIdValue("sel_Holiday_Event"),"holidayEfps");
+	            break;
+	        case "OtherEvent":
+	            hx.setNodeValue(getIdValue("sel_Other_Event"), "otherEfps");
+	            break;
+	        case "WeekendAction":
+	            hx.setNodeValue(getIdChecked("chk_Weekend_Event_Action"), "weekendAction");
+	            break;
+	        case "WeekdayDaytimeAction":
+	            hx.setNodeValue(getIdChecked("chk_Daytime_Event_Action"), "weekdayDayAction");
+	            break;
+	        case "WeekdayNighttimeAction":
+	            hx.setNodeValue(getIdChecked("chk_Nighttime_Event_Action"), "weekdayNightAction");
+	            break;
+	        case "HolidayAction":
+	            hx.setNodeValue(getIdChecked("chk_Holiday_Event_Action"), "holidayAction");
+	            break;
+	        case "OtherAction":
+	            hx.setNodeValue(getIdChecked("chk_Other_Event_Action"), "otherAction");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+
+	    }
+	}
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/ScheduleExpress.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function setConfirm() {
+    if (window.confirm(hl.get("WARNING_SENTENCE20"))) {
+        SetXML();
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr id="tr_WE_Start">
+				<td></td>
+				<td id="td_WE_Start" style="width:auto;"></td>
+				<td>
+					<select id="sel_WE_Start" style="width:100px;"></select>
+				</td>
+				<td>
+					<div id="tc_ws"></div>
+				</td>
+			</tr>
+			<tr id="tr_WE_End">
+				<td></td>
+				<td id="td_WE_End"></td>
+				<td>
+					<select id="sel_WE_End" style="width:auto;"></select>
+				</td>
+				<td>
+					<div id="tc_we"></div>
+				</td>
+			</tr>
+			<tr id="tr_Daytime_Start">
+				<td></td>
+				<td id="td_Daytime_Start"></td>
+				<td>
+					<div id="tc_ds"></div>
+				</td>
+			</tr>
+			<tr id="tr_Daytime_End">
+				<td></td>
+				<td id="td_Daytime_End"></td>
+				<td>
+					<div id="tc_de"></div>
+				</td>
+			</tr>
+		</table>
+		<br/>
+		<br/>
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td width="180"></td>
+				<td id="td_Record_Type" class="txtCenter" style="display:none" nowrap="nowrap"></td>
+				<td id="td_Normal" class="txtCenter" style="display:none"></td>
+				<td id="td_Event" class="txtCenter" style="display:none"></td>
+				<td id="td_Event_Action" class="txtCenter" style="display:none" nowrap="nowrap" ></td>
+			</tr>
+			<tr>
+				<td id="td_Weekend" style="display:none" nowrap></td>
+				<td>
+					<select id="sel_Weekend_Rec_Type" style="display:none;width: 130px;"></select>
+				</td>
+				<td id="td_Weekend_Normal" style="display:none">
+					<select id="sel_Weekend_Normal" style="display:none"></select>
+				</td>
+				<td id="td_Weekend_Event" style="display:none">
+					<select id="sel_Weekend_Event" style="display:none"></select>
+				</td>
+				<td align="center">
+					<input type="checkbox" id="chk_Weekend_Event_Action" style="display:none"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Weekday_Daytime" style="display:none;" nowrap></td>
+				<td>
+					<select id="sel_Daytime_Rec_Type" style="display:none; width: 130px;"></select>
+				</td>
+				<td id="td_Daytime_Normal" style="display:none;">
+					<select id="sel_Daytime_Normal" style="display:none"></select>
+				</td>
+				<td id="td_Daytime_Event" style="display:none;">
+					<select id="sel_Daytime_Event" style="display:none"></select>
+				</td>
+				<td align="center">
+					<input type="checkbox" id="chk_Daytime_Event_Action" style="display:none"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Weekday_Nighttime"  style="display:none;" nowrap></td>
+				<td>
+					<select id="sel_Nighttime_Rec_Type" style="display:none;width: 130px;"></select>
+				</td>
+				<td id="td_Nighttime_Normal" style="display:none;">
+					<select id="sel_Nighttime_Normal" style="display:none"></select>
+				</td>
+				<td id="td_Nighttime_Event" style="display:none;">
+					<select id="sel_Nighttime_Event" style="display:none"></select>
+				</td>
+				<td align="center">
+					<input type="checkbox" id="chk_Nighttime_Event_Action" style="display:none"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Holiday" nowrap></td>
+				<td>
+					<select id="sel_Holiday_Rec_Type" style="width:130px;display:none"></select>
+				</td>
+				<td id="td_Holiday_Normal" style="display:none;">
+					<select id="sel_Holiday_Normal" style="display:none;"></select>
+				</td>
+				<td id="td_Holiday_Event" style="display:none;">
+					<select id="sel_Holiday_Event" style="display:none;"></select>
+				</td>
+				<td align="center">
+					<input type="checkbox" id="chk_Holiday_Event_Action" style="display:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Other" nowrap></td>
+				<td>
+					<select id="sel_Other_Rec_Type" style="width:130px;display:none;"></select>
+				</td>
+				<td id="td_Other_Normal" style="display:none;">
+					<select id="sel_Other_Normal" style="display:none;"></select>
+				</td>
+				<td id="td_Other_Event" style="display:none;">
+					<select id="sel_Other_Event" style="display:none;"></select>
+				</td>
+				<td align="center">
+					<input type="checkbox" id="chk_Other_Event_Action" style="display:none;"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="setConfirm();"/>
+	</div>
+</body>
+</html>

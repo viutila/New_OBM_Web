@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<meta http-equiv="cache-control" content="no-store">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css"/>
+<link rel="stylesheet" href="../include/css/jquery-ui.css" />
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/Slide.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<style>
+    .ui-widget-content .ui-state-default 
+    {
+        border: 1px solid #d3d3d3/*{borderColorDefault}*/;
+	    background: #797979/*{bgColorDefault}*/ /*url(images/ui-bg_glass_75_e6e6e6_1x400.png)*//*{bgImgUrlDefault}*/ 40%/*{bgDefaultXPos}*/ 40%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/;
+	    font-weight: normal/*{fwDefault}*/;
+	    color: #555555/*{fcDefault}*/;
+    }
+    #slider1 .ui-slider-range { background: #FFD700; }
+    #slider2 .ui-slider-range { background: #FFD700; }
+    #slider3 .ui-slider-range { background: #FFD700; }
+    #slider4 .ui-slider-range { background: #FFD700; }
+</style>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var devicehx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+var HallWay_Device_Ary = new Array();
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+    GetDeviceXML();
+	sm = new ScreenMask("m","sm");
+	mc_apply = new MultipleCheckbox("d","mc_apply",hl.get("CAMERA"),300,500,hl);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		g_cam_ary.push(i + 1);
+    }
+    CreateSlideBar();
+    initHallwayImage();
+    GetXML();
+    //ChangeMotionSel();
+    if (parent.firstTimeFlag == 0) {
+        parent.firstTimeFlag = 1;
+        parent.openLiveStreamApplet();
+    }
+    //parent.SetAppletVideoAdjust(0);
+    parent.ChangAppletPosition(480, 360, 220, 330);
+    refresh();
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var hs = new HandleSelect("sel_channel_num", 0);
+    var ch_num = parent.g_total_ch_num;
+
+    for (i = 0; i < ch_num; i++) {
+        hs.addOpt(i, i + 1, i);
+    }
+    funcNum = setHx.getNodeChildSize("EVIDEOADJUST");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("EVIDEOADJUST", Cnt)) {
+
+            case "Brightness":
+                setIdInnerHTML("td_Brightness", hl.get("BRIGHTNESS"));
+                //sld1 = new Slide("txt1", "scl1", "idx1", 490, 240, 6, -2, 0, 100, 100);
+                break;
+            case "Contrast":
+                setIdInnerHTML("td_Contrast", hl.get("CONTRAST"));
+                //sld2 = new Slide("txt2", "scl2", "idx2", 525, 240, 6, -2, 0, 100, 100);
+                break;
+            case "Color":
+                setIdInnerHTML("td_Color", hl.get("COLOR"));
+                //sld3 = new Slide("txt3", "scl3", "idx3", 560, 240, 6, -2, 0, 100);  
+                break;
+            case "Sharpness":
+                setIdInnerHTML("td_Sharpness", hl.get("SHARPNESS")); //multi-lang
+                //sld3 = new Slide("txt3", "scl3", "idx3", 560, 240, 6, -2, 0, 100);  
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+
+    EFDEF_("^td_").className("txtLeft");
+
+    setIdInnerHTML("td_connected_channel", hl.get("CONNECTED_CHANNEL"));
+    setIdInnerHTML("td_mask_channel", hl.get("MASK_CHANNEL"));
+    setIdInnerHTML("td_channel_num", hl.get("CHANNEL_NUMBER"));
+    setIdInnerHTML("td_ratio", hl.get("RATIO"));
+    setIdInnerHTML("td_hallway_mode", hl.get("HALLWAY_MODE"));
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    setIdValue("btn_save", hl.get("SAVE"));
+}
+
+function selectCamera(){
+    var str = "camera" + getIdSelectText("sel_channel_num");
+
+	//setIdInnerHTML("txt_Title", hx.getNodeValue(str, "title"));
+	if (setHx.getNode("EVIDEOADJUST", "Brightness")) {
+	    //sld1.setValue(hx.getNodeValue(str, "brightnessLevel"));
+	    setIdValue("txt1", hx.getNodeValue(str, "brightnessLevel"));
+	    $("#slider1").slider("option", "value", hx.getNodeValue(str, "brightnessLevel"));
+    }	
+	if (setHx.getNode("EVIDEOADJUST", "Contrast")) {
+	    //sld2.setValue(hx.getNodeValue(str, "contrastLevel"));
+	    setIdValue("txt2", hx.getNodeValue(str, "contrastLevel"));
+	    $("#slider2").slider("option", "value", hx.getNodeValue(str, "contrastLevel"));
+    }	
+	if (setHx.getNode("EVIDEOADJUST", "Color")) {
+	    //sld3.setValue(hx.getNodeValue(str, "saturationLevel"));
+	    setIdValue("txt3", hx.getNodeValue(str, "saturationLevel"));
+	    $("#slider3").slider("option", "value", hx.getNodeValue(str, "saturationLevel"));
+    }
+
+	if (setHx.getNode("EVIDEOADJUST", "Sharpness")) {
+	    //sld3.setValue(hx.getNodeValue(str, "saturationLevel"));
+	    setIdValue("txt4", hx.getNodeValue(str, "sharpnessLevel"));
+	    $("#slider4").slider("option", "value", hx.getNodeValue(str, "sharpnessLevel"));
+	}
+
+	if (setHx.getNode("EVIDEOADJUST", "ConnectedChannel")) {
+	    setIdChecked("chk_connected_channel", hx.getNodeValue(str, "connectChannel"));
+	}
+
+	if (setHx.getNode("EVIDEOADJUST", "MaskChennel")) {
+	    setIdChecked("chk_mask_channel", hx.getNodeValue(str, "maskChannel"));
+	}
+
+	setIdDisplay("tr_Hallway", "none");
+	checkHallway();
+	if (parent.firstTimeFlag == 0) {    //******* John add 20130624
+	    parent.firstTimeFlag = 1;
+	    parent.openLiveStreamAppletLivePage();
+	}
+	parent.applet.setSingleChannelScreen(getIdValue("sel_channel_num"));
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/IPCam.xml");
+	selectCamera();
+}
+function syncData(){
+    var str = "camera" + getIdSelectText("sel_channel_num");
+	var funcNum = 0;
+	var Cnt = 0;
+	hx.setNodeValue(1, str, "modified");
+	funcNum = setHx.getNodeChildSize("EVIDEOADJUST");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName("EVIDEOADJUST", Cnt)) {
+	        case "Brightness":
+                hx.setNodeValue(getIdValue("txt1"),str,"brightnessLevel");
+	            break;
+	        case "Contrast":
+                hx.setNodeValue(getIdValue("txt2"),str,"contrastLevel");
+	            break;
+	        case "Color":
+                hx.setNodeValue(getIdValue("txt3"), str, "saturationLevel");
+                break;
+            case "Sharpness":
+                hx.setNodeValue(getIdValue("txt4"), str, "sharpnessLevel");
+                break;
+            case "ConnectedChannel":
+                hx.setNodeValue(getIdChecked("chk_connected_channel"), str, "connectChannel");
+                break;
+            case "MaskChennel":
+                hx.setNodeValue(getIdChecked("chk_mask_channel"), str, "maskChannel");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+	    }
+	}
+}
+function SetXML(){
+	syncData();
+	var hx2 = new HandleXml();
+	var newxml = hx.getXml().xml.replace(/\t/g, "");
+	ajax.postData("../cgi-bin/IPCam.xml", newxml);
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+    }
+
+    setTimeout('parent.setNVRMaskValue()', 1000);
+}
+function applyToAll(){
+	syncData();
+	var fromNode = "camera" + getIdSelectText("sel_channel_num");
+	var toNode = "";
+	for(var i = 0;i < mc_apply.aryChecked.length;i++){
+		if(mc_apply.aryChecked[i]){
+		    toNode = "camera" + (i + 1);
+		    hx.setNodeValue(1, toNode, "modified");
+		    if (setHx.getNode("EVIDEOADJUST", "Brightness"))
+			    hx.setNodeValue(hx.getNodeValue(fromNode, "brightnessLevel"), toNode, "brightnessLevel");
+		    if (setHx.getNode("EVIDEOADJUST", "Contrast"))
+				hx.setNodeValue(hx.getNodeValue(fromNode, "contrastLevel"), toNode, "contrastLevel");
+		    if (setHx.getNode("EVIDEOADJUST", "Color"))
+		        hx.setNodeValue(hx.getNodeValue(fromNode, "saturationLevel"), toNode, "saturationLevel");
+		    if (setHx.getNode("EVIDEOADJUST", "Sharpness"))
+		        hx.setNodeValue(hx.getNodeValue(fromNode, "sharpnessLevel"), toNode, "sharpnessLevel");
+            if (setHx.getNode("EVIDEOADJUST", "MaskChennel"))
+                hx.setNodeValue(hx.getNodeValue(fromNode, "maskChannel"), toNode, "maskChannel");
+            if (setHx.getNode("EVIDEOADJUST", "ConnectedChannel"))
+                hx.setNodeValue(hx.getNodeValue(fromNode, "connectChannel"), toNode, "connectChannel");
+		}
+	}
+	SetXML();
+	closeApplyEdit();
+}
+function closeApplyEdit(){
+	//parent.resetViewFrm(1,400,300,190,570);
+    //sm.close();
+    setIdVisibility("mask1", 0);
+    mc_apply.close();
+    parent.ChangAppletPosition(480, 360, 220, 330);
+}
+function openApplyEdit(){
+
+	//parent.resetViewFrm(0,0,0,0,0);
+	mc_apply.setAry(g_cam_ary);
+	mc_apply.setCols(4)
+		.setSelectedText(getIdValue("sel_channel_num").toInt() + 1)
+		.createList()
+		.setFuncOk(applyToAll)
+		.setFuncCancel(closeApplyEdit);
+	//sm.open();
+	setIdVisibility("mask1", 1);
+	mc_apply.open();
+	parent.ChangAppletPosition(0, 0, 220, 330);
+}
+function PauseApplet() {
+    parent.applet.appletPause();
+    parent.applet.style.width = 0 + "px";
+    parent.applet.style.height = 0 + "px";
+}
+
+
+function CreateSlideBar() { //** create jQuery slide bar
+    $("#slider1").slider({
+        max: 100,
+        min: 0,
+        range: "min",
+        orientation: "horizontal",
+        value: getIdValue("txt1"),
+        change: function (event, ui) {
+            //alert($( "#slider" ).slider( "value" ));
+            //document.getElementById("txt1").value = $("#slider1").slider("value");
+            setIdValue("txt1", $("#slider1").slider("value"));
+        },
+        slide: function (event, ui) {
+            setIdValue("txt1", ui.value);
+        }
+    });
+
+    $("#slider2").slider({
+        max: 100,
+        min: 0,
+        range: "min",
+        orientation: "horizontal",
+        value: getIdValue("txt2"),
+        change: function (event, ui) {
+            setIdValue("txt2", $("#slider2").slider("value"));
+        },
+        slide: function (event, ui) {
+            setIdValue("txt2", ui.value);
+        }
+    });
+
+    $("#slider3").slider({
+        max: 100,
+        min: 0,
+        range: "min",
+        orientation: "horizontal",
+        value: getIdValue("txt3"),
+        change: function (event, ui) {
+            setIdValue("txt3", $("#slider3").slider("value"));
+        },
+        slide: function (event, ui) {
+            setIdValue("txt3", ui.value);
+        }
+    });
+
+    $("#slider4").slider({
+        max: 100,
+        min: 0,
+        range: "min",
+        orientation: "horizontal",
+        value: getIdValue("txt4"),
+        change: function (event, ui) {
+            setIdValue("txt4", $("#slider4").slider("value"));
+        },
+        slide: function (event, ui) {
+            setIdValue("txt4", ui.value);
+        }
+    });
+}
+function setSliderValue(no) {
+    $("#slider"+no).slider("option", "value", EFDEF_id("txt"+no).value);
+}
+function setAppletDivDisplay(flag) {
+    if (flag == 1) {
+        EFDEF_id("appletDiv").style.width = "1247px";
+        EFDEF_id("appletDiv").style.height = "532px";
+        EFDEF_id("appletDiv").style.overflow = "hidden";
+    }
+    else {
+        EFDEF_id("appletDiv").style.width = "0px";
+        EFDEF_id("appletDiv").style.height = "0px";
+        EFDEF_id("appletDiv").style.overflow = "hidden";
+    }
+}
+function GetDeviceXML() {
+    devicehx.setUrl("../IPDevice.xml");
+    var lenght = devicehx.getItemSize("HallWay");
+    for (cnt = 0; cnt < lenght; cnt++) {
+        HallWay_Device_Ary.push(devicehx.getItemValue(cnt, "HallWay"));
+    }
+}
+function checkHallway() {
+    //var cam = "camera" + getIdValue("sel_channel_num");
+    var cam = "camera" + getIdSelectText("sel_channel_num").toInt();
+    var device = hx.getNodeValue(cam, "model");
+    var ch_idx_now = getIdValue("sel_channel_num").toInt();
+    for (cnt = 0; cnt < HallWay_Device_Ary.length; cnt++) {
+        if (device == HallWay_Device_Ary[cnt]) {
+            setIdDisplay("tr_Hallway", "table-row");
+            var hallArray = new Array(parent.g_total_ch_num);
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = parseInt(hx.getNodeValue(cam, "hallwayMode"));
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            parent.setViewRotateAngle(hallArray);
+        }
+    }
+
+}
+function initHallwayImage() {
+    EFDEF_("hallway_left")
+        .onmousedown(function () {
+
+        })
+        .onmouseup(function () {
+
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_hallway", "../img/IPcamPtz/turnleftover.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_hallway", "../img/IPcamPtz/turn.png");
+	    })
+        .onclick(function () {
+            var cam = "camera" + getIdSelectText("sel_channel_num").toInt();
+            var hallArray = new Array(parent.g_total_ch_num);
+            var ch_idx_now = getIdValue("sel_channel_num").toInt();
+
+            var ch_angle_now = parseInt(hx.getNodeValue(cam, "hallwayMode"));
+            var ch_angle_result;
+            if (ch_angle_now == 270) {
+                ch_angle_result = 0;
+            } else {
+                ch_angle_result = ch_angle_now + 90;
+            }
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = ch_angle_result;
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            hx.setNodeValue(ch_angle_result, cam, "hallwayMode");
+            parent.setViewRotateAngle(hallArray);
+        });
+
+    EFDEF_("hallway_right")
+        .onmousedown(function () {
+
+        })
+        .onmouseup(function () {
+
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_hallway", "../img/IPcamPtz/turnrightover.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_hallway", "../img/IPcamPtz/turn.png");
+	    })
+        .onclick(function () {
+            var cam = "camera" + getIdSelectText("sel_channel_num").toInt();
+            var hallArray = new Array(parent.g_total_ch_num);
+            var ch_idx_now = getIdValue("sel_channel_num").toInt();
+
+            var ch_angle_now = parseInt(hx.getNodeValue(cam, "hallwayMode"));
+            var ch_angle_result;
+            if (ch_angle_now == 0) {
+                ch_angle_result = 270;
+            } else {
+                ch_angle_result = ch_angle_now - 90;
+            }
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = ch_angle_result;
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            hx.setNodeValue(ch_angle_result, cam, "hallwayMode");
+            parent.setViewRotateAngle(hallArray);
+        });
+}
+</script>
+</head>
+<body onload="" onunload="parent.g_setpopup = 1;parent.SetAppletVisible(0)">
+	<div class="ClientFrame">
+    <div style="position:absolute; top:390px; width:400px;">
+		<table border="0" cellspacing="5" cellpadding="0">
+             <tr>
+				        <td id="td_Brightness" style="width:120px;"></td>
+				        <td>
+					        <input type="text" id="txt1" size="4" maxLength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);" onkeyup="setSliderValue('1');" />
+				        </td>
+                        <td style="width: 150px"><div id="slider1" style="z-index: 90"></div></td>
+			        </tr>			
+			        <tr>
+				        <td id="td_Contrast"></td>
+				        <td>
+					        <input type="text" id="txt2" size="4" maxLength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);" onkeyup="setSliderValue('2');" />
+				        </td>
+                        <td style="width: 150px"><div id="slider2" style="z-index: 90"></div></td>
+			        </tr>
+			        <tr>
+				        <td id="td_Color"></td>
+				        <td>
+					        <input type="text" id="txt3" size="4" maxLength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);" onkeyup="setSliderValue('3');" />
+				        </td>
+                        <td style="width: 180px"><div id="slider3" style="z-index: 90"></div></td>
+			        </tr>
+                    <tr>
+				        <td id="td_Sharpness">Sharpness</td>
+				        <td>
+					        <input type="text" id="txt4" size="4" maxLength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);" onkeyup="setSliderValue('4');" />
+				        </td>
+                        <td style="width: 180px"><div id="slider4" style="z-index: 90"></div></td>
+			        </tr>
+              
+		</table>	
+        </div>
+        <div id="div_camera_setting" style="position:absolute; left:450px; width: 350px;">
+                        <table>
+                            <tr>
+                                <td id="td_channel_num" class="txtLeft" style="height:60px">Channel Number</td>
+                                <td><select id="sel_channel_num" style="width:50px" onchange="selectCamera();"></select></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td style="height:60px; width:30px;"><input type="checkbox" id="chk_connected_channel"/></td>
+                                            <td id="td_connected_channel" class="txtLeft">Connected Channel</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="height:60px;width:30px;"><input type="checkbox" id="chk_mask_channel"/></td>
+                                            <td id="td_mask_channel" class="txtLeft">Mask Channel</td>                
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr id="tr_ratio" style="display:none">
+                                <td id="td_ratio" class="txtLeft" style="height:60px">Ratio</td>
+                                <td><select id="sel_ratio"></select></td>
+                            </tr>
+                            <tr id="tr_Hallway" style="display:none">
+                                <td id="td_hallway_mode" class="txtLeft" style="height:60px">Hollway Mode</td>
+                                <td><img src="../img/IPcamPtz/turn.png" id="img_hallway" usemap="#hallwaymap" alt=""  border="0"/>
+                                      <map id="hallwaymap" name="hallwaymap">
+                                          <area id="hallway_right" shape="poly" coords="1,15, 5,0, 33,0, 33,31, 5,31, 1,15" alt="right" />
+                                          <area id="hallway_left" shape="poly" coords="34,0, 62,0, 67,15, 62,31, 34,31, 34,0"  alt="left"/>
+                                      </map>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+       </div>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Apply_To" class="btnStyle" value="" style="width:120px;" onclick="openApplyEdit();" />
+        <br />
+        <br />
+		<input type="button" id="btn_save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();" />
+	</div>
+	<div id="sm"></div>
+	<div id="mc_apply" style="z-index:121;"></div>
+    <div id="mask1" class="ScreenMask"></div>
+
+    <script src="../include/js/jquery-1.8.2.js"></script>
+    <script src="../include/js/jquery-ui.js"></script>
+    <script src="../include/js/detect-zoom.js"></script>
+    <script>
+        function refresh() {
+            var width, height, ratio;
+            ratio = window.detectZoom.zoom();
+            if (ratio == 0) {
+                ratio = 1;
+            }
+            width = 480 * ratio;
+            height = 360 * ratio;
+            parent.applet.resize(width, height);
+            parent.applet.setUILayout(width, height, 1);
+            parent.applet.setSingleChannelScreen(0);
+        }
+        $(document).ready(function () {
+            init();
+            //applet.setUILayout(appletWidth, appletHeight, 16);
+            $(window).on('resize', refresh);
+        });
+    </script>
+</body>
+</html>

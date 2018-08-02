@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+
+function init(){
+	setLanguage();
+	GetXML();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkAlarmServer.xml");
+    var str = "AlarmServer";
+
+    setIdValue("txt_ServerIP1_0", hx.getNodeValue(str, "ipAddress").split(".")[0]);
+    setIdValue("txt_ServerIP1_1", hx.getNodeValue(str, "ipAddress").split(".")[1]);
+    setIdValue("txt_ServerIP1_2", hx.getNodeValue(str, "ipAddress").split(".")[2]);
+    setIdValue("txt_ServerIP1_3", hx.getNodeValue(str, "ipAddress").split(".")[3]);
+
+    setIdValue("txt_ServerIP2_0", hx.getNodeValue(str, "ipAddress_1").split(".")[0]);
+    setIdValue("txt_ServerIP2_1", hx.getNodeValue(str, "ipAddress_1").split(".")[1]);
+    setIdValue("txt_ServerIP2_2", hx.getNodeValue(str, "ipAddress_1").split(".")[2]);
+    setIdValue("txt_ServerIP2_3", hx.getNodeValue(str, "ipAddress_1").split(".")[3]);
+
+    setIdValue("txt_ServerIP3_0", hx.getNodeValue(str, "ipAddress_2").split(".")[0]);
+    setIdValue("txt_ServerIP3_1", hx.getNodeValue(str, "ipAddress_2").split(".")[1]);
+    setIdValue("txt_ServerIP3_2", hx.getNodeValue(str, "ipAddress_2").split(".")[2]);
+    setIdValue("txt_ServerIP3_3", hx.getNodeValue(str, "ipAddress_2").split(".")[3]);
+
+    setIdValue("sel_Protocol", hx.getNodeValue(str, "protocol"));
+    setIdValue("txt_Port", hx.getNodeValue(str, "portNo"));
+    setIdValue("txt_ID", hx.getNodeValue(str, "uniqueID"));
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+	var str = "AlarmServer";
+
+	hx.setNodeValue(getIdValue("txt_ServerIP1_0") + "." + getIdValue("txt_ServerIP1_1") + "." + getIdValue("txt_ServerIP1_2") + "." + getIdValue("txt_ServerIP1_3"), str, "ipAddress");
+	hx.setNodeValue(getIdValue("txt_ServerIP2_0") + "." + getIdValue("txt_ServerIP2_1") + "." + getIdValue("txt_ServerIP2_2") + "." + getIdValue("txt_ServerIP2_3"), str, "ipAddress_1");
+	hx.setNodeValue(getIdValue("txt_ServerIP3_0") + "." + getIdValue("txt_ServerIP3_1") + "." + getIdValue("txt_ServerIP3_2") + "." + getIdValue("txt_ServerIP3_3"), str, "ipAddress_2");
+	hx.setNodeValue(getIdValue("sel_Protocol"), str, "protocol");
+	hx.setNodeValue(getIdValue("txt_Port"), str, "portNo");
+	hx.setNodeValue(getIdValue("txt_ID"), str, "uniqueID");
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/NetworkAlarmServer.xml", newxml);
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+    parent.showMsg(hx.getNode("AlarmServer").xml, "xml");
+}
+
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_ServerIP1"	,hl.get("SERVER_IP1"));
+	setIdInnerHTML("td_ServerIP2"	,hl.get("SERVER_IP2"));
+	setIdInnerHTML("td_ServerIP3"	,hl.get("SERVER_IP3"));
+	setIdInnerHTML("td_Protocol"	,hl.get("PROTOCOL"));
+	setIdInnerHTML("td_Port"	,hl.get("PORT"));
+	setIdInnerHTML("td_Network_ID"	,hl.get("NETWORK_ID"));
+
+	var hs = new HandleSelect("sel_Protocol",0);
+	hs.addOpt(0,"TCP","TCP")
+		.addOpt(1,"UDP","UDP");
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_ServerIP1" width="150px"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_ServerIP1_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP1_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP1_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP1_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_ServerIP2"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_ServerIP2_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP2_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP2_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP2_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_ServerIP3"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_ServerIP3_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP3_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP3_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_ServerIP3_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>		
+			<tr>
+				<td id="td_Protocol"></td>
+				<td class="txtLeft">
+					<select id="sel_Protocol" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Port"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_Port" maxlength="5" style="width:100px;" onblur="CheckCharKeyin(this,0,1,65535);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Network_ID"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_ID" maxlength="32" style="width:150px;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>										
+		</table>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();">
+	</div>
+</body>
+</html>

@@ -1,0 +1,749 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hx1 = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+parent.g_setpopup = 0;
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+	sm = new ScreenMask("m","sm");
+	mc_apply = new MultipleCheckbox("d","mc_apply",hl.get("CAMERA"),120,80,hl);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		g_cam_ary.push(i + 1);
+	}
+	GetXML();
+	InitMotionApplet();
+	refresh();
+	setIdInnerHTML("td_Sensitivity", hl.get("SENSITIVITY"));
+	setIdInnerHTML("td_Min_Area", hl.get("MIN_AREA"));
+	setIdInnerHTML("td_sensitivity_sentence", hl.get("SENSITIVITY_HIGHEST_LOWEST"));
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+
+    funcNum = setHx.getNodeChildSize("MOTION");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("MOTION", Cnt)) {
+            case "Enable":
+                setIdDisplay("tr_Enable", "table-row");
+                setIdInnerHTML("td_Enable", hl.get("ENABLE"));
+                break;
+            case "PreAlarmRecord":
+                setIdDisplay("tr_Prealarm_REC", "table-row");
+                setIdInnerHTML("td_Prealarm_REC", hl.get("PRE_ALARM_RECORD"));
+                break;
+            case "EmailNotify":
+                setIdDisplay("tr_Email_Notify", "table-row");
+                setIdInnerHTML("td_Email_Notify", hl.get("EMAIL_NOTIFY"));
+                break;
+            case "Log":
+                setIdDisplay("tr_Log", "table-row");
+                setIdInnerHTML("td_Log", hl.get("LOG"));
+                break;
+            case "Buzzer":
+                setIdDisplay("tr_Buzzer", "table-row");
+                setIdInnerHTML("td_Buzzer", hl.get("BUZZER"));
+                break;
+            case "NetworkAlarm":
+                setIdDisplay("tr_Network_Alarm", "table-row");
+                setIdInnerHTML("td_Network_Alarm", hl.get("NETWORK_ALARM"));
+                break;
+            case "AutoLock":
+                setIdDisplay("tr_Auto_Lock", "table-row");
+                setIdInnerHTML("td_Auto_Lock", hl.get("AUTO_LOCK"));
+                break;
+            case "FTPUpload":
+                setIdDisplay("tr_Ftp_Upload", "table-row");
+                setIdInnerHTML("td_Ftp_Upload", hl.get("FTP_UPLOAD"));
+                break;
+            case "FTPUploadFileType":
+                setIdDisplay("tr_Ftp_Upload_File_Type", "table-row");
+                setIdInnerHTML("td_Ftp_Upload_File_Type", hl.get("FTP_UPLOAD_FILE_TYPE"));
+                var type = parent.SetHx.getNodeValue("EventSetting", "MotionFTPUploadFileType").split(",");
+                var hs = new HandleSelect("sel_Ftp_Upload_File_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                break;
+            case "AlarmOutput":
+                setIdDisplay("tr_Alarm_Output", "table-row");
+                setIdInnerHTML("td_Alarm_Output", hl.get("ALARM_OUTPUT"));
+                parent.setSelectOutput(EFDEF_id("sel_Alarm_Output"), parent.g_OutputSum);
+                break;
+            case "OutputType":
+                setIdDisplay("tr_Output_Type", "table-row");
+                setIdInnerHTML("td_Output_Type", hl.get("OUTPUT_TYPE"));
+                var type = parent.SetHx.getNodeValue("EventSetting", "MotionAlarmType").split(",");
+                var hs = new HandleSelect("sel_Output_Type", 0);
+                var tArray = parent.transLangArray(type);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), type[i].toLowerCase());
+                }
+                break;
+            case "TimeoutDuration":
+                setIdDisplay("tr_timeout_dur", "table-row");
+                setIdInnerHTML("td_Timeout_Dur", hl.get("TIMEOUT_DURATION"));
+                break;
+            case "MainMonitor":
+                setIdDisplay("td_Main_Monitor", "table-cell");
+                setIdDisplay("sel_Main_Monitor", "inline");
+                setIdInnerHTML("td_Main_Monitor", hl.get("MAIN_MONITOR"));
+                var monitor = parent.SetHx.getNodeValue("EventSetting", "MotionMainMonitor").split(",");
+                var tArray = parent.transLangArray(monitor);
+                var hs = new HandleSelect("sel_Main_Monitor", 0);
+                for (i = 0; i < monitor.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "MotionGrid":
+                setIdDisplay("td_edit_motion_grid", "inline");
+                setIdValue("btn_saveback", hl.get("SAVE_AND_BACK"));
+                setIdValue("btn_edit_motion_grid", hl.get("EDIT_MOTION_GRID"));
+                break;
+            case "CallMonitor":
+                setIdDisplay("td_Call_Monitor", "table-cell");
+                setIdDisplay("sel_Call_Monitor", "inline");
+                setIdInnerHTML("td_Call_Monitor", hl.get("CALL_MONITOR"));
+                var monitor = parent.SetHx.getNodeValue("EventSetting", "MotionCallMonitor").split(",");
+                var tArray = parent.transLangArray(monitor);
+                var hs = new HandleSelect("sel_Call_Monitor", 0);
+                for (i = 0; i < monitor.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), i);
+                }
+                break;
+            case "MatrixMT":
+                setIdDisplay("tr_MatrixMT", "table-row");
+                setIdDisplay("tr_Monitor", "table-row");
+                setIdInnerHTML("td_MatrixMT", "Matrix");
+                setIdInnerHTML("sel_Matrix_Change","Moniter");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    setIdInnerHTML("td_Cam", hl.get("CAMERA"));
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    setIdValue("btn_set_all", hl.get("SET_ALL"));
+    setIdValue("btn_clear_all", hl.get("CLEAR_ALL"));
+    setIdValue("btn_cancel", hl.get("CANCEL"));
+    
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    var hs = new HandleSelect("sel_cam", 0);
+    for (var i = 0; i < parent.g_total_ch_num; i++) {
+        hs.addOpt(i, i + 1, i);
+    }
+}
+function selectCamera() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+    funcNum = setHx.getNodeChildSize("MOTION");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("MOTION", Cnt)) {
+            case "Enable":
+               setIdChecked("chk_Enable", hx.getNodeValue(str, "enable"));
+                break;
+            case "PreAlarmRecord":
+                setIdChecked("chk_Prealarm_REC", hx.getNodeValue(str, "preAlarmRecord"));
+                break;
+            case "EmailNotify":
+                setIdChecked("chk_Email_Notify", hx.getNodeValue(str, "emailNotify"));
+                break;
+            case "Log":
+                setIdChecked("chk_Log",hx.getNodeValue(str,"log"));
+                break;
+            case "Buzzer":
+                setIdChecked("chk_Buzzer", hx.getNodeValue(str, "buzzer"));
+                break;
+            case "NetworkAlarm":
+                setIdChecked("chk_Network_Alarm", hx.getNodeValue(str, "networkAlarm"));
+                break;
+            case "AutoLock":
+               setIdChecked("chk_Auto_Lock", hx.getNodeValue(str, "autoLock"));
+                break;
+            case "FTPUpload":
+                setIdChecked("chk_Ftp_Upload", hx.getNodeValue(str, "ftpUpload"));
+                break;
+            case "FTPUploadFileType":
+                setIdValue("sel_Ftp_Upload_File_Type", hx.getNodeValue(str, "ftpUploadFileType"));
+                break;
+            case "AlarmOutput":
+                setIdValue("sel_Alarm_Output", hx.getNodeValue(str, "alarmOutput"));
+                break;
+            case "OutputType":
+                setIdValue("sel_Output_Type", hx.getNodeValue(str, "alarmOutputType"));
+                break;
+            case "TimeoutDuration":
+               setIdValue("txt_Timeout_Dur", hx.getNodeValue(str, "timeoutDuration"));
+                break;
+            case "MainMonitor":
+                setIdValue("sel_Main_Monitor", hx.getNodeValue(str, "mainScreenType"));
+                break;
+            case "MotionGrid":
+                setIdValue("sel_Sensitivity", hx.getNodeValue(str, "threshold"));
+                //setIdValue("sel_Delay", hx.getNodeValue(str, "delay"));
+                setIdValue("sel_Min_Area", hx.getNodeValue(str, "target_size"));
+                var tmpGridAry = hx.getNodeValue(str, "grid").split(";");
+                break;
+            case "CallMonitor":
+                setIdValue("sel_Call_Monitor", hx.getNodeValue(str, "callScreenType"));
+                break;
+            case "MatrixMT":
+
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }
+    }    
+	setIdValue("btn_save", hl.get("SAVE"));
+	chgOutputType();
+	ChangeMotionSel();
+}
+function chgOutputType(){
+    if(getIdValue("sel_Output_Type") == "timeout" || getIdValue("sel_Output_Type") == "trans+timeout"){
+        setIdVisibility("tr_timeout_dur",1);
+    }else{
+        setIdVisibility("tr_timeout_dur",0);
+    }
+}
+function MotionGridChange(obj) {
+	if(getIdChecked(obj)){
+
+	}else{
+
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Motion.xml");
+	selectCamera();
+}
+
+function chgMatrix(strtag) {
+    var tmp = 0;
+    for (var j = 1; j < parent.g_total_ch_num; j++) {
+        if (hx.getNodeValue(strtag, "MATRIX_ACT_" + j).toString() != "0" && hx.getNodeValue(strtag, "MATRIX_ACT_" + j).toString() != "1") {
+            tmp = (j - 1);
+            j = parent.g_total_ch_num;
+        }
+    }
+    return tmp;
+}
+
+function syncData(){
+	var tmpGrid = "";
+	var tmpValue;
+	var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+	hx.setNodeValue(1, str, "modified");
+	funcNum = setHx.getNodeChildSize("MOTION");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("MOTION", Cnt)) {
+	        case "Enable":
+	            hx.setNodeValue(getIdChecked("chk_Enable"), str, "enable");   
+	            break;
+	        case "PreAlarmRecord":
+	            hx.setNodeValue(getIdChecked("chk_Prealarm_REC"), str, "preAlarmRecord");
+	            break;
+	        case "EmailNotify":
+	            hx.setNodeValue(getIdChecked("chk_Email_Notify"), str, "emailNotify");
+	            break;
+	        case "Log":
+	            hx.setNodeValue(getIdChecked("chk_Log"), str, "log");
+	            break;
+	        case "Buzzer":
+	            hx.setNodeValue(getIdChecked("chk_Buzzer"), str, "buzzer");
+	            break;
+	        case "NetworkAlarm":
+	            hx.setNodeValue(getIdChecked("chk_Network_Alarm"), str, "networkAlarm");
+	            break;
+	        case "AutoLock":
+	            hx.setNodeValue(getIdChecked("chk_Auto_Lock"), str, "autoLock");
+	            break;
+	        case "FTPUpload":
+	             hx.setNodeValue(getIdChecked("chk_Ftp_Upload"), str, "ftpUpload");
+	            break;
+	        case "FTPUploadFileType":
+	             hx.setNodeValue(getIdValue("sel_Ftp_Upload_File_Type"),str, "ftpUploadFileType");
+	            break;
+	        case "AlarmOutput":
+	            hx.setNodeValue(getIdValue("sel_Alarm_Output"), str, "alarmOutput");
+	            break;
+	        case "OutputType":
+	            hx.setNodeValue(getIdValue("sel_Output_Type"), str, "alarmOutputType");
+	            break;
+	        case "TimeoutDuration":
+	            hx.setNodeValue(getIdValue("txt_Timeout_Dur"), str, "timeoutDuration");
+	            break;
+	        case "MotionGrid":
+	            hx.setNodeValue(getIdValue("sel_Sensitivity"), str, "threshold");
+	            hx.setNodeValue(getIdValue("sel_Min_Area"), str, "target_size");
+	            break;
+	        case "MainMonitor":
+	            hx.setNodeValue(getIdValue("sel_Main_Monitor"), str, "mainScreenType");
+	            break;
+	        case "CallMonitor":
+	            hx.setNodeValue(getIdValue("sel_Call_Monitor"), str, "callScreenType");
+	            break;
+	        case "MatrixMT":
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+}
+function SetXML(){
+	syncData();
+	
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Motion.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function applyToAll(){
+    syncData();
+    var funcNum = 0;
+	var Cnt = 0;
+	var fromNode = "camera" + getIdSelectText("sel_cam").toFill(2);
+	var toNode = "";
+	var ACT = "MATRIX_ACT_" + getIdValue("sel_Matrix_ACT").toInt();
+	for(var i = 0;i < mc_apply.aryChecked.length;i++){
+		if(mc_apply.aryChecked[i]){
+		    toNode = "camera" + (i + 1).toFill(2);
+		    funcNum = setHx.getNodeChildSize("MOTION");
+		    hx.setNodeValue(1, toNode, "modified");
+		    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+		        switch (setHx.getNodeChildName("MOTION", Cnt)) {
+		            case "Enable":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "enable"), toNode, "enable");
+		                break;
+		            case "PreAlarmRecord":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "preAlarmRecord"), toNode, "preAlarmRecord");
+		                break;
+		            case "EmailNotify":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "emailNotify"), toNode, "emailNotify");
+		                break;
+		            case "Log":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "log"), toNode, "log");
+		                break;
+		            case "Buzzer":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "buzzer"), toNode, "buzzer");
+		                break;
+		            case "NetworkAlarm":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "networkAlarm"), toNode, "networkAlarm");
+		                break;
+		            case "AutoLock":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "autoLock"), toNode, "autoLock");
+		                break;
+		            case "FTPUpload":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "ftpUpload"), toNode, "ftpUpload");
+		                break;
+		            case "FTPUploadFileType":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "ftpUploadFileType"), toNode, "ftpUploadFileType");
+		                break;
+		            case "AlarmOutput":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "alarmOutput"), toNode, "alarmOutput");
+		                break;
+		            case "OutputType":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "alarmOutputType"), toNode, "alarmOutputType");
+		                break;
+		            case "TimeoutDuration":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "timeoutDuration"), toNode, "timeoutDuration");
+		                break;
+		            case "MotionGrid":
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "threshold"), toNode, "threshold");
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "delay"), toNode, "delay");
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "target_size"), toNode, "target_size");
+		                //hx.setNodeValue(hx.getNodeValue(fromNode, "grid"), toNode, "grid");
+		                break;
+		            case "MainMonitor":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "mainScreenType"), toNode, "mainScreenType");
+		                break;
+		            case "CallMonitor":
+		                hx.setNodeValue(hx.getNodeValue(fromNode, "callScreenType"), toNode, "callScreenType");
+		                break;
+		            case "MatrixMT":
+		                break;
+		            case "#text":   //******* for chrome
+		                funcNum++;
+		                break;
+		        }
+		    }	
+		}
+	}
+	SetXML();
+	closeApplyEdit();
+}
+function closeApplyEdit(){
+    setIdVisibility("mask1", 0);
+	mc_apply.close();
+}
+
+function openApplyEdit(){
+	mc_apply.setAry(g_cam_ary)
+		.setCols(4)
+		.setSelectedText(getIdValue("sel_cam").toInt() + 1)
+		.createList()
+		.setFuncOk(applyToAll)
+		.setFuncCancel(closeApplyEdit);
+	setIdVisibility("mask1", 1);
+	mc_apply.open();
+}
+function openGrid() {
+    setIdVisibility("mask1", 1);
+    EFDEF_("edit_grid").display("block");
+    OpenMotionApplet();
+    parent.g_lock_menu = 1;
+}
+function closeGrid() {
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+    var tmpGrid = "";
+    var arrayFromJava = parent.applet.getMotionData();
+    for (var i = 0; i < parent.g_motion_height; i++) {
+        if (i > 0) {
+            tmpGrid += ";";
+        }
+        tmpGrid += "00" + arrayFromJava[i].toString(16);
+    }
+    hx.setNodeValue(tmpGrid, str, "grid");
+
+    CloseMotionApplet();
+    EFDEF_("edit_grid").display("none");
+    setIdVisibility("mask1", 0);
+    parent.g_lock_menu = 0;
+}
+function cancel() {
+    CloseMotionApplet();
+    EFDEF_("edit_grid").display("none");
+    setIdVisibility("mask1", 0);
+    parent.g_lock_menu = 0;
+}
+function ACTtoChange() {
+    var str = "CH" + getIdSelectText("sel_cam").toFill(2);
+    var ACT = "MATRIX_ACT_" + getIdValue("sel_Matrix_ACT").toInt();
+    setIdValue("sel_Matrix_Change", hx.getNodeValue(str, ACT));
+}
+
+function ChangeMotionSel() {
+    
+}
+
+function InitMotionApplet() {
+    tmpSel = getIdValue("sel_cam");
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+    var motionGrid = hx.getNodeValue(str, "grid").split(";");
+    var motion_width = parent.g_motion_width * 20;
+    var motion_height = parent.g_motion_height * 20;
+    parent.applet.appletRelease();
+    for (i = 0; i < motionGrid.length; i++) {
+        motionGrid[i] = parseInt(motionGrid[i], 16);
+        //motionGrid[i] = parseInt(motionGrid[i], parent.g_motion_height);
+    }
+    parent.applet.setTimeInfo(parent.g_date_fmt, parent.g_time_fmt);
+    parent.applet.setMotionInfo(motion_width, motion_height, parent.g_motion_width, parent.g_motion_height, 1);
+    parent.applet.initApplet();
+    parent.applet.openMotionStream(parent.g_ip, parent.g_port);
+}
+function OpenMotionApplet() {
+    tmpSel = getIdValue("sel_cam");
+    var str = "camera" + getIdSelectText("sel_cam").toFill(2);
+
+    var motionGrid1 = hx.getNodeValue(str, "grid").split(";");
+    var motionGrid2 = new Array(motionGrid1.length);
+    parent.ChangAppletPosition(440, 320, 200, 600);
+
+    for (i = 0; i < motionGrid1.length; i++) {
+        motionGrid2[i] = parseInt(motionGrid1[i], 16);
+    }
+    parent.applet.setMotionXMLData(motionGrid2, motionGrid2.length);
+    parent.applet.setSingleChannelScreen(tmpSel);
+    /*
+    var testIntArray = new Array();
+    var intArrayLength = 16;
+    for (var i = 0; i < 16; i++) {
+    testIntArray[i] = 0x00000000;
+    }*/
+}
+function CloseMotionApplet() {
+    parent.ChangAppletPosition(0, 0, 0, 0);
+}
+function motionClearAll() {
+    parent.applet.motionClearAll();
+}
+function motionSetAll() {
+    parent.applet.motionSetAll();
+}
+function PauseMotionApplet() {
+    parent.applet.appletPause();
+    parent.firstTimeFlag = 0;
+}
+
+//-->
+</script>
+</head>
+<body onload="" onunload="parent.g_setpopup = 1;PauseMotionApplet();">
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table width="450" border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Cam" ></td>
+				<td style="width:180px;">
+					<select id="sel_cam"  onchange="selectCamera();"></select>
+				</td>
+			</tr>
+            <tr><td style="height:20px;"></td></tr>
+		</table>
+        <table width="700" border="0" cellspacing="5" cellpadding="0">
+			<tr id="tr_Enable"  style="display:none;">
+                <td id="td_Enable" style="width:250px"></td>
+                <td style="width:200px;">
+					<input type="checkbox" id="chk_Enable" onclick="MotionGridChange(this);" />
+				</td>
+                <td id="td_Main_Monitor" width="200" style="display:none;"></td>
+				<td >
+					<select id="sel_Main_Monitor" style="width:auto;display:none;"></select>
+				</td>
+            </tr>
+            <tr id="tr_Log"  style="display:none">
+                <td id="td_Log" ></td>
+                <td>
+					<input type="checkbox" id="chk_Log" />
+				</td>
+                <td id="td_Call_Monitor" style="display:none;width: 200px;"></td>
+				<td >
+					<select id="sel_Call_Monitor" style="width:auto;display:none;"></select>
+				</td>
+			</tr>
+            <tr id="tr_Prealarm_REC"  style="display:none">
+                <td id="td_Prealarm_REC" nowrap="nowrap" ></td>
+                <td>
+					<input type="checkbox" id="chk_Prealarm_REC" />
+				</td>
+                <td></td>
+                <td id="td_edit_motion_grid" style="display:none;">
+                    <input type="button" id="btn_edit_motion_grid" class="btnStyle" value="" onclick="openGrid();"/>
+                </td>
+            </tr>
+            <tr id="tr_Buzzer"  style="display:none">	
+                <td id="td_Buzzer" ></td>
+                <td>
+					<input type="checkbox" id="chk_Buzzer" />
+				</td>
+			</tr>
+            <tr id="tr_Email_Notify"  style="display:none">
+                <td id="td_Email_Notify" ></td>
+				<td>
+					<input type="checkbox" id="chk_Email_Notify" />
+				</td>
+			</tr>
+            <tr id="tr_Network_Alarm"  style="display:none">
+                <td id="td_Network_Alarm" ></td>
+                <td>
+					<input type="checkbox" id="chk_Network_Alarm" />
+				</td>
+			</tr>
+
+			<tr id="tr_Auto_Lock"  style="display:none">
+                <td id="td_Auto_Lock" ></td>
+                <td>
+					<input type="checkbox" id="chk_Auto_Lock"/>
+				</td>
+            </tr>
+            <tr id="tr_Ftp_Upload"  style="display:none">
+                <td id="td_Ftp_Upload" ></td>
+				<td>
+                    <input type="checkbox" id="chk_Ftp_Upload" />
+                </td>
+			</tr>
+            </table>
+            <table width="700" border="0" cellspacing="5" cellpadding="0">
+            <tr id="tr_Ftp_Upload_File_Type" style="display:none">
+                <td id="td_Ftp_Upload_File_Type" style="width: 230px"></td>
+                <td><select id="sel_Ftp_Upload_File_Type"></select></td>
+            </tr>
+			<tr id="tr_Alarm_Output" style="display:none">
+				<td id="td_Alarm_Output" style="width:200px;"></td>
+				<td>
+					<select id="sel_Alarm_Output" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Output_Type" style="display:none">
+				<td id="td_Output_Type"  style="width:200px;"></td>
+				<td>
+					<select id="sel_Output_Type" style="width:180px;" onchange="chgOutputType();"></select>
+				</td>
+			</tr>
+			<tr id="tr_timeout_dur" style="display:none">
+				<td id="td_Timeout_Dur" nowrap="nowrap"  style="width:200px;"></td>
+				<td>
+					<input type="text" id="txt_Timeout_Dur" maxlength="16" style="width:60px;" onblur="CheckCharKeyin(this,0,10,150);"/>
+				</td>
+			</tr>
+		</table>
+        <table border="0" cellspacing="5" cellpadding="0" width="700";>
+			<tr id="tr_MatrixMT" style="display:none">
+			<td width="200px" id="td_MatrixMT"></td>
+			<td >
+			<select id="sel_Matrix_ACT" style="width:40px;" onchange="ACTtoChange();"></select>
+			</td></tr>
+			<tr id="tr_Monitor" style="display:none">
+			<td width="200px" id="td_Monitor"></td>
+			<td>
+			<select id="sel_Matrix_Change" style="width:115px;"></select>
+			</td></tr>
+			
+		</table>
+	</div>
+    </div>
+	
+	<div id="edit_grid" style=" position:absolute; top:50px; left:50px; display: none; z-index:110;">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr><td></td><td></td></tr>
+			<tr>
+				<td id="td_Sensitivity" style="width: 150px;"></td>
+				<td>
+					<select id="sel_Sensitivity" style="width:70px;">
+						<option value="0">1</option>
+						<option value="1">2</option>
+						<option value="2">3</option>
+						<option value="3">4</option>
+						<option value="4">5</option>
+						<option value="5">6</option>
+						<option value="6">7</option>
+						<option value="7">8</option>
+						<option value="8">9</option>
+						<option value="9">10</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Min_Area"></td>
+				<td>
+					<select id="sel_Min_Area" style="width:70px;">
+						<option value="0">1</option>
+						<option value="1">2</option>
+						<option value="2">3</option>
+						<option value="3">4</option>
+						<option value="4">5</option>
+					</select>
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr>
+				<td align="center" colspan="2">
+					<input type="button" id="btn_set_all" class="btnStyle" value="" style="width:140px;" onclick="motionSetAll();"/>
+				</td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2">
+					<input type="button" id="btn_clear_all" class="btnStyle" value="" style="width:140px;" onclick="motionClearAll();"/>
+				</td>
+			</tr>
+			<tr>
+				<td align="center" colspan="2">
+					<input type="button" id="btn_saveback" class="btnStyle" value="" style="width:140px;" onclick="closeGrid();"/>
+				</td>
+			</tr>
+            <tr>
+				<td align="center" colspan="2">
+					<input type="button" id="btn_cancel" class="btnStyle" value="" style="width:140px;" onclick="cancel();"/>
+				</td>
+			</tr>
+			<tr><td style="height:180px;">&nbsp;</td></tr>
+            <!--
+            <tr>
+                <td id="td_sensitivity_sentence" class="txtLeft" style="text-align:left;" colspan="2"></td>
+            </tr>-->
+		</table>
+        <span id="td_sensitivity_sentence" class="txtLeft"></span>
+	</div>
+
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Apply_To" class="btnStyle" value="" style="width:120px;" onclick="openApplyEdit();"/>
+        <br/>
+        <br/>
+		<input type="button" id="btn_save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+	<div id="sm"></div>
+	<div id="mc_apply"></div>
+	<div id="mask1" class="ScreenMask"></div>
+
+    <script src="../include/js/jquery-1.8.2.js"></script>
+    <script src="../include/js/detect-zoom.js"></script>
+    <script>
+        function refresh() {
+            var width, height, ratio;
+            var motion_width = parent.g_motion_width * 20;
+            var motion_height = parent.g_motion_height * 20;
+            ratio = window.detectZoom.zoom();
+            if (ratio == 0) {
+                ratio = 1;
+            }
+            width = motion_width * ratio;
+            height = motion_height * ratio;
+            /*if (width >= 1200) {
+                width = 1200;
+                height = 720;
+            }*/
+            parent.applet.resize(width, height);
+            parent.applet.setUILayout(width, height, 1);
+
+            //parent.applet.setSingleChannelScreen(getIdValue("sel_cam"));
+        }
+        $(document).ready(function () {
+            init();
+            //applet.setUILayout(appletWidth, appletHeight, 16);
+            $(window).on('resize', refresh);
+        });
+    </script>
+</body>
+</html>

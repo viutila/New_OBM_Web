@@ -1,0 +1,953 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type; X-UA-Compatible" CONTENT="text/html; charset=utf-8;">
+<META HTTP-EQUIV="X-UA-Compatible" CONTENT="IE=EmulateIE8">
+<META HTTP-EQUIV="X-UA-Compatible" CONTENT="IE=8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<title></title>
+<link rel="stylesheet" type="text/css" href="./include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="./include/css/index.css">
+<script type="text/javascript" src="./include/js/utility.js"></script>
+<script type="text/javascript" src="./include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="./include/js/HandleXml.js"></script>
+<script type="text/javascript" src="./include/js/lang_empty.js"></script>
+<script type="text/javascript" src="./include/js/HandleLanguage.js"></script>
+<script type="text/javascript" src="./include/js/AppletFuc.js"></script>
+<script type="text/javascript" src="./include/js/cgi.js"></script>
+<script type="text/javascript" src="./include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="./include/config.js"></script>
+<script type="text/javascript">
+var hl = new HandleLanguage(lang_lib);
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+//var hx_init = new HandleXml();
+var hx_DateTime = new HandleXml();
+var hx_Lang = new HandleXml();
+var SetHx = new HandleXml();
+var LoginHx = new HandleXml(); ;
+var hx_Dongle = new HandleXml();
+var cgi;
+var smask = null; 	//ScreenMask
+var sm;
+var reconnectFlag = 0;
+
+//addbyalec042010
+var g_menuItemNum = 14; // total menu item num
+var g_flagMIArray = new Array(g_menuItemNum); // menuitem enable mapping
+var g_firstMenu = -1; //第一個顯示的 menuitem index, 因為有些menuitem會被disable,所以要選取 enable的
+var g_allMenuItemMap = 16383; // menu選項全開, 等於0x3FFF(14個選單)
+var g_flagMenumap = 0;
+var g_setpopup = 1;
+//var oPopup = window.createPopup();
+//******************************
+var audio_stream = -1;
+var g_ch_num_sqrt;
+
+//******* archive parameters
+var archive_progress = -99;
+var archive_SID = 0;
+/***************Julia add*******************/
+var testHx = new HandleXml();
+//var SetHx = new HandleXml();
+var g_mainResolution_ary;
+var g_mainRecordQuality_ary;
+var g_mainNormalSpeed_ary;
+var g_mainEventSpeed_ary;
+var g_subResolution_ary;
+var g_subRecordQuality_ary;
+var g_subNormalSpeed_ary;
+var g_subEventSpeed_ary;
+var g_device_xml_name; //20130308 julia add
+var g_Num_alarm_in;
+/**************************************/
+//******* Applet parameters
+var applet;
+var livePage = 0;
+var liveMode = 16;
+var appletWidth = 1200;
+var appletHeight = 720;
+var videoTypeFlag = 1;
+var audioFlag = false;
+var SessionId = -1;
+var g_screenMaskFlag = false;
+
+var g_time_zone;
+var g_time_zone_sec;
+var g_dst_time_sec = 0;
+var firstTimeFlag = 0;
+var RemoteCtrlLiveChnmap = 0;
+var RemoteCtrlPBChnmap = 0;
+var RemoteCtrlPTZChnmap = 0;
+
+var LocalctrlLiveChnmap = 0;
+var LocalctrlPBChnmap = 0;
+var LocalctrlPTZChnmap = 0;
+
+var installCameraArray;
+var dongleFlag = 0;
+var dongleStatusTimeout;
+var hot_Swap;
+var connect_cnt = 0;
+var g_model_name_int;
+//*************** ESI Parameters ************************//
+var StreamCoreReady = false;
+var Viewes = [];
+var GenView = [];
+var viewIndex = 0;
+var focusIndex = -1;
+var NewGenView = "";
+var PanelWidth = 1240;
+var PanelHeight = 725;
+var LiveCount = 64;
+var AddCount = 0;
+var LoadCount = 0;
+var pageCount = 0;
+
+function init() {
+    LoadLangXML();
+    /* Applet Code
+    if (deployJava.getJREs()[0] == undefined) {
+        var msg = hl.get("WARNING_SENTENCE40");
+        var r = confirm(msg);
+        if (r == true) {
+            window.location.replace('http://www.java.com/');
+        }
+        else {
+            return 0;
+        }
+        return 0;
+    }*/
+    cgi = new cgi();
+    GetXML();
+    creatScreenMask();
+    sm.setSpanText(hl.get("PLEASE_WAIT"));
+    //sm.open();
+    initMenuFrame();
+    GetTimeZone();
+    checkDST_NV();
+    //initAppletObject();
+    initInstallCameraArray();
+    connect();
+}
+/* Applet Code
+function initAppletObject() {
+    EFDEF_id("appletDiv").innerHTML =
+        "<applet id='applet'  archive='appletMulti.jar,httpcore.jar,httpclient.jar,commons-logging.jar,commons-logging-adapters.jar,commons-logging-api.jar,hidapi.jar' " +
+        "code='com/applet/view/MultiView.class;com\applet\view\AppletInfo.class;com\applet\view\ChannelManager.class;com\applet\view\ChannelPanel.class;" +
+        "com\applet\view\DeviceInfo.class;com\applet\view\ImageRender.class;com\applet\view\PlayScreen.class;com\applet\view\FullScreen.class;" +
+        "com\applet\view\MotionStructure.class;com\applet\view\MotionRender.class;com\applet\decoder\VideoDecoder.class;com\applet\decoder\AudioDecoder.class;" +
+        "com\applet\encoder\Base64.class;com\applet\net\NetUtils.class;com\applet\net\PARAStreamParser.class;com\applet\net\StreamFrameParser.class;" +
+        "com\applet\net\StreamParser.class;com\applet\net\CommandProcess.class;com\applet\net\PARACommandProcess.class;com\applet\net\Archive.class;" +
+        "com\applet\net\AudioData.class;com\applet\ekb\Ekb200.class' param name='EverFocusViewer' value='no' " +
+        "width='" + appletWidth + "' height='" + appletHeight + "' style='position:absolute; top:0px; left:0px; z-index: -1;'>" +
+        "<PARAM name='java_arguments' value='-Xmx768m -Dsun.java2d.ddoffscreen=false -Dsun.java2d.ddscale=true' />" +
+        "Sorry your brower does not support Java applet!!" +
+        "</applet>";
+}
+
+function EventMessage(message) {//******* applet Event Message receiver
+    if (message == "33") {
+        sm.setSpanText(hl.get("RECONNECT") + ".....");
+        sm.open();
+        connectStatus = 0;
+        firstTimeFlag = 0;
+    }
+    else if (message == "32") {
+        if (connectStatus == 0) {
+            //******** 20130709 john add to reload page when reconnect from rebooting for X86NVR because the nubmer of dongle channel might change.
+            //******** 20131004 john add to all devices which use this web.
+            if (g_model_name_int == 0) {
+                connect_cnt++;
+                if (connect_cnt > 1) {
+                    window.location.reload();
+                }
+            } else if (g_model_name_int == 1) {
+                connect_cnt++;
+                if (connect_cnt > 1) {
+                    window.location.reload();
+                }
+            } else {
+                connect_cnt++;
+                if (connect_cnt > 1) {
+                    window.location.reload();
+                }
+            }
+
+            connect();
+            sm.close();
+            connectStatus = 1;
+        } 
+    }
+}
+function callbackAppletRun(isAppletRun) {
+    if (isAppletRun) {
+        if (testIfJavaVersion() == 0) {
+            return;
+        }
+        applet = EFDEF_id("applet");
+        firstTimeFlag = 2;
+        openLiveStreamApplet();
+    }
+}
+function testIfJavaVersion() {
+    var applet = document.getElementById("applet");
+    var version = parseFloat(applet.getJavaVersion());
+    var msg = hl.get("WARNING_SENTENCE40");
+    if (version < 1.7) {
+        var r = confirm(msg);
+        if (r == true) {
+            window.location.replace('http://www.java.com/');
+        }
+        else {
+            return 0;
+        }
+        return 0;
+    } else {
+        return 1;
+    }
+    //alert("version = " + version);
+    //1.7以下擋住
+}
+function downloadDllFail() {
+    var msg = hl.get("WARNING_SENTENCE41");
+    alert(msg);
+}
+*/
+function initMenuFrame() {
+    g_firstMenu = 0;
+    for (var i = 0; i < g_menuItemNum; i++) {
+        g_flagMIArray[i] = 0;
+    }
+    var menuSize = testHx.getNodeChildSize("MENU");
+    for (var i = 0; i < menuSize; i++) {
+        switch (testHx.getNodeChildName("MENU", i)) {
+            case "Live":
+                g_flagMIArray[0] = 1;
+                break;
+            case "Express":
+                g_flagMIArray[1] = 1;
+                if (LoginHx.getNodeValue("level") != "Admin")
+                    g_flagMIArray[1] = 0;
+                break;
+            case "Camera":
+                g_flagMIArray[2] = 1;
+                if (LoginHx.getNodeValue("pageCamera") == 0)
+                    g_flagMIArray[2] = 0;
+                break;
+            case "RecordAndPlay":
+                g_flagMIArray[3] = 1;
+                if (LoginHx.getNodeValue("pageRecord") == 0)
+                    g_flagMIArray[3] = 0;
+                break;
+            case "AlarmAndEvent":
+                g_flagMIArray[4] = 1;
+                if (LoginHx.getNodeValue("pageAlarmEvent") == 0)
+                    g_flagMIArray[4] = 0;
+                break;
+            case "Schedule":
+                g_flagMIArray[8] = 1;
+                if (LoginHx.getNodeValue("pageSchedule") == 0)
+                    g_flagMIArray[8] = 0;
+                break;
+            case "Network":
+                g_flagMIArray[7] = 1;
+                if (LoginHx.getNodeValue("pageNetwork") == 0)
+                    g_flagMIArray[7] = 0;
+                break;
+            case "Disk":
+                g_flagMIArray[5] = 1;
+                if (LoginHx.getNodeValue("pageDisk") == 0)
+                    g_flagMIArray[5] = 0;
+                break;
+            case "Display":
+                g_flagMIArray[6] = 1;
+                if (LoginHx.getNodeValue("pageDisplay") == 0)
+                    g_flagMIArray[6] = 0;
+                break;
+            case "System":
+                g_flagMIArray[9] = 1;
+                break;
+            case "Infotmation":
+                g_flagMIArray[10] = 1;
+                break;
+            case "Copy":
+                g_flagMIArray[11] = 1;
+                if (LoginHx.getNodeValue("iconArchive") == 0)
+                    g_flagMIArray[11] = 0;
+                break;
+            case "Search":
+                g_flagMIArray[12] = 1;
+                if (LoginHx.getNodeValue("iconPbSearch") == 0)
+                    g_flagMIArray[12] = 0;
+                break;
+            case "PTZ":
+                g_flagMIArray[13] = 1;
+                if (LoginHx.getNodeValue("iconPTZ") == 0)
+                    g_flagMIArray[13] = 0;
+                break;
+            case "#text":   //******* for chrome
+                menuSize++;
+                break;
+        }
+    }
+
+    var ht;
+    ht = new HandleTable("tbl_menu", 0, 0, 0);
+    ht.insertRow();
+    ht.insertCell().width(224)
+				.textAlign("center")
+                .innerHTML("<img id='img_Logo' src='./img/logo.jpg'>") ;
+    var menu_item_width = 89;
+    var menu_item_height = 117;
+    for (var i = 0; i < g_menuItemNum; i++) {
+        if (g_flagMIArray[i] == 1) {
+
+            ht.insertCell().id("td_" + i).width(53)
+				.innerHTML("<img id='img_menu_" + i + "' width='" + menu_item_width + "' height='" + menu_item_height + "' src='" + g_imgMenuPath + "menu_" + i + "_n.png'/>");
+            /*if (i != g_firstMenu) {
+            setIdDisplay(ht.td, "none");
+            }*/
+        }
+    }
+
+    EFDEF_("^img_menu_").onclick(function () {
+        MenuSelect(parseInt(this.id.split("_")[2]));
+    })
+    .onmouseover(function () {
+        setIdCursor(this, "pointer");
+    });
+}
+function connect() {
+    if (g_flagMenumap == 1) {
+        if (parseInt(hx.getNodeValue("user_level")) < 3) {
+            if (g_screenMaskFlag) {
+                sm.setSpanText("No Competence!!\n");
+                sm.open();
+            }
+
+            alert("No Competence!!");
+            g_flagMenumap = 2;
+            return -1;
+        }
+    }
+    g_lock_menu = 0;
+    MenuSelect(g_firstMenu);
+    setLanguage();
+    ifDongle();
+}
+function GetDeviceInfoXML() {
+    hx.setUrl("./xml/DeviceInfo.xml");
+    g_ch_num = parseInt(hx.getNodeValue("NUM_CH_ANALOG_MAIN"));
+    g_ipcam_num = parseInt(hx.getNodeValue("NUM_CH_IP_MAIN"));
+    g_total_ch_num = g_ch_num + g_ipcam_num;
+    g_audio_num = parseInt(hx.getNodeValue("NUM_AUDIO_IN"));
+    g_OutputSum = parseInt(hx.getNodeValue("NUM_ALARM_OUT"));
+    g_motion_width = parseInt(hx.getNodeValue("MOTION", "GRID_W"));
+    g_motion_height = parseInt(hx.getNodeValue("MOTION", "GRID_H"));
+    g_model_name = hx.getNodeValue("MODEL_NAME");
+    g_Num_alarm_in = hx.getNodeValue("NUM_ALARM_IN");
+    g_nic_num = parseInt(hx.getNodeValue("NETINTERFACE", "NUM_NIC"));
+
+    //**********Get Device xml Julia add 
+    //********** Move TUTIS+-8F3 and TUTIS+-4F3 to ECOR960-8F2 group by John 20131007
+    if (g_model_name == "Paragon960x4-16" ||
+        g_model_name == "Paragon960x4-16H") {
+            testHx.setUrl("./Paragon960x4-16.xml");
+            g_device_xml_name = "Paragon960x4-16.xml";
+            g_title = "Digital Video Recorder";
+            hot_Swap = parseInt(hx.getNodeValue("FS", "HOT_SWAP"));
+            g_model_name_int = 0;
+    } else if (g_model_name == "EPHD08+") {
+            testHx.setUrl("./EPHD08-Plus.xml");
+            g_device_xml_name = "EPHD08-Plus.xml";
+            g_title = "Digital Video Recorder";
+            hot_Swap = parseInt(hx.getNodeValue("FS", "HOT_SWAP"));
+            g_model_name_int = 0;
+    } else if (g_model_name == "ECOR960-8F2" ||
+                   g_model_name == "ECOR960-4F2" ||
+                   g_model_name == "TUTIS+-8F3" ||
+                   g_model_name == "TUTIS+-4F3") {
+            testHx.setUrl("./ECOR960-8F2.xml");
+            g_device_xml_name = "ECOR960-8F2.xml";
+            g_title = "Digital Video Recorder";
+            hot_Swap = parseInt(hx.getNodeValue("FS", "HOT_SWAP"));
+            g_model_name_int = 0;
+    } else if (g_model_name == "NVR8004X") {
+        testHx.setUrl("./X86NVR.xml");
+        g_device_xml_name = "X86NVR.xml";
+        g_title = "Network Video Recorder";
+        dongleFlag = 1;
+        g_model_name_int = 1;
+    } else if (g_model_name == "ENVR8304D-08") {
+        testHx.setUrl("./ENVR.xml");
+        g_device_xml_name = "ENVR.xml";
+        g_title = "Network Video Recorder";
+        hot_Swap = parseInt(hx.getNodeValue("FS", "HOT_SWAP")); //20130606 julia add
+        g_model_name_int = 2;
+    }
+    document.title = g_title;
+}
+function LoadLangXML() {
+    if (getCookie("lang")) {
+        hl.setType(getCookie("lang"));
+        g_lang = parseInt(getCookie("lang")); //20120307  julia add
+    } else {
+        hl.setType(0);
+        g_lang = 0; //20120307  julia add
+    }
+    //************ Add for multi lang xml
+    hx_Lang.setUrl("./include/lang_xml/" + "lang00.xml");
+    hl.SetLangArray(hx_Lang.GetLangXML(), 0);
+
+    hx_Lang.setUrl("./include/lang_xml/" + "lang" + g_lang.toFill(2) + ".xml");
+    hl.SetLangArray(hx_Lang.GetLangXML(), g_lang);
+}
+function GetXML() {
+    GetDeviceInfoXML();
+    if (g_ip != "localhost") {}
+    //========================================================
+    LoginHx.setUrl("./cgi-bin/Login_Info.cgi");
+    //***** URM Channel Access Right
+    RemoteCtrlLiveChnmap = LoginHx.getNodeValue("Login_Info", "RemoteChnAccess", "ctrlLiveChnmap");
+    RemoteCtrlPBChnmap = LoginHx.getNodeValue("Login_Info", "RemoteChnAccess", "ctrlPbChnmap");
+    RemoteCtrlPTZChnmap = LoginHx.getNodeValue("Login_Info", "RemoteChnAccess", "ctrlPtzChnmap");
+
+    LocalCtrlLiveChnmap = LoginHx.getNodeValue("Login_Info", "LocalChnAccess", "ctrlLiveChnmap");
+    LocalCtrlPBChnmap = LoginHx.getNodeValue("Login_Info", "LocalChnAccess", "ctrlPbChnmap");
+    LocalCtrlPTZChnmap = LoginHx.getNodeValue("Login_Info", "LocalChnAccess", "ctrlPtzChnmap");
+    //***** URM Channel Access Right
+    SetHx.setUrl("./xml/menutree.xml");
+    g_user_lv = LoginHx.getNodeValue("Login_Info", "level");
+    if (g_user_lv == "Admin") {
+        g_user_lv = 3;
+    } else if (g_user_lv == "Manager") {
+        g_user_lv = 2;
+    } else if (g_user_lv == "Operator") {
+        g_user_lv = 1;
+    }
+    g_user_name = LoginHx.getNodeValue("Login_Info", "userName");
+    g_user_password = LoginHx.getNodeValue("Login_Info", "password");
+
+    g_dvr_sys = LoginHx.getNodeValue("Login_Info", "tvSystem");
+    var np;
+    if (g_dvr_sys == 0) {
+        np = "N";
+    }
+    else {
+        np = "P";
+    }
+    g_mainResolution_ary = SetHx.getNodeValue("Global", "MainstreamResolution_" + np).split(",");
+    g_mainRecordQuality_ary = SetHx.getNodeValue("Global", "MainstreamRecordQuality").split(","); ;
+    g_mainNormalSpeed_ary = SetHx.getNodeValue("Global", "MainstreamNormalSpeed_" + np).split(",");
+    g_mainEventSpeed_ary = SetHx.getNodeValue("Global", "MainstreamEventSpeed_" + np).split(",");
+    g_subResolution_ary = SetHx.getNodeValue("Global", "SubstreamResolution_" + np).split(",");
+    g_subRecordQuality_ary = SetHx.getNodeValue("Global", "SubstreamRecordQuality").split(",");
+    g_subNormalSpeed_ary = SetHx.getNodeValue("Global", "SubstreamNormalSpeed_" + np).split(",");
+    g_subEventSpeed_ary = SetHx.getNodeValue("Global", "SubstreamEventSpeed_" + np).split(",");
+}
+function UrlExists(url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
+}
+function MenuSelect(idx) {
+    if (g_lock_menu == 0) {
+        //var tmpCount = EFDEF_id("^img_menu_").length;
+        for (var i = 0; i < g_menuItemNum; i++) {
+            if (g_flagMIArray[i] == 1) {
+                setIdSrc('img_menu_' + i, g_imgMenuPath + 'menu_' + i + '_n.png');
+            }
+        }
+        setIdSrc('img_menu_' + idx, g_imgMenuPath + 'menu_' + idx + '_a.png');
+        
+        switch (idx) {
+            case 0:
+                subMenuFrm.location.replace("./live/subMenu.html");
+                ifrm_View.location.replace("./live/live.html");
+                break;
+            case 1:
+                subMenuFrm.location.replace("./express/subMenu.html");
+                ifrm_View.location.replace("./express/express.html");
+                break;
+            case 2:
+                subMenuFrm.location.replace("./camera/subMenu.html");
+                if (g_model_name_int == 0)//20130326
+                    ifrm_View.location.replace("./camera/BasicSetting.html");
+                else if (g_model_name_int == 2)  //20130527
+                    ifrm_View.location.replace("./camera/ECameraStatus.html");
+                else 
+                    ifrm_View.location.replace("./camera/AutoSearch.html");
+                break;
+            case 3:
+                subMenuFrm.location.replace("./record/subMenu.html");
+                ifrm_View.location.replace("./record/record.html");
+                break;
+            case 4:
+                subMenuFrm.location.replace("./event/subMenu.html");
+                if (testHx.getNode("ALARM"))//20130326
+                    ifrm_View.location.replace("./event/alarm.html");
+                else
+                    ifrm_View.location.replace("./event/VideoLoss.html");
+                break;
+            case 5:
+                subMenuFrm.location.replace("./disk/subMenu.html");
+                ifrm_View.location.replace("./disk/disk.html");
+                break;
+            case 6:
+                subMenuFrm.location.replace("./display/subMenu.html");
+                ifrm_View.location.replace("./display/MainOSD.html");
+                break;
+            case 7:
+                subMenuFrm.location.replace("./network/subMenu.html");
+                ifrm_View.location.replace("./network/lan.html");
+                break;
+            case 8:
+                subMenuFrm.location.replace("./schedule/subMenu.html");
+                ifrm_View.location.replace("./schedule/express.html");
+                break;
+            case 9:
+                subMenuFrm.location.replace("./system/subMenu.html");
+                if (LoginHx.getNodeValue("pageDateTime") == 0) {
+                    ifrm_View.location.replace("./system/daylightSaving.html");
+                }
+                else {
+                    ifrm_View.location.replace("./system/dateTime.html");
+                }
+                break;
+            case 10:
+                subMenuFrm.location.replace("./info/subMenu.html");
+                ifrm_View.location.replace("./info/system.html");
+                break;
+            case 11:
+                subMenuFrm.location.replace("./archive/subMenu.html");
+                ifrm_View.location.replace("./archive/standard.html");
+                break;
+            case 12:
+                subMenuFrm.location.replace("./search/subMenu.html");
+                ifrm_View.location.replace("./search/time.html");
+                break;
+            case 13:
+                subMenuFrm.location.replace("./PTZ/subMenu.html");
+                ifrm_View.location.replace("./PTZ/PTZ.html");
+                break;
+        }
+    }
+}
+function setLanguage() {
+
+    if (g_flagMIArray[0] == 1) //addbyalec042410
+        setIdTitle("td_0", hl.get("LIVE"));
+    if (g_flagMIArray[1] == 1)//addbyalec042410
+        setIdTitle("td_1", hl.get("EXPRESS"));
+    if (g_flagMIArray[2] == 1)//addbyalec042410
+        setIdTitle("td_2", hl.get("CAMERA"));
+    if (g_flagMIArray[3] == 1)//addbyalec042410
+    {
+        if (g_device_xml_name == "ENVR.xml")
+            setIdTitle("td_3", "Record & Playback");//20130605 julia add multi-lang
+        else
+            setIdTitle("td_3", hl.get("RECORD"));
+    }
+    if (g_flagMIArray[4] == 1)//addbyalec042410
+        setIdTitle("td_4", hl.get("EVENT"));
+    if (g_flagMIArray[5] == 1)//addbyalec042410
+        setIdTitle("td_5", hl.get("DISK"));
+    if (g_flagMIArray[6] == 1)//addbyalec042410
+        setIdTitle("td_6", hl.get("DISPLAY_SETTING"));
+    if (g_flagMIArray[7] == 1)//addbyalec042410
+        setIdTitle("td_7", hl.get("NETWORK"));
+    if (g_flagMIArray[8] == 1)//addbyalec042410
+        setIdTitle("td_8", hl.get("SCHEDULE"));
+    if (g_flagMIArray[9] == 1)//addbyalec042410
+        setIdTitle("td_9", hl.get("SYSTEM_SETTING"));
+    if (g_flagMIArray[10] == 1)//addbyalec042410
+        setIdTitle("td_10", hl.get("SYSTEM_INFORMATION"));
+    if (g_flagMIArray[11] == 1)//addbyalec042410
+        setIdTitle("td_11", hl.get("COPY"));
+    if (g_flagMIArray[12] == 1)//addbyalec042410
+        setIdTitle("td_12", hl.get("SEARCH"));
+    if (g_flagMIArray[13] == 1)//addbyalec042410
+        setIdTitle("td_13", hl.get("PTZ"));
+}
+function creatScreenMask() {       //20110630  julia add only creat once 
+    if (g_screenMaskFlag == false) {
+        sm = new ScreenMask("mt", "sm");
+        sm.setSpanText(hl.get("RECONNECT") + ".....");
+        g_screenMaskFlag = true;
+        sm.resize(1491,896);    //******** assign the mask width and height absolute value
+    }
+}
+function transLangArray(oriArray) {
+    var aylength = oriArray.length;
+    var hlArray = new Array(aylength);
+    for (var i = 0; i < aylength; i++) {
+        hlArray[i] = oriArray[i].toUpperCase();
+        hlArray[i] = hlArray[i].replace(/\+/gi, "_");
+        hlArray[i] = hlArray[i].replace(/[ ]/gi, "_");
+    }
+    return hlArray;
+}
+function ifDongle() {
+    if (dongleFlag) {
+        dongleStatusTimeout = setTimeout("getDongleStatus()", 3000);
+    }
+}
+function getDongleStatus() {
+    hx_Dongle.setUrl("./xml/Status.xml");
+
+    if (hx_Dongle.getNodeValue("dongleInfo")) {
+        var flag = parseInt(hx_Dongle.getNodeValue("dongleInfo"));
+        if (flag) {
+            sm.close();
+            dongleStatusTimeout = setTimeout("getDongleStatus()", 60000);
+        }
+        else {
+            sm.setSpanText("");
+            sm.open();
+
+            var msg = hl.get("WARNING_SENTENCE39");
+            if (window.confirm(msg)) {
+                clearTimeout(dongleStatusTimeout);
+                var dongleStatusTimeout99 = setTimeout("getDongleStatus()", 30000);
+            } else {
+                cgi.ShutDown(); //**************** Shut Down the NVR
+            }
+        }
+    } else {
+        var dongleStatusTimeout99 = setTimeout("getDongleStatus()", 60000);
+    }
+}
+function AutoTrackingMessage(message) { //******* For PTZ AutoTracking setting result
+    if (ifrm_View.AutoTrackResult != undefined) {
+        ifrm_View.AutoTrackResult(message);
+    }
+}
+//************************  ESI function  ******************************//
+	function processEvent(eventStr){
+			var strArray = eventStr.split('\n');
+			switch (strArray[0]) {
+				case "MouseDown":
+				{
+					//format: MouseDown \n DisplayHandle \n Button \n MousePosX \n MousePosY
+					document.getElementById("V_X").value = strArray[3];
+					document.getElementById("V_Y").value = strArray[4];
+					for(var i=0;i<Viewes.length;++i)
+					{
+						if(Viewes[i].GetDisplayHandle() == strArray[1])
+						{
+							selectView(i);
+						}
+					}
+					bMouseIsDown = true;
+
+					break;
+				}
+				case "MouseUp":
+				{
+					bMouseIsDown = false;
+					break;
+				}
+				case "MouseMove":
+				{
+					break;
+				}
+				case "MouseScroll":
+				{			
+					break;
+				}
+				case "MouseDblClick":
+				{
+					break;
+				}
+				case "ScanDiskEvent":
+				{
+					break;
+				}
+				case "SearchEvent":
+				{
+					break;
+				}
+				case "ArchiveEvent":
+				{
+					break;
+				}
+				case "WindowRefresh":
+				{
+					break;
+				}					
+		}
+	}
+	function plugin0()
+	{
+		return document.getElementById('mainplugin');
+	}
+	plugin = plugin0;
+	function genView() {
+			var viewPanel = document.getElementById('ViewPanel');
+			var obj = document.createElement('object');
+			obj.setAttribute('id','plugin'+viewIndex);
+			obj.setAttribute('width',1);
+			obj.setAttribute('height',1);
+			obj.setAttribute('type','application/x-esiwebcomponent');
+			var par = document.createElement('param');
+			par.setAttribute('name','onload');
+			par.setAttribute('value','pluginLoaded');
+			
+			//obj.innerHTML='<param name="onload" value="pluginLoaded" />';
+			obj.appendChild(par);
+			obj.style.display = 'inline';
+			viewPanel.appendChild(obj);
+
+			NewGenView = 'plugin'+viewIndex;
+			GenView[viewIndex] = NewGenView;
+			var view = document.getElementById(NewGenView);
+			//alert("1 "+NewGenView);
+// test
+			Viewes.push(view);
+			++viewIndex;
+// test
+			return view;
+	}
+	function arrangeViews(){
+		var viewCount = Viewes.length;
+		var c = 0;
+		do{
+			++c;
+		}while(c*c < viewCount);
+		var newWidth = (PanelWidth-2) / c;
+		var newHeight = (PanelHeight-2) / c;
+		var i=0;
+		for(var y = 0; y < c && i<viewCount ; ++y)
+		{
+			for(var x = 0; x < c && i<viewCount; ++x)
+			{
+				Viewes[i].width = newWidth;
+				Viewes[i].height = newHeight;
+				++i;
+			}
+		}
+	}
+	function openLiveStream(ip, port, channel, stream, username, password) {
+		// test
+		if (Viewes.length < LiveCount)
+		{
+			genView();	
+		}
+		var view = Viewes[AddCount];
+		// test
+		var h = plugin().OpenLiveStream(ip, port, channel, stream, username, password, 0, "");
+		if(h!=0)
+		{
+			view.setAttribute('StreamHandle',h);
+			view.setAttribute('StreamType','Live');
+			selectView(Viewes.length - 1);
+			if (navigator.appName.indexOf("Internet Explorer") != -1)	//IE 動態生成 onload 會失敗
+				pluginLoaded();
+		}
+	}
+	function openLiveRtspStream(url) {
+		var view = genView();
+		var h = plugin().OpenLiveRtspStream(url, 0, "");
+		if(h!=0)
+		{
+			view.setAttribute('StreamHandle',h);
+			view.setAttribute('StreamType','Live');
+			selectView(Viewes.length - 1);
+			//if (navigator.appName.indexOf("Internet Explorer") != -1)	//IE 動態生成 onload 會失敗
+			//	pluginLoaded();
+		}
+	}
+	function closeLiveStream() {
+		if(focusIndex!=-1)
+		{
+			var v = Viewes[focusIndex];
+			if(v.getAttribute('StreamType') == 'Live')
+			{
+				var preView = v.getAttribute('StreamHandle');
+				if(v.haveZoomView)
+				{
+					closeLiveStreamZoom();
+				}
+				plugin().CloseLiveStream(preView);
+				Viewes.splice(focusIndex, 1);
+				var viewPanel = document.getElementById('ViewPanel');
+				viewPanel.removeChild(v);					
+				if(focusIndex>=Viewes.length)
+					selectView(Viewes.length - 1);
+				else
+					selectView(focusIndex);
+				arrangeViews();
+			}
+		}
+	}
+	function pluginLoaded() {
+		//alert("pluginLoaded "+NewGenView);
+		if(!StreamCoreReady)
+		{
+			StreamCoreReady = true;
+			var view = document.getElementById('mainplugin');
+			view.style.height = 0;
+		}
+		/*if(focusIndex!=-1)
+		{
+			//alert("2 "+NewGenView);
+			GenView[viewIndex]
+			var view = document.getElementById(NewGenView);
+			var h = Viewes[focusIndex].getAttribute('StreamHandle');
+			var Type = Viewes[focusIndex].getAttribute('StreamType');
+			if(Type == 'Live')
+			{
+				plugin().SetDisplayRect(h, 1, view.GetDisplayHandle(), 0, 0, 0, 0, 0);
+				openAllOSD(h);
+				selectView(Viewes.length - 1);
+				view.OpenEventListener("MouseEvent", "MouseDown");
+				view.OpenEventListener("MouseEvent", "MouseUp");
+				view.OpenEventListener("MouseEvent", "MouseMove");
+				view.OpenEventListener("MouseEvent", "MouseScroll");
+			}
+			addEvent(view, 'WebComponentEvent', function(eventStr){
+				processEvent(eventStr);
+			});
+		}*/
+	}
+	function addEvent(obj, name, func)
+	{
+		if (obj.attachEvent) {
+			obj.attachEvent("on"+name, func);
+		} else {
+			obj.addEventListener(name, func, false); 
+		}
+	}
+	function openAllOSD(h) {
+		plugin().SetOSDState(h, 0, 1, 0, 0, 0, 255, 255, 255, 255, 255); //0:camera title
+		plugin().SetOSDState(h, 1, 2, 0, 0, 0, 255, 255, 255, 255, 255); //1:frame time
+		plugin().SetOSDState(h, 2, 1, 255, 255, 255, 255, 255, 255, 255, 255); //2:border
+		//plugin().SetOSDState(h, 3, 1, 255, 255, 255, 255, 255, 255, 255, 255); //3:zoom
+	}
+	function selectView(newFocus){
+		if(focusIndex!=-1)
+		{
+			if(focusIndex<Viewes.length)
+			{
+				var preView = Viewes[focusIndex].getAttribute('StreamHandle');
+				plugin().SetOSDState(preView, 2, 1, 255, 255, 255, 255, 255, 255, 255, 255);
+			}
+		}
+		focusIndex = newFocus;
+		if(focusIndex!=-1)
+		{			
+			var h = Viewes[newFocus].getAttribute('StreamHandle');
+			var t = Viewes[newFocus].getAttribute('StreamType');
+			if( t == 'Live')
+				plugin().SetOSDState(h, 2, 1, 0, 255, 0, 255, 0, 255, 0, 255); //live -> green border
+			else if( t == 'Playback')
+				plugin().SetOSDState(h, 2, 1, 255, 255, 0, 255, 255, 255, 0, 255); //playback -> yellow border		
+			else if( t == 'FilePlay')
+				plugin().SetOSDState(h, 2, 1, 255, 0, 255, 255, 255, 0, 255, 255); //playback -> yellow border							
+		}
+	}
+// test
+	function initAddStreams()
+	{
+		AddStreams(LiveCount);
+	}
+	function AddStreams()
+	{
+		viewIndex = 0;
+		for (AddCount = 0;AddCount < LiveCount; AddCount++)
+		{	
+			AddStream();
+		}
+		for (LoadCount = 0;LoadCount < LiveCount; LoadCount++)
+		{	
+			LoadStream();
+		}
+	}
+	function LoadStream()
+	{		
+		var view = document.getElementById(GenView[LoadCount]);
+		var h = Viewes[LoadCount].getAttribute('StreamHandle');
+		var Type = Viewes[LoadCount].getAttribute('StreamType');
+		if(Type == 'Live')
+		{
+			plugin().SetDisplayRect(h, 1, view.GetDisplayHandle(), 0, 0, 0, 0, 0);
+			openAllOSD(h);
+			//selectView(Viewes.length - 1);
+			view.OpenEventListener("MouseEvent", "MouseDown");
+			view.OpenEventListener("MouseEvent", "MouseUp");
+			view.OpenEventListener("MouseEvent", "MouseMove");
+			view.OpenEventListener("MouseEvent", "MouseScroll");
+		}
+		addEvent(view, 'WebComponentEvent', function(eventStr){
+			processEvent(eventStr);
+		});
+	}
+	function DelStreams()
+	{
+		for (LoadCount = 0;LoadCount < LiveCount; LoadCount++)
+		{	
+			DelStream();
+		}
+		Viewes = [];
+	}
+	function DelStream()
+	{
+		var v = Viewes[LoadCount];
+		if(v.getAttribute('StreamType') == 'Live')
+		{
+			var preView = v.getAttribute('StreamHandle');
+			plugin().CloseLiveStream(preView);
+			//Viewes.splice(focusIndex, 1);
+			var viewPanel = document.getElementById('ViewPanel');
+			viewPanel.removeChild(v);
+		}
+	}
+// test
+	function AddStream(){
+	//alert(0);
+		//-------------------------------------------------------
+		var rtsp_url = "rtsp://192.168.37.226/3GPP/0";
+		//var temp_ip = "192.168.33.167";
+		var temp_ip = "192.168.37.21";
+		var temp_port = "80";
+		//var temp_channel = AddCount+1;
+		var temp_channel = AddCount + (LiveCount*pageCount)+1;
+		var temp_stream = 1;
+		//var temp_username = "user1";
+		var temp_username = "admin";
+		var temp_password = "11111111";
+		//-------------------------------------------------------
+		//openLiveRtspStream(rtsp_url);
+		openLiveStream(temp_ip, temp_port, temp_channel-1, temp_stream, temp_username, temp_password);
+		arrangeViews();
+	}
+	function checkview(){
+		alert(Viewes[focusIndex].width+","+Viewes[focusIndex].height);
+	}
+	function changeview(){
+		PanelWidth = document.getElementById("Vwidth").value;
+		PanelHeight = document.getElementById("Vheight").value;
+		arrangeViews();
+	}
+</script>
+</head>
+<body onload="init();">
+<div id="ViewPanel" style="z-index: 99999; position: absolute; left: 250px; top: 170px; width: 1240px;"></div>
+<div id="div_plugin" style="z-index: 99999;"><object id="mainplugin" type="application/x-esiwebcomponent" width="1" height="1"><param name="onload" value="pluginLoaded" /></object></div>
+<div class="base">
+	<div id="BackFrame" class="backFrm">
+		<div id="MenuFrame" class="menuFrm">
+			<table id="tbl_menu"></table>
+		</div>
+		<iframe id="ifrm_View" name="ifrm_View" class="setupFrm" src="" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
+		<iframe id="subMenuFrm" name="subMenuFrm" class="subMenuFrm" src="" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
+        <!--<div id="appletDiv" class="appletDivcss" style="z-index:12; top: 170px; left: 274px;"></div>-->
+    </div>
+    <div id="sm"></div>
+</div>
+</body>
+</html>

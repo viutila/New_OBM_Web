@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ProcessBar.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/ProcessBar.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hx_DeviceInfo =  new HandleXml();
+var sm;		//ScreenMask
+var pb;
+var tmpFwUploadStatus;
+var tmpFwUpgradeStatus;
+var tmpLoadDefaultStatus;
+var tmpLoadConfigStatus;
+var fwFileName;
+var setHx = new HandleXml();
+
+function init() {
+    GetXML();
+    initFunc();
+    setLanguage();
+    resetLanguageSel();
+
+	sm = new ScreenMask("","sm");
+	sm.setOpacity(9);
+	////sm.setBtnValue("cancel");
+	pb = new ProcessBar("sd","pb",200,200,370,20,"Process Bar",180,330);
+	
+	checkkURM();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+
+    funcNum = setHx.getNodeChildSize("MISC");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (setHx.getNodeChildName("MISC", Cnt)) {
+            case "Dongle":
+                setIdDisplay("tb_Dongle", "table");
+                setIdInnerHTML("dongleSN_val", hx.getNodeValue("dongleSerialNumber"));
+                setIdInnerHTML("dongleStatus_val", hx_DeviceInfo.getNodeValue("NUM_CH_IP_MAIN") + " CH");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    //EFDEF_("^td_").className("txtLeft");
+}
+function GetXML() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    hx.setUrl("../cgi-bin/Misc.xml");
+    hx_DeviceInfo.setUrl("../xml/DeviceInfo.xml");
+    fwFileName = hx_DeviceInfo.getNodeValue("NAME_BIN");
+    setIdInnerHTML("Firmware_Version_val", hx.getNodeValue("firmwareVersion"));
+    
+	////setIdValue("sel_lang"			,parent.g_lang.toInt());
+}
+//==========================================================================================
+function fwUpload(){
+    if (getIdValue("file1") != "") {
+        var filePath = getIdValue("file1");
+        var pos01 = filePath.lastIndexOf("\\");
+        var upload_filename = filePath.substring(pos01 + 1);
+        if (upload_filename != fwFileName) {
+            alert(hl.get("FIRMWARE_UPGRADE_ERROR"));
+            return;
+        }
+
+
+
+		parent.g_lock_menu = 1;
+		EFDEF_("frm_fw_upgrade").submit();
+		sm.open();
+		pb.show()
+			.setValue(0)
+			.setProcessFlag(0)
+			.setFinishFn(null)
+			.setMsg("Uploading....");
+		tmpFwUploadStatus = 0;
+		//startFwUpload();
+		//wait firmware respond
+		//if "success" , firmware will execute parent.startFwUpload();
+		//if "fail" , firmware will execute parent.fwUploadFail();
+	}else{
+		parent.g_lock_menu = 0;
+		alert(hl.get("PLZ_CHOOSE_FILE"));
+	}
+}
+function fwUploadFail(){
+	showMsg("fw upload fail");
+	parent.g_lock_menu = 0;
+	sm.close();
+	pb.hide();
+	alert(hl.get("MSG_UPLOAD_FAIL"))
+}
+function startFwUpload(){
+	showMsg("start fw upload");
+	var tmpData = parent.cgi.getFwUploadStatus();
+	hx.setXml(tmpData);
+	showMsg("fwUpload:" + tmpData);
+	tmpFwUploadStatus = hx.getNodeValue("result").toInt();
+	if(tmpFwUploadStatus != -1){
+		pb.setValue(tmpFwUploadStatus);
+		if(tmpFwUploadStatus >= 100){
+			sm.close();
+			pb.hide();
+			fwUpgrade();
+		}else{
+			setTimeout("startFwUpload()",1000);
+		}
+	}else{
+		parent.g_lock_menu = 0;
+		alert(hl.get("MSG_UPLOAD_FAIL"));
+		sm.close();
+		pb.hide();
+	}
+}
+function cancelFwUpload(){
+	sm.close();
+	pb.hide();
+}
+//==========================================================================================
+function fwUpgrade(){
+	sm.open();
+	pb.show()
+		.setValue(0)
+		.setProcessFlag(0)
+		.setMsg("Upgrading....")
+		.setFinishFn(function(){alert(hl.get("SUCCESS"));});
+	tmpFwUpgradeStatus = 0;
+	startFwUpgrade();
+}
+function startFwUpgrade(){
+	var tmpData = parent.cgi.getFwUpgradeStatus();
+	hx.setXml(tmpData);
+	showMsg("fwUpgrade:" + tmpData);
+	tmpFwUpgradeStatus = hx.getNodeValue("result").toInt();
+	if(tmpFwUpgradeStatus != -1){
+		pb.setValue(tmpFwUpgradeStatus);
+		if(tmpFwUpgradeStatus >= 100){
+			parent.g_lock_menu = 0;
+			sm.close();
+			pb.hide();
+		}else{
+			setTimeout("startFwUpgrade()",1000);
+		}
+	}else{
+		parent.g_lock_menu = 0;
+		alert(hl.get("MSG_UPGRADE_FAIL"));
+		sm.close();
+		pb.hide();
+	}
+}
+//==========================================================================================
+function dongleUpload() {
+    if (getIdValue("file3") != "") {
+        var filePath = getIdValue("file3");
+        var pos01 = filePath.lastIndexOf("\\");
+        var upload_filename = filePath.substring(pos01 + 1);
+        if (upload_filename != "Dongle.bin") {
+            //alert(hl.get("FIRMWARE_UPGRADE_ERROR"));
+            alert("DONGLE_UPGRADE_ERROR");
+            return;
+        }
+        parent.g_lock_menu = 1;
+        EFDEF_("frm_dongle_upgrade").submit();
+        sm.open();
+        pb.show()
+			.setValue(0)
+			.setProcessFlag(0)
+			.setFinishFn(null)
+			.setMsg("Uploading....");
+        tmpFwUploadStatus = 0;
+        //startFwUpload();
+        //wait firmware respond
+        //if "success" , firmware will execute parent.startFwUpload();
+        //if "fail" , firmware will execute parent.fwUploadFail();
+    } else {
+        parent.g_lock_menu = 0;
+        alert(hl.get("PLZ_CHOOSE_FILE"));
+    }
+}
+function dongleUpgrade() {
+    //var tmp = parent.cgi.getDongleUploadStatus();
+    //showMsg("start dongle upload");
+    var tmpData = parent.cgi.getDongleUploadStatus();
+    hx.setXml(tmpData);
+    showMsg("dongleUpload:" + tmpData);
+    tmpFwUploadStatus = hx.getNodeValue("result").toInt();
+    if (tmpFwUploadStatus != -1) {
+        pb.setValue(tmpFwUploadStatus);
+        if (tmpFwUploadStatus >= 100) {
+            sm.close();
+            pb.hide();
+            parent.g_lock_menu = 0;
+            //fwUpgrade();
+        } else {
+            setTimeout("dongleUpgrade()", 500);
+        }
+    } else {
+        parent.g_lock_menu = 0;
+        alert(hl.get("MSG_UPLOAD_FAIL"));
+        sm.close();
+        pb.hide();
+    }
+}
+function startDongleUpload() {
+    //alert("Dongle UPLOAD successfully!");
+    sm.open();
+    pb.show()
+		.setValue(0)
+		.setProcessFlag(0)
+		.setMsg("Upgrading....")
+		.setFinishFn(function () { alert(hl.get("SUCCESS")); });
+    tmpFwUpgradeStatus = 0;
+    dongleUpgrade();
+    
+}
+//==========================================================================================
+function confirmLoadDefault() {
+    var str = hl.get("WARNING_SENTENCE11");
+    var MSG;
+    if (parent.g_model_name_int == 0) {
+        MSG = str
+    } else {
+        MSG = str.replace("DVR", "NVR");
+    }
+    if (window.confirm(MSG)) {
+        LoadDefault();
+    }
+}
+function LoadDefault(){
+	var tmpData = parent.cgi.loadDefault();
+	hx.setXml(tmpData);
+	showMsg("start:" + tmpData);
+	if(hx.getNodeValue("result") == "1"){
+		parent.g_lock_menu = 1;
+		sm.open();
+		pb.show()
+			.setValue(0)
+			.setProcessFlag(0)
+			.setMsg("Load default....")
+			.setFinishFn(function () {
+			    parent.g_lock_menu = 0;
+			    sm.close();
+			    pb.hide();
+			    alert(hl.get("SUCCESS"));
+            });
+		tmpLoadDefaultStatus = 0;
+		startLoadDefault();
+	}else{
+		parent.g_lock_menu = 0;
+		alert(hl.get("FAIL"));
+	}
+}
+function startLoadDefault(){
+	var tmpData = parent.cgi.getLoadDefaultStatus();
+	hx.setXml(tmpData);
+	showMsg("access:" + tmpData);
+	tmpLoadDefaultStatus = hx.getNodeValue("result").toInt();
+	pb.setValue(tmpLoadDefaultStatus);
+	if(tmpLoadDefaultStatus >= 100){
+	    /*parent.g_lock_menu = 0;
+	    sm.close();
+	    pb.hide();*/
+	}else{
+		setTimeout("startLoadDefault()",700);
+	}
+}
+//==========================================================================================
+var configFlag;
+var configCount;
+function confirmLoadConfig() {
+    if (window.confirm(hl.get("WARNING_SENTENCE27"))) {
+        LoadConfig();
+    }
+}
+
+function LoadConfig(){
+	if(getIdValue("file2") != ""){
+		configFlag = 0;
+		configCount = 0;
+		EFDEF_("frm_load_config").submit();
+		
+		//var tmpData = parent.cgi.getLoadConfig();
+		//hx.setXml(tmpData);
+		//showMsg("start:" + tmpData);
+		//if(hx.getNodeValue("result").toInt() > 0){
+			parent.g_lock_menu = 1;
+			sm.open();
+			pb.show()
+				.setValue(0)
+				.setProcessFlag(0)
+				.setMsg("Load config....")
+				.setFinishFn(function () {
+				    parent.g_lock_menu = 0;
+				    sm.close();
+				    pb.hide();
+				    alert(hl.get("SUCCESS"));
+                });
+			tmpLoadConfigStatus = 0;
+			//startLoadConfig();
+			//wait firmware respond
+			//if "success" , firmware will execute parent.startLoadConfig();
+			//if "fail" , firmware will execute parent.LoadConfigFail();
+			startLoadConfig2();
+		//}else{
+		//	alert("error");
+		//}
+	}else{
+		parent.g_lock_menu = 0;
+		alert(hl.get("PLZ_CHOOSE_FILE"));
+	}
+}
+function LoadConfigFail(){
+	showMsg("load config fail");
+	configFlag = 0;
+	configCount = 0;
+	parent.g_lock_menu = 0;
+	sm.close();
+	pb.hide();
+	alert(hl.get("MSG_UPLOAD_FAIL"));
+}
+function startLoadConfig(){
+	configFlag = 1;
+}
+function startLoadConfig2(){
+	if(configFlag == 1){
+		var tmpData = parent.cgi.getLoadConfigStatus();
+		hx.setXml(tmpData);
+		showMsg("access:" + tmpData);
+		tmpLoadConfigStatus = hx.getNodeValue("result").toInt();
+		pb.setValue(tmpLoadConfigStatus);
+		if(tmpLoadConfigStatus >= 0){
+		    if (tmpLoadConfigStatus >= 100) {
+                /*
+				parent.g_lock_menu = 0;
+				sm.close();
+				pb.hide();
+                */
+			}else{
+				setTimeout("startLoadConfig2()",700);
+			}
+		}else{
+			parent.g_lock_menu = 0;
+			alert(hl.get("MSG_UPLOAD_FAIL"));
+		}
+	}else{
+		configCount++;
+		//alert(configCount);
+		if(configCount > 5){
+			LoadConfigFail();
+		}else{
+			setTimeout("startLoadConfig2()",3000);
+		}
+	}
+}
+//==========================================================================================
+function selLanguage(){
+	var tmpVal = getIdValue("sel_lang");
+	//parent.g_lang = tmpVal;
+	parent.setCookie("lang", tmpVal);
+	parent.g_lang = parseInt(tmpVal); //20120308  julia add
+	//hl.setType(parent.g_lang_ary[parent.g_lang.toInt()]);
+	hl.setType(tmpVal);
+	//************ add for multi lang xml
+	hx.setUrl("../include/lang_xml/"+"lang"+tmpVal.toFill(2)+".xml");
+	hl.SetLangArray(hx.GetLangXML(), tmpVal);
+	//************
+	setLanguage();
+	parent.setLanguage();
+	parent.subMenuFrm.setLanguage();
+	resetLanguageSel();
+}
+function setLanguage(){
+    EFDEF_("^td_").className("txtLeft");
+
+    setIdInnerHTML("td_Reboot", hl.get("REMOTE_REBOOT"));
+    setIdInnerHTML("td_PowerOff", "Shut Down");
+    
+	setIdInnerHTML("td_Firmware"			,hl.get("FIRMWARE"));
+	setIdInnerHTML("td_Firmware_Version"	,hl.get("FIRMWARE_VERSION"));
+	setIdInnerHTML("td_Firmware_Upgrade"	,hl.get("FIRMWARE_UPGRADE"));
+	setIdInnerHTML("td_Configurations"	,hl.get("CONFIGURATIONS"));
+	setIdInnerHTML("td_Load_Factory_Default",hl.get("LOAD_FACTORY_DEFAULT"));
+	setIdInnerHTML("td_Load_From_File"	,hl.get("LOAD_FROM_FILE"));
+	setIdInnerHTML("td_Save_To_File"	,hl.get("SAVE_TO_FILE"));
+	setIdInnerHTML("td_language"		,hl.get("LANGUAGE"));
+
+	setIdValue("btn_Upgrade", hl.get("UPGRADE_U"));
+	setIdValue("btn_DongleUpgrade", hl.get("UPGRADE_U"));
+	setIdValue("btn_Load"			,hl.get("LOAD"));
+	setIdValue("btn_Load2"			,hl.get("LOAD"));
+	
+	setIdValue("btn_save"			,hl.get("SAVE"));
+	setIdValue("btn_Reboot", hl.get("REBOOT_NOW"));
+	setIdValue("btn_PowerOff", "Shut Down");
+	
+}
+
+function resetLanguageSel() {
+    var select = EFDEF_id("sel_lang");
+    for (i = 0; i < select.options.length; i++) {
+        select.options[i] = null;
+    }
+    var lang_kind = parent.SetHx.getNodeValue("SystemSetting", "SystemSwttingMiscLanguage").split(",");
+    var tArray = parent.transLangArray(lang_kind);
+    var hs = new HandleSelect("sel_lang", 0);
+    for (i = 0; i < lang_kind.length; i++) {
+        hs.addOpt(i, hl.get(tArray[i]), i);
+    }
+    setIdValue("sel_lang", getCookie("lang") ? getCookie("lang") : 0);
+}
+
+function addressReboot() {
+    var hx1 = new HandleXml();
+
+    if (window.confirm("Do you want to remote reboot?") == true) {
+        if (hx.getNodeValue("allowedRemoteReboot").toInt() == 1) {
+            var tmpData = parent.cgi.getReboot();
+            hx1.setXml(tmpData);
+            parent.showMsg("reboot:" + tmpData);
+            if (hx1.getNodeValue("result").toInt() == 1) {
+                alert("Reboot Success");
+                parent.sm.open();
+            }
+            else {
+                alert("Reboot Fail");
+            }
+        }
+        else
+            alert("Remote reboot is not allowed");
+    }
+}
+function addressPowerOff() {
+    var hx1 = new HandleXml();
+    if (window.confirm("Do you want to shut down?") == true) {
+        var tmpData = parent.cgi.ShutDown();
+        hx1.setXml(tmpData);
+        parent.showMsg("reboot:" + tmpData);
+        if (hx1.getNodeValue("result").toInt() == 1) {
+            alert("Shut down Success");
+            parent.window.close();
+            //parent.sm.open();
+        }
+        else {
+            alert("Shut down Fail");
+        }
+    }
+}
+function checkkURM() {
+    if (parent.LoginHx.getNodeValue("pageMisc") == 0) {
+        setIdVisibility("btn_Upgrade", "0");
+        setIdVisibility("btn_Load", "0");
+        setIdVisibility("btn_Load2", "0");
+        setIdVisibility("file1", "0");
+        setIdVisibility("file2", "0");
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+        <table border="0" cellspacing="5" cellpadding="0">
+		<table border="0" style="border: solid 1px #000000;">
+			<tr>
+				<td id="td_Reboot" style="width:400px;"></td>
+				<td style="text-align:right">
+                    <input type="button" id="btn_Reboot" class="btnStyle"  style="width:130px;" onclick="addressReboot();"/>
+                </td>
+			</tr>
+            <tr>
+				<td id="td_PowerOff"></td>
+				<td style="text-align:right">
+                    <input type="button" id="btn_PowerOff" class="btnStyle"  style="width:130px;" onclick="addressPowerOff();"/>
+                </td>
+			</tr>
+			<tr>
+				<td id="td_Firmware"></td>
+                <td class="txtLeft"><span id="td_Firmware_Version"></span>&nbsp<span id="Firmware_Version_val"></span></td>
+			</tr>
+			<form id="frm_fw_upgrade" name="frm_fw_upgrade" method="post" action="../cgi-bin/FW_Upgrade.cgi" enctype="multipart/form-data" target="ifrm1">
+				<tr>
+					<td id="td_Firmware_Upgrade"></td>
+					<td style="text-align:right">
+						<input type="file" name="file1" id="file1" style="width: 360px;"/>
+						<iframe style="display:none;" src="" id="ifrm1" name="ifrm1" height="0" width="0" scrolling="no" marginwidth="0" marginheight="0"></iframe>
+                        <input type="button" id="btn_Upgrade" class="btnStyle" value="" style="width:100px;" onclick="fwUpload();"/>
+					</td>
+				</tr>
+			</form>
+        </table>
+        <tr><td>&nbsp</td></tr>
+
+        <table id="tb_Dongle" style="border: solid 1px #000000;display:none;">
+            <tr>
+                <td id="td_dongleUpgrade" style="width:400px;">USB Dongle Upgrade</td>
+            </tr>
+            <tr>
+                <td id="td_dongleStatus">USB Dongle Status</td>
+                <td id="dongleStatus_val" class="txtLeft"></td>
+            </tr>
+            <tr>
+                <td id="td_dongleSN">USB Donlge S/N</td>
+                <td id="dongleSN_val" class="txtLeft"></td>
+            </tr>
+            <tr>
+                <td id="td_USBdongle">USB Dongle</td>
+                <td>
+                    <form id="frm_dongle_upgrade" name="frm_dongle_upgrade" method="post" action="../cgi-bin/Dongle_Upgrade.cgi" enctype="multipart/form-data" target="ifrm4">
+						<input type="file" name="file3" id="file3" style="width: 360px;"/>
+						<iframe style="display:none;" src="" id="ifrm4" name="ifrm4" height="0" width="0" scrolling="no" marginwidth="0" marginheight="0"></iframe>
+                        <input type="button" id="btn_DongleUpgrade" class="btnStyle" value="" style="width:100px;" onclick="dongleUpload();"/>
+			        </form>
+                </td>
+            </tr>
+        </table>
+
+        <tr><td>&nbsp</td></tr>
+        <table border="0" style="border: solid 1px #000000;">
+			<tr>
+				<td id="td_Configurations" style="width:400px;"></td>
+			</tr>
+			<tr>
+				<td id="td_Load_Factory_Default"></td>
+				<td style="text-align:right">
+					<input type="button" id="btn_Load" class="btnStyle" value="" style="width:100px;" onclick="confirmLoadDefault();"/>
+				</td>
+			</tr>
+			
+			<form id="frm_load_config" name="frm_load_config" method="post" action="../cgi-bin/Config.cgi?cmd=load_config" enctype="multipart/form-data" target="ifrm3">
+				<tr>
+					<td id="td_Load_From_File"></td>
+					<td style="text-align:right">
+						<input type="file" name="file2" id="file2" style="width: 360px;"/>
+						<iframe style="display: none;" src="" id="ifrm3" name="ifrm3" height="0" width="0" scrolling="no" marginwidth="0" marginheight="0"></iframe>
+                        <input type="button" id="btn_Load2" class="btnStyle" value="" style="width:100px;" onclick="confirmLoadConfig();"/>
+					</td>
+				</tr>
+			</form>
+	
+			<tr>
+				<td id="td_Save_To_File"></td>
+				<td style="text-align:right">
+					<input type="button" id="btn_save" class="btnStyle" value="" style="width:100px;" onclick="reloadPage('../cgi-bin/Config.cgi?cmd=save_config');"/>
+				</td>
+			</tr>
+        </table>
+        <tr><td>&nbsp</td></tr>
+        <table border="0" style="border: solid 1px #000000; width:876px;">
+			<tr>
+				<td id="td_language" style="width:400px;"></td>
+				<td style="text-align:right">
+					<select id="sel_lang" style="width:180px;" onChange="selLanguage();"></select>
+				</td>
+			</tr>
+		</table>
+
+        </table>
+    </div>
+    <div id="sm"></div>
+    <div id="pb"></div>
+</body>
+</html>

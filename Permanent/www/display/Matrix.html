@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+
+function init(){
+	setLanguage();
+	initCallSeq();
+	initCamera();
+	initCallSeqDwellTime();
+	initMonitorList();
+
+	GetXML(0);
+}
+function initMonitorList() {
+    var hs = new HandleSelect("sel_camera", 0);
+      for(var i = 0; i<4; i++){
+      	hs.addOpt(i, i+1, i);
+      }
+}
+function initCallSeq(){
+	var ht = new HandleTable("tbl_Call_Seq");
+	for(var i = 0;i < 16;i++){
+		ht.insertRow();
+			//left
+			ht.insertCell();
+			ht.insertCell().className("txtRight")
+					.innerHTML(i + 1);
+			ht.insertCell().className("txtRight")
+					.innerHTML("<select id='sel_Cam_" + i + "' style='width:80px;'></select>");
+ 			ht.insertCell().className("txtRight")
+ 					.innerHTML("<select id='sel_Dwell_" + i + "' style='width:80px;'></select>");
+	 		//right
+	 		ht.insertCell();
+			ht.insertCell().className("txtRight")
+					.innerHTML(i + 1 + 16);
+			ht.insertCell().className("txtRight")
+					.innerHTML("<select id='sel_Cam_" + (i+16) + "' style='width:80px;'></select>");
+ 			ht.insertCell().className("txtRight")
+ 					.innerHTML("<select id='sel_Dwell_" + (i+16) + "' style='width:80px;'></select>");
+	}
+}
+
+function initCamera(){
+	var hs;
+	for(var j = 0;j < 32;j++){
+		hs = new HandleSelect("sel_Cam_" + j,0);
+		for (var k = 0; k < parent.g_total_ch_num; k++) {
+			hs.addOpt(k,k + 1,k);
+		}
+	}
+}
+
+function initCallSeqDwellTime(){
+	var hs;		
+	for(var j = 0;j < 32;j++){
+		hs = new HandleSelect("sel_Dwell_" + j,0);
+		for(var k = 0;k <= 60;k++){
+			hs.addOpt(k,k,k);
+		}
+	}
+}
+function GetXML(idx){
+    hx.setUrl("../cgi-bin/DisplayMatrixSEQ.xml");
+    var str = "Camera" + idx.toFill(2);
+    var sequence = hx.getNodeValue(str, "sequence");
+    var cameraout = hx.getNodeValue(str, "cameraout");
+    var CameraIDArray = hx.getNodeValue(str, "cameraID").split(",");
+    var DwellArray = hx.getNodeValue(str, "second").split(",");
+    setIdValue("sel_sequence", sequence);
+    setIdValue("sel_cameraout", cameraout);
+    hx.getNodeValue(str, "second");
+    for (var i = 0; i < 32; i++) {
+        /*if (CameraIDArray[i] > 15) {
+            CameraIDArray[i] = 15;
+        }*/
+        setIdValue("sel_Cam_" + i, CameraIDArray[i]);
+        setIdValue("sel_Dwell_" + i, DwellArray[i]);
+    }
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var tmpStep="";
+	var tmpSec="";
+	var str = "Camera" + getIdValue("sel_camera").toFill(2);
+	/*if (getIdValue("sel_monitor") == 0) {
+	    str = "MainMonitor";
+    }
+	else {
+	    str = "CallMonitor";
+    }*/
+	for (var i = 0; i < 32; i++) {
+        if (i>0) {
+            tmpStep = tmpStep + ",";
+            tmpSec = tmpSec + ",";
+        }
+        tmpStep = tmpStep + getIdValue("sel_Cam_" + i);
+        tmpSec = tmpSec + getIdValue("sel_Dwell_" + i);
+    }
+	hx.setNodeValue(getIdValue("sel_sequence"),str,"sequence");
+	hx.setNodeValue(getIdValue("sel_cameraout"),str,"cameraout");
+    hx.setNodeValue(tmpStep, str, "cameraID");
+    hx.setNodeValue(tmpSec, str, "second");
+
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/DisplayMatrixSEQ.xml", newxml);
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+
+function setLanguage(){
+	setIdInnerHTML("Step1"		,hl.get("STEP"));
+	setIdInnerHTML("Camera1"	,hl.get("CAMERA"));
+	setIdInnerHTML("DwellTime1"	,hl.get("DWELL_TIME"));
+	setIdInnerHTML("Step2"		,hl.get("STEP"));
+	setIdInnerHTML("Camera2"	,hl.get("CAMERA"));
+	setIdInnerHTML("DwellTime2"	,hl.get("DWELL_TIME"));
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table id="tbl_Call_Seq" border="0" cellspacing="5" cellpadding="0">
+            <tr>
+            	<td colspan="4"><select id="sel_camera" onchange="GetXML(this.value);" style="width:160px;"></select></td>
+            	<td colspan="4"><select id="sel_sequence" onchange="" style="width:160px;"></select></td>
+            	<td colspan="4"><select id="sel_cameraout" onchange="" style="width:160px;"></select></td>
+            </tr>
+			<tr>
+				<td width="20"></td>
+				<td id="Step1" class="txtRight" width="80"></td>
+				<td id="Camera1" class="txtCenter" width="80"></td>
+				<td id="DwellTime1" class="txtCenter" width="100"></td>
+				<td width="20"></td>
+				<td id="Step2" class="txtRight" width="80"></td>
+				<td id="Camera2" class="txtCenter" width="80"></td>
+				<td id="DwellTime2" class="txtCenter" width="100"></td>				
+			</tr>
+		</table>
+    </div>
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

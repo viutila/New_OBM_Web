@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+
+var g_ddns_flag = 1;
+var g_ddns_status = "0";
+var change_pw_flag = 0;
+
+function init(){
+	setLanguage();
+	selProduct();
+	
+	GetXML();
+	selectNetworkDDNSService();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkDDNS.xml");
+    var str = "DDNS";
+
+    setIdValue("sel_DDNS_Service", hx.getNodeValue(str, "server"));
+    setIdValue("txt_DVR_Name", hx.getNodeValue(str, "fqdn"));
+    setIdValue("txt_Host_Name", hx.getNodeValue(str, "fqdn"));
+	setIdValue("txt_Username", hx.getNodeValue(str, "username"));
+	setIdValue("txt_Recordid", hx.getNodeValue(str, "recordID"));
+}
+function GetDDNSStatus1() {
+    var str = "DDNS";
+    hx.setUrl("../cgi-bin/NetworkDDNS.xml");
+    if (hx.getNodeValue(str, "evfDDNSStatus") == "-1") {
+        setIdInnerHTML("txt_status", hl.get("UPDATING"));
+    } else if (hx.getNodeValue(str, "evfDDNSStatus") == "0") {
+        setIdInnerHTML("txt_status", hl.get("FAIL"));
+    } else if (hx.getNodeValue(str, "evfDDNSStatus") == "1") {
+        setIdInnerHTML("txt_status", hl.get("OK"));
+    }
+}
+function SetXML(){
+    var str = "DDNS";
+    hx.setNodeValue(getIdValue("sel_DDNS_Service"), str, "server");
+    if (getIdValue("sel_DDNS_Service") == "Disable") {
+        hx.setNodeValue(0, str, "enabled");
+    } else {
+        hx.setNodeValue(1, str, "enabled");
+    }
+    if (getIdValue("sel_DDNS_Service") == "EverfocusDDNS") {
+        hx.setNodeValue(getIdValue("txt_DVR_Name"), str, "fqdn")
+    }
+    else if (getIdValue("sel_DDNS_Service") == "www.dyndns.org" || getIdValue("sel_DDNS_Service") == "www.no-ip.com") {
+        hx.setNodeValue(getIdValue("txt_Host_Name"), str, "fqdn");
+
+        if (change_pw_flag == 1) {
+            if (getIdValue("txt_Password") == getIdValue("txt_Confirm")) {
+                hx.setNodeValue(getIdValue("txt_Password"), str, "password");
+            } else {
+                alert(hl.get("PASSWORD_ERROR"));
+                return "";
+            }
+        }
+    }
+    else if (getIdValue("sel_DDNS_Service") == "www.sitelutions.com") { 
+        hx.setNodeValue(getIdValue("txt_Recordid"), str, "recordID");
+    }
+    hx.setNodeValue(getIdValue("txt_Username"), str, "username");
+
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/NetworkDDNS.xml", newxml);
+	var hx2 = new HandleXml();
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+		
+		if (hx.getNodeValue(str, "server") == "EverfocusDDNS") {
+		    setIdInnerHTML("txt_status", hl.get("UPDATING"));
+		    CamStatusTimeout = setInterval("GetDDNSStatus1()", 1500);
+		}
+	}else{
+		alert(hl.get("FAIL"));
+    }
+    change_pw_flag = 0;
+    parent.showMsg(hx.getNode("DDNS").xml, "xml");
+}
+function selectNetworkDDNSService() {
+    var str = "DDNS";
+    setIdValue("txt_DVR_Name", hx.getNodeValue(str, "fqdn"));
+    setIdValue("txt_Host_Name", hx.getNodeValue(str, "fqdn"));
+    setIdValue("txt_Username", hx.getNodeValue(str, "username"));
+    setIdValue("txt_Recordid", hx.getNodeValue(str, "recordID"));
+    setIdValue("txt_Password", "123456789012345678901234567890");
+    
+    if (getIdValue(sel_DDNS_Service) == "EverfocusDDNS") {
+        if (hx.getNodeValue(str, "server") != "EverfocusDDNS") {
+            setIdValue("txt_DVR_Name", "");
+        } else {
+            if (hx.getNodeValue(str, "evfDDNSStatus") == "-1") {
+                setIdInnerHTML("txt_status", hl.get("UPDATING"));
+            } else if (hx.getNodeValue(str, "evfDDNSStatus") == "0") {
+                setIdInnerHTML("txt_status", hl.get("FAIL"));
+            } else if (hx.getNodeValue(str, "evfDDNSStatus") == "1") {
+                setIdInnerHTML("txt_status", hl.get("OK"));
+            }
+        }
+        g_ddns_flag = 1;
+        setIdDisplay("btn_Save", "inline");
+
+        setIdDisplay("tr_dvr", "table-row");
+        setIdDisplay("tr_status", "table-row");
+        setIdDisplay("tr_reg", "table-row");
+        setIdDisplay("tr_host", "none");
+        setIdDisplay("tr_user", "none");
+        setIdDisplay("tr_pwd", "none");
+        setIdVisibility("tr_Confirm", 0);
+        setIdDisplay("tr_Recordid", "none");
+    } else if (getIdValue(sel_DDNS_Service) == "www.dyndns.org") {
+        if (hx.getNodeValue(str, "server") != "www.dyndns.org") {
+            setIdValue("txt_Host_Name", "");
+            setIdValue("txt_Username", "");
+            setIdValue("txt_Password", "");
+        }
+        g_ddns_flag = 0;
+        setIdDisplay("btn_Save", "inline");
+
+        setIdDisplay("tr_dvr", "none");
+        setIdDisplay("tr_status", "none");
+        setIdDisplay("tr_reg", "none");
+        setIdDisplay("tr_host", "table-row");
+        setIdDisplay("tr_user", "table-row");
+        setIdDisplay("tr_pwd", "table-row");
+        setIdDisplay("tr_Recordid", "none");
+    } else if (getIdValue(sel_DDNS_Service) == "www.sitelutions.com") {
+        if (hx.getNodeValue(str, "server") != "www.sitelutions.com") {
+            setIdValue("txt_Recordid", "");
+            setIdValue("txt_Username", "");
+            setIdValue("txt_Password", "");
+        }
+
+        g_ddns_flag = 0;
+        setIdDisplay("btn_Save", "inline");
+
+        setIdDisplay("tr_dvr", "none");
+        setIdDisplay("tr_status", "none");
+        setIdDisplay("tr_reg", "none");
+        setIdDisplay("tr_host", "none");
+        setIdDisplay("tr_user", "table-row");
+        setIdDisplay("tr_pwd", "table-row");
+        setIdDisplay("tr_Recordid", "table-row");
+    } else if (getIdValue(sel_DDNS_Service) == "www.no-ip.com") {
+        if (hx.getNodeValue(str, "server") != "www.no-ip.com") {
+            setIdValue("txt_Host_Name", "");
+            setIdValue("txt_Username", "");
+            setIdValue("txt_Password", "");
+        }
+
+        g_ddns_flag = 0;
+        setIdDisplay("btn_Save", "inline");
+
+        setIdDisplay("tr_dvr", "none");
+        setIdDisplay("tr_status", "none");
+        setIdDisplay("tr_reg", "none");
+        setIdDisplay("tr_host", "table-row");
+        setIdDisplay("tr_user", "table-row");
+        setIdDisplay("tr_pwd", "table-row");
+        setIdDisplay("tr_Recordid", "none");
+    } else if (getIdValue(sel_DDNS_Service) == "Disable") {
+        g_ddns_flag = 0;
+        setIdDisplay("btn_Save", "inline");
+
+        setIdDisplay("tr_dvr", "none");
+        setIdDisplay("tr_status", "none");
+        setIdDisplay("tr_reg", "none");
+        setIdDisplay("tr_host", "none");
+        setIdDisplay("tr_user", "none");
+        setIdDisplay("tr_pwd", "none");
+        setIdDisplay("tr_Recordid", "none");
+    }
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_DDNS_Service"	,hl.get("DDNS_SERVICE"));
+	setIdInnerHTML("td_DVR_Name"		,hl.get("DVR_NAME"));
+	setIdInnerHTML("td_status"		,hl.get("STATUS"));
+	setIdInnerHTML("td_Host_Name"		,hl.get("HOST_NAME"));
+	setIdInnerHTML("td_Username"		,hl.get("USERNAME"));
+	setIdInnerHTML("td_Password"		,hl.get("PASSWORD"));
+	setIdInnerHTML("td_Confirm", hl.get("CONFIRM"));
+	setIdValue("btn_Register", hl.get("REGISTER_UPDATE"));
+	setIdInnerHTML("td_Recordid", hl.get("RECORD") + " " + hl.get("ID"));
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+	
+	setIdValue("txt_Password","123456789012345678901234567890");
+
+	EFDEF_("txt_Password").readOnly(1)
+		.onclick(function () {
+		    if (getIdReadOnly(this)) {
+		        if (window.confirm(hl.get("EDIT_PASSWORD") + "?")) {
+		            change_pw_flag = 1;
+		            setIdValue(this, "");
+		            setIdReadOnly(this, 0);
+		            setIdVisibility("tr_Confirm", 1);
+		            this.focus();
+		            this.select();
+		            setTimeout("EFDEF_id('txt_Password').focus()", 500);
+		        } else {
+		            setIdReadOnly(this, 1);
+		            this.blur();
+		            return false;
+		        }
+		    }
+		})
+		.onfocus(getIdOnclick("txt_Password"));
+}
+function selProduct() {
+    var hs = new HandleSelect("sel_DDNS_Service", 0);
+    var ddnstype = parent.SetHx.getNodeValue("NetworkSetting", "DDNSDDNSService").split(",");
+    for (i = 0; i < ddnstype.length; i++) {
+        if (i == 0) {
+            hs.addOpt(i, hl.get(ddnstype[i].toUpperCase()), ddnstype[i]);
+        } else {
+            hs.addOpt(i, ddnstype[i], ddnstype[i]);
+        }
+        
+    }
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_DDNS_Service" width="180px"></td>
+				<td width="300px" align="left">
+					<select id="sel_DDNS_Service" onchange="selectNetworkDDNSService();" style="width:200px;"></select>
+				</td>
+			</tr>
+            <tr id="tr_Recordid">
+                <td id="td_Recordid"></td>
+                <td align="left">
+                    <input type="text" id="txt_Recordid" maxlength="32" style="width:200px;" onblur="CheckUnicodeTitle(this);"/>
+                </td>
+            </tr>
+
+			<tr id="tr_dvr">
+				<td id="td_DVR_Name"></td>
+				<td align="left">
+					<input type="text" id="txt_DVR_Name" maxlength="32" style="width:100px;" onblur="CheckUnicodeTitle(this);"/>
+					<span class="txtLeft">.everfocusddns.com</span>
+				</td>						
+			</tr>
+			<tr id="tr_status">
+				<td id="td_status"></td>
+				<td id="txt_status" class="txtLeft"></td>						
+			</tr>
+			<tr id="tr_reg">
+				<td></td>
+				<td align="left">
+					<input type="button" id="btn_Register" class="btnStyle" value="Register/Update" style="width:150px; visibility:hidden;" onclick="SetXML();"/>
+				</td>
+			</tr>
+
+			<tr id="tr_host">
+				<td id="td_Host_Name"></td>
+				<td align="left">
+					<input type="text" id="txt_Host_Name" maxlength="64" style="width:200px;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>
+			<tr id="tr_user">
+				<td id="td_Username"></td>
+				<td align="left">
+					<input type="text" id="txt_Username" maxlength="32" style="width:200px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+			<tr id="tr_pwd">
+				<td id="td_Password"></td>
+				<td align="left">
+					<input type="password" id="txt_Password" maxlength="32" style="width:200px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+			<tr id="tr_Confirm" style="visibility: hidden;">
+				<td id="td_Confirm"></td>
+				<td align="left">
+					<input type="password" id="txt_Confirm" maxlength="32" style="width:200px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>	
+		</table>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

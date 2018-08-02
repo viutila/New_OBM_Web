@@ -1,0 +1,1072 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/cgi.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var IpcamHx = new HandleXml();
+var sm;
+var mc_apply;
+var cgi = new cgi();
+var m_videoFormat;// save xml tag num
+var g_format_ary = new Array("H264", "MPEG", "JPEG");
+
+function init() {
+   
+    GetXML();
+    initTable();
+    setLanguage();
+
+}
+function GetXML() {
+    hx.setUrl("../cgi-bin/IPCam.xml");
+
+}
+function initTable() {
+
+    var ht = new HandleTable("tbl_list");
+    ht.clear();
+    var str = "";
+    var port, brand, address, model,enabled;
+    var dataCnt = 0;
+    for (var cnt = 1; cnt <= parent.g_ipcam_num; cnt++) {
+        str = "camera" + cnt;
+
+        ht.insertRow().id("tbl_tr_" + cnt).onmouseover(
+					function () {
+					    setIdBgColor(this, "#F5FFFA");
+					})
+				.onmouseout(
+					function () {
+					    var id = this.id.split("_")[2];
+                        if(id % 2)
+                            setIdBgColor(this, "#CCCCCC");
+                        else
+                            setIdBgColor(this, "");
+					});
+        if (cnt % 2)
+            setIdBgColor("tbl_tr_" + cnt, "#CCCCCC");
+
+        address = hx.getNodeValue(str, "ipAddress");
+        enabled = hx.getNodeValue(str, "enabled").toInt();
+        port = hx.getNodeValue(str, "httpPort");
+        brand = hx.getNodeValue(str, "brand");
+        model = hx.getNodeValue(str, "model");
+        if (!enabled) {
+            address = "0.0.0.0";
+            port = "0";
+            brand = "";
+            model = "";
+            dataCnt++;
+        }
+        ht.insertCell().className("txtCenter")
+					.width(100)
+					.innerHTML("Camera" + cnt);
+        ht.insertCell().id("td_camera_address_"+cnt).className("txtCenter")
+					.width(180)
+					.innerHTML(address);
+        ht.insertCell().id("td_camera_port_" + cnt).className("txtCenter")
+					.width(50)
+					.innerHTML(port);
+        ht.insertCell().id("td_camera_brand_" + cnt).className("txtCenter")
+					.width(120)
+					.innerHTML(brand);
+        ht.insertCell().id("td_camera_model_" + cnt).className("txtCenter")
+					.width(200)
+					.innerHTML(model);
+        ht.insertCell().className("txtCenter")
+					.width(60)
+					.innerHTML("<input type='button' value='+' class='advButton' onclick='add("+cnt+")'/>");
+        ht.insertCell().className("txtCenter")
+					.width(60)
+					.innerHTML("<input type='button' value='-' class='advButton' onclick='remove("+cnt+")'/>");
+        ht.insertCell().className("txtCenter")
+					.width(60)
+					.innerHTML("<input type='button' value='M' class='advMButton' onclick='modify("+cnt+")'/>");
+    
+    }
+
+    if (dataCnt == 16)//20130521 julia fix bugzilla:13122
+        if (confirm(hl.get("MSG_SEARCH_IPCAM")))
+            parent.subMenuFrm.subMenuSelect(0);
+
+}
+
+function AutoDetection() {
+    setIdDisplay("mask", "inline");
+    var channel = getIdValue("sel_channel");
+    var ip, port, username, password;
+    var detHx = new HandleXml();
+    ip = getIdValue("txt_address");
+    port = getIdValue("txt_port");
+    username = getIdValue("txt_id");
+    password = getIdValue("txt_password");
+    if (ip == "" || port == "" || username == "" || password == "") {
+        alert(hl.get("MSG_IPCAM_CONFIG"));
+        setIdDisplay("mask", "none");
+        return;
+    }
+    var tmpData = cgi.AutoDetection(port, ip, username, password,channel-1);//20130606 julia add channel從0開始
+    detHx.setXml(tmpData);
+    if (detHx.getNodeValue("result") == -1) {
+        alert(hl.get("MSG_IPCAM_CONFIG"));
+        setIdDisplay("mask", "none");
+        return;
+    } else {
+        var protocol, brand, model;
+        protocol = detHx.getNodeValue("Protocol");
+        brand = detHx.getNodeValue("Brand");
+        model = detHx.getNodeValue("Model");
+        setIdChecked("rad_" + protocol, 1);
+        setIdValue("sel_brand", brand);
+        var modelName = checkModel(model);
+        setIdValue("sel_model", modelName);
+        setIdDisplay("mask", "none");
+    }
+}
+function checkModel(model) {
+    var tmpHx = new HandleXml();
+    tmpHx.setUrl("../IPDevice.xml");
+    var lenght = tmpHx.getItemSize("Model");
+    var modelName = "Others";
+    for (cnt = 0; cnt < lenght; cnt++) {
+        str = tmpHx.getItemValue(cnt, "Model");
+        if (str == model) {
+            modelName = str;
+            break;
+        }
+    }
+
+    return modelName;
+}
+function add(id) {
+    if (hx.getNodeValue("camera" + id, "enabled").toInt()) {
+        var result = confirm(hl.get("MSG_OVERWRITE_SETTING"));
+        if (result) {
+            openAddpage(id);
+        } else
+            return;
+    } else {
+        openAddpage(id);
+    }
+
+}
+function openAddpage(id) {
+    setIdDisplay("div_list", "none");
+    cleanIp();
+    setIdInnerHTML("td_add_ip_cam", hl.get("ADD_IP_CAMERA"));
+    setIdValue("sel_channel", id);
+    setIdDisabled("sel_channel", true);
+    setIdDisplay("div_detection", "inline");
+    setIdDisplay("div_detection_btn", "inline");
+
+}
+function GetParamenter() {
+    if (OpenParamenter()) {
+        checkFrameRate();  //20130521 julia fix bugzilla:13119
+        setIdDisplay("div_detection", "none");
+        setIdDisplay("div_detection_btn", "none");
+        setIdDisplay("div_setup", "inline");
+        setIdDisplay("div_save_btn", "inline");   
+    }
+}
+function remove(id) {
+    if (!hx.getNodeValue("camera" + id, "enabled").toInt())
+        return;
+    if (confirm(hl.get("MSG_DEL_IPCAM"))) {
+        var str = "camera" + id;
+        setIdInnerHTML("td_camera_address_" + id, "0.0.0.0");
+        setIdInnerHTML("td_camera_port_" + id, "");
+        setIdInnerHTML("td_camera_brand_" + id, "");
+        setIdInnerHTML("td_camera_model_" + id, "");
+        hx.setNodeValue(1, str, "modified");
+        hx.setNodeValue("camera"+id, str, "title");
+        hx.setNodeValue("0.0.0.0", str, "ipAddress");
+        hx.setNodeValue("", str, "httpPort");
+        hx.setNodeValue("", str, "password");
+        hx.setNodeValue("", str, "username");
+        hx.setNodeValue("", str, "brand");
+        hx.setNodeValue(0, str, "enabled");
+        hx.setNodeValue("", str, "model");
+        hx.setNodeValue(0, str, "recordDual");
+        hx.setNodeValue(0, str, "connectChannel");
+        hx.setNodeValue("", str, "Main", "encodeType");
+        hx.setNodeValue("", str, "Main", "connectType");
+        hx.setNodeValue("", str, "Main", "recordQuality");
+        hx.setNodeValue("", str, "Main", "resolutionWidth");
+        hx.setNodeValue("", str, "Main", "resolutionHeight");
+        hx.setNodeValue("", str, "Main", "normalSpeed");
+        hx.setNodeValue("", str, "Main", "eventSpeed");
+        hx.setNodeValue(0, str, "Main", "recordAudio"); //20130417 julia fix
+        hx.setNodeValue("", str, "sub", "encodeType");
+        hx.setNodeValue("", str, "sub", "connectType");
+        hx.setNodeValue("", str, "Sub", "recordQuality");
+        hx.setNodeValue("", str, "Sub", "resolutionWidth");
+        hx.setNodeValue("", str, "Sub", "resolutionHeight");
+        hx.setNodeValue("", str, "Sub", "normalSpeed");
+        hx.setNodeValue("", str, "Sub", "eventSpeed");
+        hx.setNodeValue(0, str, "Sub", "recordAudio"); //20130417 julia fix
+        SetXML();
+    }
+}
+function SetXML() {
+    var temphx = new HandleXml();
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/IPCam.xml", newxml);
+
+
+    temphx.setXml(ajax.data);
+    if (temphx.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+        GetXML();
+        initTable();
+    } else {
+        alert(hl.get("FAIL"));
+    }
+}
+
+function modify(id) {
+    if (hx.getNodeValue("camera" + id, "ipAddress") == "0.0.0.0")
+        return;
+    setIdDisplay("div_list", "none");
+    cleanIp();
+    setIdInnerHTML("td_add_ip_cam", hl.get("MODIFY_IP_CAMERA"));
+    setIdValue("sel_channel", id);
+    setIdDisabled("sel_channel", true);
+    setIPcamBaseic(id);
+    setIdDisplay("div_detection", "inline");
+    setIdDisplay("div_modify_btn", "inline");
+    //checkBrand();
+    checkBrandinit();
+}
+function setIPcamBaseic(id) {
+    var str = "camera" + id;
+    setIdValue("txt_address", hx.getNodeValue(str, "ipAddress"));
+    setIdValue("txt_port", hx.getNodeValue(str, "httpPort"));
+    setIdValue("txt_id", hx.getNodeValue(str, "username"));
+    setIdValue("txt_password", hx.getNodeValue(str, "password"));
+    setIdValue("sel_brand", hx.getNodeValue(str, "brand"));
+    var model=hx.getNodeValue(str, "model");
+    var modelName=checkModel(model);
+    setIdValue("sel_model", modelName);
+    var protocol = hx.getNodeValue(str, "Main", "connectType");
+    setIdChecked("rad_" + protocol, 1);
+    //setIdChecked("rad_tcp",1);
+}
+function next() {
+    if (OpenParamenter())
+    {
+        setValue();
+        setIdDisplay("div_detection", "none");
+        setIdDisplay("div_modify_btn", "none");
+        setIdDisplay("div_setup", "inline");
+        setIdDisplay("div_modify_save_btn", "inline");
+    }
+}
+function DetectionCancel() {
+    cleanIp();
+    setIdDisplay("div_detection", "none");
+    setIdDisplay("div_detection_btn", "none");
+    setIdDisplay("div_list", "inline");
+}
+
+function SaveCancel() {
+    setIdDisplay("div_setup", "none");
+    setIdDisplay("div_save_btn", "none");
+    setIdDisplay("div_list", "inline");
+}
+
+function ModifyCancel() {
+    setIdDisplay("div_detection", "none");
+    setIdDisplay("div_modify_btn", "none");
+    setIdDisplay("div_list", "inline");
+
+}
+function BackModify() {
+    setIdDisplay("div_modify_save_btn", "none");
+    setIdDisplay("div_setup", "none");
+    setIdDisplay("div_detection", "inline");
+    setIdDisplay("div_modify_btn", "inline");
+}
+function OpenParamenter() {
+    var channel = getIdValue("sel_channel");
+    var channelNo=checkIPCam(channel);
+    if (channelNo) {
+        alert(hl.get("WARNING_SENTENCE61") + " " + channelNo + ".");
+        return 0;
+    }
+    setIdDisplay("mask", "inline");
+    var ip, port, username, password;
+    ip = getIdValue("txt_address");
+    port = getIdValue("txt_port");
+    username = getIdValue("txt_id");
+    password = getIdValue("txt_password");
+    var tmpData = cgi.GetIPCamOption(port, ip, username, password, channel - 1); //channel 從0開始
+    //IpcamHx.setUrl("../IPCamVideoOptions.xml");
+    IpcamHx.setXml(tmpData);
+    if (IpcamHx.getNodeValue("result") == -1) {
+        alert(hl.get("MSG_IPCAM_CONFIG"));
+        setIdDisplay("mask", "none");
+        return 0;
+    } else {
+        setStreamFormat();
+        setQuality();
+        changOption("Main");
+        changOption("Sub");
+    }
+    setIdDisplay("mask", "none");
+    setIdInnerHTML("txt_main_channel", "Camera " + channel.toFill(2));
+    setIdInnerHTML("txt_sub_channel", "Camera " + channel.toFill(2));
+    return 1;
+}
+function hiddenVideoFormat() {
+    for (var cnt = 0; cnt < g_format_ary.length; cnt++) {
+        setIdDisplay("samp_rad_Main_" + g_format_ary[cnt], "none");
+        setIdDisplay("samp_rad_Sub_" + g_format_ary[cnt], "none");
+    }
+
+}
+function setStreamFormat() {
+    var cnt;
+    var videolen;
+    var str;
+    var tmpHx = new HandleXml();
+    hiddenVideoFormat();
+    if (IpcamHx.getNode("Main")) {
+        setIdDisplay("tab_main", "inline");
+        tmpHx.setXml(IpcamHx.getNode("Main"));
+        videolen = tmpHx.getItemSize("VideoFormat");
+        for (cnt = 0; cnt < videolen; cnt++) {
+            str = IpcamHx.getItemValue(cnt, "type");
+            setIdDisabled("rad_Main_" + str, false);
+            setIdDisplay("samp_rad_Main_" + str, "inline");
+        }
+
+    }
+    if (IpcamHx.getNode("Sub")) {
+        setIdDisplay("tab_sub", "inline");
+        tmpHx.setXml(IpcamHx.getNode("Sub"));
+        videolen = tmpHx.getItemSize("VideoFormat");
+        for (cnt = 0; cnt < videolen; cnt++) {
+            str = IpcamHx.getItemValue(cnt, "type");
+            setIdDisabled("rad_Sub_" + str, false);
+            setIdDisplay("samp_rad_Sub_" + str, "inline");
+        }
+    }
+}
+
+function setQuality() {
+    var mainhs = new HandleSelect("sel_Main_quality", 0);
+    var subhs = new HandleSelect("sel_Sub_quality", 0);
+    var min = IpcamHx.getNodeValue("QualityRange", "Min");
+    var max = IpcamHx.getNodeValue("QualityRange", "Max");
+    var rang = (max - min) / 4;
+    mainhs.addOpt(4, hl.get("LOW"), min)
+        .addOpt(3, hl.get("BASIC"), rang)
+        .addOpt(2, hl.get("STANDARD"), rang * 2)
+        .addOpt(1, hl.get("HIGH"), rang * 3)
+        .addOpt(0, hl.get("SUPERIOR"), max);
+    subhs.addOpt(4, hl.get("LOW"), min)
+        .addOpt(3, hl.get("BASIC"), rang)
+        .addOpt(2, hl.get("STANDARD"), rang * 2)
+        .addOpt(1, hl.get("HIGH"), rang * 3)
+        .addOpt(0, hl.get("SUPERIOR"), max);
+}
+function changOption(format) {
+    if (!IpcamHx.getNode(format))
+        return;
+    var cnt;
+    var checkType;
+    if (getIdChecked("rad_" + format + "_H264"))
+        checkType = "H264";
+    else if (getIdChecked("rad_" + format + "_MPEG"))
+        checkType = "MPEG";
+    else if (getIdChecked("rad_" + format + "_JPEG"))
+        checkType = "MJPE";
+
+    var tmpHx = new HandleXml();
+    var ResHx = new HandleXml();
+    tmpHx.setXml(IpcamHx.getNode(format));//這裡取得main 或是 sub的item
+    var videolen = tmpHx.getItemSize("VideoFormat");
+    var str;
+    var typeNo = 0;
+    for (cnt = 0; cnt < videolen; cnt++) {
+        str = tmpHx.getItemValue(cnt, "type");
+        if (checkType == str) {
+            if (format == "Main")
+                m_videoFormat = cnt;
+            typeNo = cnt;
+            break;
+        }
+    }
+    //*************set resolution*******************  
+    ResHx.setXml(tmpHx.getItem(typeNo, "VideoFormat"));
+    var res = ResHx.getNodeValue("ResolutionsAvailable").split(","); //20130606 julia modify
+    var width, height;
+    var hs = new HandleSelect("sel_" + format + "_resolution", 0);
+    for (cnt = 0; cnt < res.length; cnt++) {
+        width = res[cnt].split("x")[0];
+        height = res[cnt].split("x")[1];
+        hs.addOpt(cnt, res[cnt], width + "," + height);
+    }
+    //*************set frame rate*******************
+    var min = tmpHx.getNodeValue("FrameRateRange", "Min");
+    var max = tmpHx.getNodeValue("FrameRateRange", "Max");
+    var normalHs = new HandleSelect("sel_" + format + "_normal_rate", 0);
+    var eventHs = new HandleSelect("sel_" + format + "_event_rate", 0);
+    for (var i = 0, cnt = max; cnt >= min; cnt--, i++) {
+        normalHs.addOpt(i, cnt, cnt);
+        eventHs.addOpt(i, cnt, cnt);
+    }
+
+}
+function setValue() {
+    var channel = getIdValue("sel_channel"); 
+    var mainencodetype, mainconnecttype, mainquality, mainwidth, mainheight, mainnormal, mainevent,mainaudio;
+    var subencodetype, subconnecttype, subquality, subwidth, subheight, subnormal, subevent,subaudio;
+    mainencodetype = hx.getNodeValue("camera" + channel, "Main", "encodeType");
+    mainconnecttype = hx.getNodeValue("camera" + channel, "Main", "connectType");
+    mainquality = hx.getNodeValue("camera" + channel, "Main", "recordQuality");
+    mainwidth = hx.getNodeValue("camera" + channel, "Main", "resolutionWidth");
+    mainheight = hx.getNodeValue("camera" + channel, "Main", "resolutionHeight");
+    if (mainwidth >= 1920 && mainheight >= 1200) //3MP Resoult 2048*1536  & 1920*1200
+        checkFrameRate();
+    mainnormal = hx.getNodeValue("camera" + channel, "Main", "normalSpeed");
+    mainevent = hx.getNodeValue("camera" + channel, "Main", "eventSpeed");
+    mainaudio = hx.getNodeValue("camera" + channel, "Main", "recordAudio");
+    subencodetype = hx.getNodeValue("camera" + channel, "Sub", "encodeType");
+    subconnecttype = hx.getNodeValue("camera" + channel, "Sub", "connectType");
+    subquality = hx.getNodeValue("camera" + channel, "Sub", "recordQuality");
+    subwidth = hx.getNodeValue("camera" + channel, "Sub", "resolutionWidth");
+    subheight = hx.getNodeValue("camera" + channel, "Sub", "resolutionHeight");
+    subnormal = hx.getNodeValue("camera" + channel, "Sub", "normalSpeed");
+    subevent = hx.getNodeValue("camera" + channel, "Sub", "eventSpeed");
+    subaudio = hx.getNodeValue("camera" + channel, "Sub", "recordAudio");
+    setIdChecked("rad_Main_" + mainencodetype, 1);
+    if (CheckSelectValue("sel_Main_normal_rate", mainnormal))
+        setIdValue("sel_Main_normal_rate", mainnormal);
+    else
+        setSelectIndex("sel_Main_normal_rate", 0);
+
+    if (CheckSelectValue("sel_Main_event_rate", mainevent))
+        setIdValue("sel_Main_event_rate", mainevent);
+    else
+        setSelectIndex("sel_Main_event_rate", 0);
+
+    if (CheckSelectValue("sel_Main_resolution", mainwidth + "," + mainheight))
+        setIdValue("sel_Main_resolution", mainwidth + "," + mainheight);
+    else
+        setSelectIndex("sel_Main_resolution", 0);
+
+
+    setIdValue("sel_Main_quality",mainquality);
+    setIdChecked("rad_Sub_" + subencodetype, 1);
+
+    if (CheckSelectValue("sel_Sub_normal_rate", subnormal))
+        setIdValue("sel_Sub_normal_rate", subnormal);
+    else
+        setSelectIndex("sel_Sub_normal_rate", 0);
+
+    if (CheckSelectValue("sel_Sub_event_rate", subevent))
+        setIdValue("sel_Sub_event_rate", subevent);
+    else
+        setSelectIndex("sel_Sub_event_rate", 0);
+
+    if (CheckSelectValue("sel_Sub_resolution", subwidth + "," + subheight))
+        setIdValue("sel_Sub_resolution", subwidth + "," + subheight);
+    else
+        setSelectIndex("sel_Sub_resolution", 0);
+
+    setIdValue("sel_Sub_quality",subquality);
+    if (mainaudio)
+        setIdChecked("rad_Main_audio_enable", 1);
+    else
+        setIdChecked("rad_Main_audio_disable", 1);
+
+    if (subaudio)
+        setIdChecked("rad_Sub_audio_enable", 1);
+    else
+        setIdChecked("rad_Sub_audio_disable", 1);
+}
+
+function checkIPCam(id) {
+    var sameCnt = 0;
+    var ip = getIdValue("txt_address"); ;
+    var otherIP;
+    for (var cnt = 1; cnt <= 16; cnt++) {
+        otherIP = hx.getNodeValue("camera" + cnt, "ipAddress");
+        if (cnt != id) {
+            if (ip == otherIP) {
+                sameCnt = cnt;
+                break;
+            }
+        }
+    }
+    return sameCnt;
+}
+function cleanIp() {
+    setIdValue("txt_address", "");
+    setIdValue("txt_port", "");
+    setIdValue("txt_id", "");
+    setIdValue("txt_password", "");
+    setIdDisabled("sel_channel",false);
+}
+
+function checkFrameRate() {
+    var tmpHx = new HandleXml();
+    var ResHx = new HandleXml();
+    tmpHx.setXml(IpcamHx.getNode("Main"));
+    //ResHx.setXml(tmpHx.getItem(m_videoFormat, "VideoFormat"));
+    var min = tmpHx.getNodeValue("FrameRateRange", "Min");
+    var max = tmpHx.getNodeValue("FrameRateRange", "Max");
+    var normalHs = new HandleSelect("sel_Main_normal_rate", 0);
+    var eventHs = new HandleSelect("sel_Main_event_rate", 0);
+    var subnormalHs = new HandleSelect("sel_Sub_normal_rate", 0);
+    var subeventHs = new HandleSelect("sel_Sub_event_rate", 0);
+    if (getIdValue("sel_Main_resolution") == "2048,1536" || getIdValue("sel_Main_resolution") == "1920,1200") {
+        max = 15;
+        for (var i = 0, cnt = max; cnt >= min; cnt--, i++) {
+            normalHs.addOpt(i, cnt, cnt);
+            eventHs.addOpt(i, cnt, cnt);
+
+            subnormalHs.addOpt(i, cnt, cnt);
+            subeventHs.addOpt(i, cnt, cnt);
+        }
+
+    } else {
+        for (var i = 0, cnt = max; cnt >= min; cnt--, i++) {
+            normalHs.addOpt(i, cnt, cnt);
+            eventHs.addOpt(i, cnt, cnt);
+
+            subnormalHs.addOpt(i, cnt, cnt);
+            subeventHs.addOpt(i, cnt, cnt);
+        }
+    }
+
+}
+
+function setLanguage() {
+    var cnt;
+    var lenght;
+    var str;
+    var hs = new HandleSelect("sel_channel", 0);
+    for (cnt = 0; cnt < parent.g_ipcam_num; cnt++) {
+        hs.addOpt(cnt, cnt + 1, cnt + 1);
+    }
+    var tmpHx = new HandleXml();
+    tmpHx.setUrl("../IPDevice.xml");
+    var hs = new HandleSelect("sel_model", 0);
+    lenght = tmpHx.getItemSize("Model");
+    for (cnt = 0; cnt < lenght; cnt++) {
+        str = tmpHx.getItemValue(cnt, "Model");
+        hs.addOpt(cnt, str, str);
+    }
+
+    var brand = parent.SetHx.getNodeValue("CameraSetting", "Brand").split(",");
+    var hs = new HandleSelect("sel_brand", 0);
+    for (var i = 0; i < brand.length; i++) {
+        hs.addOpt(i, brand[i], brand[i]);
+
+    }
+
+    setIdInnerHTML("td_Camera_List", hl.get("CAMERA_LIST"));
+    setIdInnerHTML("td_list_address", hl.get("ADDRESS"));
+    setIdInnerHTML("td_list_port", hl.get("PORT"));
+    setIdInnerHTML("td_list_channel", hl.get("CHANNEL"));
+    setIdInnerHTML("td_list_brand", hl.get("BRAND"));
+    setIdInnerHTML("td_list_model", hl.get("MODEL"));
+    setIdInnerHTML("td_list_add", hl.get("ADD"));
+    setIdInnerHTML("td_list_delete", hl.get("DELETE"));
+    setIdInnerHTML("td_list_modify", hl.get("MODIFY"));
+
+
+    setIdInnerHTML("td_address", hl.get("ADDRESS"));
+    setIdInnerHTML("td_port", hl.get("PORT"));
+    setIdInnerHTML("td_id", hl.get("ID"));
+    setIdInnerHTML("td_password", hl.get("PASSWORD"));
+    setIdInnerHTML("td_channel", hl.get("ADD_TO_CHANNEL"));
+    setIdInnerHTML("td_protocol", hl.get("PROTOCOL"));
+    setIdInnerHTML("td_brand", hl.get("BRAND"));
+    setIdInnerHTML("td_model", hl.get("MODEL"));
+    /*main stream*/
+    setIdInnerHTML("td_main", hl.get("MAIN_STREAM"));
+    setIdInnerHTML("leg_mian_parameter", hl.get("CAMERA_PARAMETER"));
+    setIdInnerHTML("td_main_channel", hl.get("CAMERA_CHANNEL"));
+    setIdInnerHTML("td_main_video_format", hl.get("VIDEO_FORMAT"));
+    setIdInnerHTML("td_main_normal_rate", hl.get("NORMAL_FRAME_RATE"));
+    setIdInnerHTML("td_main_event_rate", hl.get("EVENT_FRAME_RATE"));
+    setIdInnerHTML("td_main_resolution", hl.get("RESOLUTION"));
+    setIdInnerHTML("td_main_quality", hl.get("QUALITY"));
+    setIdInnerHTML("td_main_audio", hl.get("RECORD_AUDIO"));
+    setIdInnerHTML("lab_Main_audio_enable", hl.get("ENABLE"));
+    setIdInnerHTML("lab_Main_audio_disable", hl.get("DISABLE"));
+
+    /*sub stream*/
+    setIdInnerHTML("td_sub", hl.get("SUB_STREAM"));
+    setIdInnerHTML("leg_sub_parameter", hl.get("CAMERA_PARAMETER"));
+    setIdInnerHTML("td_sub_channel", hl.get("CAMERA_CHANNEL"));
+    setIdInnerHTML("td_sub_video_format", hl.get("VIDEO_FORMAT"));
+    setIdInnerHTML("td_sub_normal_rate", hl.get("NORMAL_FRAME_RATE"));
+    setIdInnerHTML("td_sub_event_rate", hl.get("EVENT_FRAME_RATE"));
+    setIdInnerHTML("td_sub_resolution", hl.get("RESOLUTION"));
+    setIdInnerHTML("td_sub_quality", hl.get("QUALITY"));
+    setIdInnerHTML("td_sub_audio", hl.get("RECORD_AUDIO"));
+    setIdInnerHTML("lab_Sub_audio_enable", hl.get("ENABLE"));
+    setIdInnerHTML("lab_Sub_audio_disable", hl.get("DISABLE"));
+
+    setIdValue("btn_detection_auto", hl.get("AUTO_DETECTION"));
+    setIdValue("btn_detection_add", hl.get("ADD"));
+    setIdValue("btn_detection_cancel", hl.get("CANCEL"));
+
+    setIdValue("btn_modify_next", hl.get("NEXT"));
+    setIdValue("btn_modify_cancel", hl.get("CANCEL"));
+
+    setIdValue("btn_paramenter_save", hl.get("SAVE"));
+    setIdValue("btn_paramenter_cancel", hl.get("CANCEL"));
+
+    setIdValue("btn_modify_save", hl.get("SAVE"));
+    setIdValue("btn_modify_back", hl.get("CANCEL"));
+
+    setIdInnerHTML("td_search", hl.get("SEARCH") + "...");
+
+
+}
+
+function syncData(type) {//type 0:add  1:modify
+    var channel = getIdValue("sel_channel");
+    var str = "camera" + channel;
+    var mainFormat, subFormat;
+    if (getIdChecked("rad_Main_H264"))
+        mainFormat = "H264";
+    else if (getIdChecked("rad_Main_MPEG"))
+        mainFormat = "MPEG";
+    else if (getIdChecked("rad_Main_JPEG"))
+        mainFormat = "JPEG";
+
+    var protocol;
+    if (getIdChecked("rad_TCP"))
+        protocol = "TCP";
+    if (getIdChecked("rad_UDP"))
+        protocol = "UDP";
+    if (getIdChecked("rad_HTTP"))
+        protocol = "HTTP";
+    if (getIdChecked("rad_Nevio"))
+        protocol = "Nevio";
+
+    var mainWidth = getIdValue("sel_Main_resolution").split(",")[0];
+    var mainHeight = getIdValue("sel_Main_resolution").split(",")[1];
+    var subWidth;
+    var subHeight;
+    var subQuality, normalSpeed, eventSpeed;
+    var mainaudio;
+    var subaudio;
+    if (getIdChecked("rad_Main_audio_enable"))
+        mainaudio = 1;
+    else
+        mainaudio = 0;
+
+
+    if (!IpcamHx.getNode("Sub")) {
+        subWidth = 0;
+        subHeight = 0;
+        subFormat = "";
+        subQuality = 0;
+        normalSpeed = 0;
+        eventSpeed = 0;
+        subaudio = 0;
+    } else {
+        if (getIdChecked("rad_Sub_H264"))
+            subFormat = "H264";
+        else if (getIdChecked("rad_Sub_MPEG"))
+            subFormat = "MPEG";
+        else if (getIdChecked("rad_Sub_JPEG"))
+            subFormat = "JPEG";
+        subWidth = getIdValue("sel_Sub_resolution").split(",")[0];
+        subHeight = getIdValue("sel_Sub_resolution").split(",")[1];
+        subQuality = getIdValue("sel_Sub_quality");
+        normalSpeed = getIdValue("sel_Sub_normal_rate");
+        eventSpeed = getIdValue("sel_Sub_event_rate");
+        if (getIdChecked("rad_Sub_audio_enable"))
+            subaudio = 1;
+        else
+            subaudio = 0;
+    }
+    if (checkModifyData(channel))
+        hx.setNodeValue(1, str, "modified");
+    if (type == 0)
+        hx.setNodeValue(1, str, "connectChannel");
+    hx.setNodeValue(getIdValue("txt_address"), str, "ipAddress");
+    hx.setNodeValue(getIdValue("txt_port"), str, "httpPort");
+    hx.setNodeValue(getIdValue("txt_password"), str, "password");
+    hx.setNodeValue(getIdValue("txt_id"), str, "username");
+    hx.setNodeValue(1, str, "enabled");
+    hx.setNodeValue(getIdValue("sel_brand"), str, "brand");
+    hx.setNodeValue(getIdValue("sel_model"), str, "model");
+    hx.setNodeValue(mainFormat, str, "Main", "encodeType");
+    hx.setNodeValue(protocol, str, "Main", "connectType");
+    hx.setNodeValue(getIdValue("sel_Main_quality"), str, "Main", "recordQuality");
+    hx.setNodeValue(mainWidth, str, "Main", "resolutionWidth");
+    hx.setNodeValue(mainHeight, str, "Main", "resolutionHeight");
+    hx.setNodeValue(getIdValue("sel_Main_normal_rate"), str, "Main", "normalSpeed");
+    hx.setNodeValue(getIdValue("sel_Main_event_rate"), str, "Main", "eventSpeed");
+    hx.setNodeValue(mainaudio, str, "Main", "recordAudio");
+    hx.setNodeValue(subFormat, str, "Sub", "encodeType");
+    hx.setNodeValue(protocol, str, "Sub", "connectType");
+    hx.setNodeValue(subQuality, str, "Sub", "recordQuality");
+    hx.setNodeValue(subWidth, str, "Sub", "resolutionWidth");
+    hx.setNodeValue(subHeight, str, "Sub", "resolutionHeight");
+    hx.setNodeValue(normalSpeed, str, "Sub", "normalSpeed");
+    hx.setNodeValue(eventSpeed, str, "Sub", "eventSpeed");
+    hx.setNodeValue(subaudio, str, "Sub", "recordAudio");
+
+    SetXML();
+}
+
+function checkModifyData(channel) {
+
+    var mainencodetype, mainconnecttype, mainquality, mainwidth, mainheight, mainnormal, mainevent, mainaudio;
+    var subencodetype, subconnecttype, subquality, subwidth, subheight, subnormal, subevent, subaudio;
+    var flag = 0;
+    var ip, port, username, password,brand,model;
+    var mainFormat, subFormat;
+    ip = getIdValue("txt_address");
+    port = getIdValue("txt_port");
+    username = getIdValue("txt_id");
+    password = getIdValue("txt_password");
+    brand = getIdValue("sel_brand");
+    model = getIdValue("sel_model");
+    mainquality = getIdValue("sel_Main_quality");
+    mainnormal = getIdValue("sel_Main_normal_rate");
+    mainevent = getIdValue("sel_Main_event_rate");
+
+    var protocol;
+    if (getIdChecked("rad_TCP"))
+        protocol = "TCP";
+    if (getIdChecked("rad_UDP"))
+        protocol = "UDP";
+    if (getIdChecked("rad_HTTP"))
+        protocol = "HTTP";
+    if (getIdChecked("rad_Nevio"))
+        protocol = "Nevio";
+
+    if (getIdChecked("rad_Main_H264"))
+        mainFormat = "H264";
+    else if (getIdChecked("rad_Main_MPEG"))
+        mainFormat = "MPEG";
+    else if (getIdChecked("rad_Main_JPEG"))
+        mainFormat = "JPEG";
+
+    mainwidth = getIdValue("sel_Main_resolution").split(",")[0];
+    mainheight = getIdValue("sel_Main_resolution").split(",")[1];
+    if (getIdChecked("rad_Main_audio_enable"))
+        mainaudio = 1;
+    else
+        mainaudio = 0;
+        
+    if (ip != hx.getNodeValue("camera" + channel, "ipAddress"))
+        flag = 1;
+    if (port != hx.getNodeValue("camera" + channel, "httpPort"))
+        flag = 1;
+    if (username != hx.getNodeValue("camera" + channel, "username"))
+        flag = 1;
+    if (password != hx.getNodeValue("camera" + channel, "password"))
+        flag = 1;
+    if (brand != hx.getNodeValue("camera" + channel, "brand"))
+        flag = 1;
+    if (protocol != hx.getNodeValue("camera" + channel, "Main", "connectType"))
+        flag = 1;
+
+
+    if (mainFormat !=hx.getNodeValue("camera" + channel, "Main", "encodeType"))
+        flag=1;
+
+    if (mainquality != hx.getNodeValue("camera" + channel, "Main", "recordQuality"))
+        flag = 1;
+
+    if (mainwidth != hx.getNodeValue("camera" + channel, "Main", "resolutionWidth"))
+        flag=1;
+
+    if (mainheight != hx.getNodeValue("camera" + channel, "Main", "resolutionHeight"))
+        flag = 1;
+    if (mainnormal != hx.getNodeValue("camera" + channel, "Main", "normalSpeed"))
+        flag = 1;
+    if (mainevent != hx.getNodeValue("camera" + channel, "Main", "eventSpeed"))
+        flag = 1;
+    if (mainaudio != hx.getNodeValue("camera" + channel, "Main", "recordAudio"))
+        flag = 1;
+
+    if (IpcamHx.getNode("Sub")) {
+        if (getIdChecked("rad_Sub_H264"))
+            subFormat = "H264";
+        else if (getIdChecked("rad_Sub_MPEG"))
+            subFormat = "MPEG";
+        else if (getIdChecked("rad_Sub_JPEG"))
+            subFormat = "JPEG";
+        subwidth = getIdValue("sel_Sub_resolution").split(",")[0];
+        subheight = getIdValue("sel_Sub_resolution").split(",")[1];
+        subquality = getIdValue("sel_Sub_quality");
+        subnormal = getIdValue("sel_Sub_normal_rate");
+        subevent = getIdValue("sel_Sub_event_rate");
+        if (getIdChecked("rad_Sub_audio_enable"))
+            subaudio = 1;
+        else
+            subaudio = 0;
+
+        if (subFormat != hx.getNodeValue("camera" + channel, "Sub", "encodeType"))
+            flag = 1;
+
+        if (subquality != hx.getNodeValue("camera" + channel, "Sub", "recordQuality"))
+            flag = 1;
+
+        if (subwidth != hx.getNodeValue("camera" + channel, "Sub", "resolutionWidth"))
+            flag = 1;
+
+        if (subheight != hx.getNodeValue("camera" + channel, "Sub", "resolutionHeight"))
+            flag = 1;
+        if (subnormal != hx.getNodeValue("camera" + channel, "Sub", "normalSpeed"))
+            flag = 1;
+        if (subevent != hx.getNodeValue("camera" + channel, "Sub", "eventSpeed"))
+            flag = 1;
+        if (subaudio != hx.getNodeValue("camera" + channel, "Sub", "recordAudio"))
+            flag = 1;
+
+    }
+
+    return flag;
+}
+function checkBrand() {
+    var brand = parent.SetHx.getNodeValue("CameraSetting", "Brand").split(",");
+    if (getIdValue("sel_brand") == brand[0]) {
+        setIdDisplay("rad_Nevio", "inline");
+        setIdDisplay("span_Nevio", "inline");
+        setIdChecked("rad_Nevio", 1);
+
+    } else if (getIdValue("sel_brand") == brand[1]) {
+        setIdDisplay("rad_Nevio", "none");
+        setIdDisplay("span_Nevio", "none");
+        setIdChecked("rad_TCP", 1);
+    }
+}
+function checkBrandinit() {
+    var brand = parent.SetHx.getNodeValue("CameraSetting", "Brand").split(",");
+    if (getIdValue("sel_brand") == brand[0]) {
+        setIdDisplay("rad_Nevio", "inline");
+        setIdDisplay("span_Nevio", "inline");
+        //setIdChecked("rad_nevio", 1);
+
+    } else if (getIdValue("sel_brand") == brand[1]) {
+        setIdDisplay("rad_Nevio", "none");
+        setIdDisplay("span_Nevio", "none");
+        //setIdChecked("rad_tcp", 1);
+    }
+}
+</script>
+</head>
+<body onload="init();" >
+	<div class="ClientFrame">
+
+    <div id="div_list">
+    <table>
+    <tr><td id="td_Camera_List" style="font-size:26px; height:40px;color: #65A097;" align="left">Camera List</td></tr>
+    <tr>
+        <td>
+            <div>
+            <table>
+            <tr>
+            <td id="td_list_channel" style="font-size:20px;width:100px;color: #65A097">Channel</td>
+            <td id="td_list_address" style="font-size:20px;width:180px;color: #65A097">Address</td>
+            <td id="td_list_port" style="font-size:20px;width:50px;color: #65A097">Port</td>
+            <td id="td_list_brand" style="font-size:20px;width:120px;color: #65A097">Brand</td>
+            <td id="td_list_model" style="font-size:20px;width:200px;color: #65A097">Model</td>
+            <td id="td_list_add" style="font-size:20px;width:60px;color: #65A097">Add</td>
+            <td id="td_list_delete" style="font-size:20px;width:60px;color: #65A097">Delete</td>
+            <td id="td_list_modify" style="font-size:20px;width:60px;color: #65A097">Modify</td>
+            </tr>
+            </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+    <td>
+    <div style="width:870px; height:600px; overflow:auto;">
+    <table id="tbl_list">
+    
+    </table>
+    </div>
+    </td>
+    </tr>
+    
+    </table>  
+    </div>
+    <div id="div_detection" style="display:none;">
+    <table>
+    <tr><td colspan="4" style="height:40px; " id="td_add_ip_cam"  class="txtLeft">Add IP Camera</td></tr>
+    <tr>
+        <td>
+        <table border="1">
+            <tr>
+                <td id="td_address" style="width:180px" class="txtCenter">Address</td>
+                <td style="width:200px" class="txtLeft">&nbsp;&nbsp;&nbsp;<input id="txt_address" type="text"  style="width:140px" value="192.168.13.46"/></td>
+                <td id="td_port" style="width:180px" class="txtCenter">Port</td>
+                <td style="width:300px"   class="txtLeft">&nbsp;&nbsp;&nbsp;<input id="txt_port" type="text" style="width:140px" value="80"/></td>
+            </tr>
+             <tr>
+                <td id="td_id" class="txtCenter">ID</td>
+                <td class="txtLeft">&nbsp;&nbsp;&nbsp;<input id="txt_id" type="text"  style="width:140px" value="user1"/></td>
+                <td id="td_password" class="txtCenter">Password</td>
+                <td class="txtLeft">&nbsp;&nbsp;&nbsp;<input id="txt_password" type="password" style="width:140px" value="11111111"/></td>
+            </tr>
+             <tr>
+                <td id="td_channel" class="txtCenter">Add to Channel</td>
+                <td class="txtLeft">&nbsp;&nbsp;&nbsp;<select id="sel_channel" style="width:50px" onchange="checkSelect();"></select></td>
+                <td id="td_protocol" class="txtCenter">Protocol</td>
+                <td class="txtLeft">
+                    <input type="radio" name="protocol" id="rad_TCP" checked="checked"/>TCP
+                    <input type="radio" name="protocol" id="rad_UDP" />UDP
+                    <input type="radio" name="protocol" id="rad_HTTP" />HTTP
+                    <input type="radio" name="protocol" id="rad_Nevio" /><span id="span_Nevio">Nevio</span>
+                </td>
+            </tr>
+             <tr>
+                <td id="td_brand" class="txtCenter">Brand</td>
+                <td class="txtLeft">&nbsp;&nbsp;&nbsp;<select id="sel_brand" onchange="checkBrand()" style="width:90px"></select></td>
+                <td id="td_model" class="txtCenter">Model</td>
+                <td class="txtLeft">&nbsp;&nbsp;&nbsp;<select id="sel_model" style="width:90px"></select></td>
+            </tr>
+        </table>
+        </td>
+    </tr>
+    </table>
+    </div>
+
+    <div id="div_setup"  style="display:none;">
+    <table id="tab_main" style="display:none">
+    <tr>
+        <td id="td_main" align="left" style="width:700px">Main Stream</td>
+    </tr>
+    <tr>
+        <td>
+        <fieldset>
+         <legend id="leg_mian_parameter" >Camera parameter</legend>
+         <table border="1"  align="center" >
+            <tr>
+            <td id="td_main_channel" style="width:300px" class="td_left">Camera Channel</td>
+            <td id="txt_main_channel" style="width:300px"  class="td_left"></td>
+            </tr>
+            <tr style="background-color:#CCCCCC">
+            <td id="td_main_video_format" class="td_left">Video Format</td>
+            <td class="td_left"><input id="rad_Main_H264" type="radio" name="main_video" checked="checked" disabled="disabled" onclick="function(){changOption('Main');checkFrameRate();}"/><samp id="samp_rad_Main_H264" style="font-size:16px;font-family:Arial;">H.264</samp>&nbsp;&nbsp;<input type="radio" id="rad_Main_MPEG" name="main_video" disabled="disabled" onclick="function(){changOption('Main');checkFrameRate();}"/><samp id="samp_rad_Main_MPEG" style="font-size:16px;font-family:Arial;">MPEG4</samp>&nbsp;&nbsp;<input id="rad_Main_JPEG" type="radio" name="main_video" disabled="disabled" onclick="function(){changOption('Main');checkFrameRate();}"/><samp id="samp_rad_Main_JPEG" style="font-size:16px;font-family:Arial;">MJPE</samp></td>
+            </tr>
+            <tr>
+            <td id="td_main_normal_rate" class="td_left">Normal Frame Rate</td>
+            <td class="td_left">&nbsp;<select id="sel_Main_normal_rate"></select></td>
+            </tr>
+            <tr style="background-color:#CCCCCC">
+            <td id="td_main_event_rate" class="td_left">Event Frame Rate</td>
+            <td  class="td_left">&nbsp;<select id="sel_Main_event_rate"></select></td>
+            </tr>   
+            <tr>
+            <td id="td_main_resolution" class="td_left">Resolution</td>
+            <td class="td_left">&nbsp;<select id="sel_Main_resolution" onchange="checkFrameRate();"></select></td>
+            </tr>  
+            <tr  style="background-color:#CCCCCC">
+            <td id="td_main_quality" class="td_left">Quality</td>
+            <td class="td_left">&nbsp;<select id="sel_Main_quality" ></select></td>
+            </tr>     
+            <tr >
+            <td id="td_main_audio" class="td_left">Record Audio</td>
+            <td class="td_left"><input id="rad_Main_audio_enable" type="radio" name="main_audio" checked="checked" onclick="setIdChecked('rad_Sub_audio_enable',1);"/><label for="rad_Main_audio_enable" id="lab_Main_audio_enable">Enable</label>&nbsp;<input type="radio" id="rad_Main_audio_disable" name="main_audio" onclick="setIdChecked('rad_Sub_audio_disable',1);"/><label for="rad_Main_audio_disable" id="lab_Main_audio_disable">Disable</label></td>
+            </tr>
+            </table>
+        </fieldset>
+        </td>
+    </tr>
+    </table>
+    <table id="tab_sub" style="display:none">
+    <tr>
+        <td id="td_sub" align="left" style="width:700px">Sub Stream</td>
+    </tr>
+    <tr>
+        <td>
+        <fieldset>
+         <legend id="leg_sub_parameter">Camera parameter</legend>
+         <table border="1"  align="center" >
+            <tr>
+            <td id="td_sub_channel" style="width:300px" class="td_left">Camera Channel</td>
+            <td id="txt_sub_channel" style="width:300px"  class="td_left"></td>
+            </tr>
+            <tr style="background-color:#CCCCCC">
+            <td id="td_sub_video_format" class="td_left">Video Format</td>
+            <td class="td_left"><input id="rad_Sub_H264" type="radio" name="sub_video" checked="checked" disabled="disabled" onclick="changOption('Sub');"/><samp id="samp_rad_Sub_H264" style="font-size:16px;font-family:Arial;">H.264</samp>&nbsp;&nbsp;<input type="radio" id="rad_Sub_MPEG" name="sub_video" disabled="disabled" onclick="changOption('Sub');"/><samp id="samp_rad_Sub_MPEG"style="font-size:16px;font-family:Arial;">MPEG4</samp>&nbsp;&nbsp;<input id="rad_Sub_JPEG" type="radio" name="sub_video" disabled="disabled" onclick="changOption('Sub');"/><samp id="samp_rad_Sub_JPEG" style="font-size:16px;font-family:Arial;">MJPE</samp></td>
+            </tr>
+            <tr>
+            <td id="td_sub_normal_rate" class="td_left">Normal Frame Rate</td>
+            <td class="td_left">&nbsp;<select id="sel_Sub_normal_rate"></select></td>
+            </tr>
+            <tr style="background-color:#CCCCCC">
+            <td id="td_sub_event_rate" class="td_left">Event Frame Rate</td>
+            <td  class="td_left">&nbsp;<select id="sel_Sub_event_rate"></select></td>
+            </tr>   
+            <tr>
+            <td id="td_sub_resolution" class="td_left">Resolution</td>
+            <td class="td_left">&nbsp;<select id="sel_Sub_resolution" ></select></td>
+            </tr>  
+            <tr style="background-color:#CCCCCC">
+            <td id="td_sub_quality" class="td_left">Quality</td>
+            <td class="td_left">&nbsp;<select id="sel_Sub_quality" ></select></td>
+            </tr>     
+            <tr >
+            <td id="td_sub_audio" class="td_left">Record Audio</td>
+            <td class="td_left"><input id="rad_Sub_audio_enable" type="radio" name="sub_audio" checked="checked" onclick="setIdChecked('rad_Main_audio_enable',1);"/><label for="rad_Sub_audio_enable" id="lab_Sub_audio_enable">Enable</label>&nbsp;<input type="radio" id="rad_Sub_audio_disable" name="sub_audio" onclick="setIdChecked('rad_Main_audio_disable',1);"/><label for="rad_Sub_audio_disable" id="lab_Sub_audio_disable">Disable</label></td>
+            </tr>
+            </table>
+        </fieldset>
+        </td>
+    </tr>
+    </table>
+    
+    </div>
+    </div>
+
+	<div id="div_detection_btn" class="detectionFrm" style="display:none">
+        <input type="button" id="btn_detection_auto" class="btnStyle" value="Auto Detection" onclick="AutoDetection();"/>&nbsp;
+		<input type="button" id="btn_detection_add" class="btnStyle" value="Add" onclick="GetParamenter();"/>&nbsp;
+		<input type="button" id="btn_detection_cancel" class="btnStyle" value="Cancel"  onclick="DetectionCancel();"/>
+	</div>
+
+    <div id="div_save_btn" class="parameterFrm" style="display:none">
+        <input type="button" id="btn_paramenter_save" class="btnStyle" value="Save" onclick="syncData(0);"/>&nbsp;
+		<input type="button" id="btn_paramenter_cancel" class="btnStyle" value="Cancel" onclick="SaveCancel();"/>
+	</div>
+    <div id="div_modify_btn" class="detectionFrm" style="display:none">
+        <input type="button" id="btn_modify_next" class="btnStyle" value="Next" onclick="next();"/>&nbsp;
+		<input type="button" id="btn_modify_cancel" class="btnStyle" value="Cancel" onclick="ModifyCancel();"/>
+	</div>
+     <div id="div_modify_save_btn" class="parameterFrm" style="display:none">
+        <input type="button" id="btn_modify_save" class="btnStyle" value="Save" onclick="syncData(1);"/>&nbsp;
+		<input type="button" id="btn_modify_back" class="btnStyle" value="Cancel" onclick="BackModify();"/>
+	</div>
+    <div id="mask" style="position:absolute;top:50px;left:50px;height:770px;width:1220px; z-index:99;  background-color:Gray; filter:alpha(opacity=30);-moz-opacity:0.3;display:none;">
+    <table style="width:100%"><tr><td align="center"><img src="../img/loading.gif" style="width:48px; height:48px;top:300px;left:600px;position:absolute;"  ondrag="return false;"/></td></tr></table>  
+    <span id="td_search" style="top:360px;left:600px;position:absolute;">Search...</span>
+    </div>
+	<div id="sm"></div>
+	<div id="mc_apply"></div>
+</body>
+</html>

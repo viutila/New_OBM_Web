@@ -1,0 +1,18 @@
+<img src="未命名" width="154" height="155" border="0" usemap="#map" />
+
+<map name="map">
+<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+<!-- #$-:Please do not edit lines starting with "#$" -->
+<!-- #$VERSION:2.3 -->
+<!-- #$AUTHOR:john_chen -->
+<area shape="poly" coords="26,23,25,47,37,39,52,21" href="http://tw.yahoo.com" />
+<area shape="poly" coords="23,59,9,75,10,81,23,95,25,92,25,59" href="http://www.google.com.tw" />
+<area shape="poly" coords="24,105,25,129,51,130,42,120,26,105" href="http://leftbottom" />
+<area shape="poly" coords="62,132,77,147,87,141,97,132,89,130,64,131,62,131" href="http://bottom" />
+<area shape="poly" coords="109,127,131,105,134,106,132,129,109,130" href="rightbottom" />
+<area shape="poly" coords="134,61,134,94,150,77,136,59" href="http://right" />
+<area shape="poly" coords="131,46,117,34,107,22,131,23" href="righttop" />
+<area shape="poly" coords="78,5,62,19,79,21,96,20" href="http://top" />
+<area shape="poly" coords="48,41,42,48,42,108,48,116,107,116,115,111,114,49,109,41" href="http://center" />
+</map>

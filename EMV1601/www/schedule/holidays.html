@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/Calendar.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/SelectWeek.css"/>
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript" src="../include/js/Calendar.js"></script>
+<script type="text/javascript" src="../include/js/SelectWeek.js"></script>
+<script type="text/javascript" src="../include/js/SelectMonthDate.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var current_page = 1;
+var cal;	//calendar
+var sw; 	//selectweek
+var smd;    //selectmonthdate
+var pageIdx = 1;
+
+function init(){
+	setLanguage();
+	initTabHoliday();
+	initCalendar_SelectWeek();
+	
+	GetXML();
+}
+function initCalendar_SelectWeek(){
+    cal = new Calendar('bsd', 'calendar', null, "yyyy/mm/dd", null, null, 65, 450);
+    sw = new SelectWeek("b", "selectweek", null, 65, 450);
+    smd = new SelectMonthDate("b", "selectmonthdate", null, 65, 450);
+}
+function initTabHoliday(){
+    var ht = new HandleTable("tab_holiday");
+    //ht.rows.length
+    if (ht.table.rows.length > 2) {
+        var cnt = ht.table.rows.length-1;
+        while (cnt > 1) {
+            ht.deleteRow(cnt);
+            cnt--;
+        }
+    }
+    var setIdx;
+    for (var i = 1; i <= 10; i++) {
+        setIdx = (pageIdx - 1) * 10 + i;
+		ht.insertRow().id("tr" + i);
+			ht.insertCell().className("txtRight")
+					.innerHTML(setIdx);
+			ht.insertCell();
+			ht.insertCell().innerHTML('<select id="sel_Date_Type' + i + '" onchange="syncXmlDateType(' + setIdx + ');"></select>');
+			ht.insertCell();
+			ht.insertCell().innerHTML('<select id="sel_Rec_Type' + i + '" onchange="resetDate(' + i + ',' + setIdx + ');" style="width:150px;"></select>');
+			ht.insertCell();
+			ht.insertCell().innerHTML('<input type="button" id="btn_Detail' + i + '" class="btnStyle" value="" onclick="setDate(' + i + ',' + setIdx + ');" style="width: 150px;"/>');
+    }
+    var str = ((pageIdx - 1) * 10 + 1).toString() + " - " + (pageIdx * 10).toString() + " / 30";
+    setIdInnerHTML("PageCountText", str);
+	initDateType();
+	initRecType();
+}
+function initDateType(){
+	for(var i = 1;i <= 10;i++){
+		var hs = new HandleSelect("sel_Date_Type" + i,0);
+		hs.addOpt(0,hl.get("HOLIDAY"),0)
+			.addOpt(1,hl.get("OTHERS"),1);
+	}
+}
+function initRecType(){
+	for(var i = 1;i <= 10;i++){
+		var hs = new HandleSelect("sel_Rec_Type" + i,0);
+		hs.addOpt(0,hl.get("DISABLE"),0)
+			.addOpt(1,hl.get("ONE_TIME"),1)
+			.addOpt(2,hl.get("MONTH_DATE"),2)
+			.addOpt(3,hl.get("MONTH_WEEKDAY"),3);
+	}
+}
+function closeAllRows(){
+	EFDEF_("^tr").display("none");
+}
+function setDate(no,i){
+	cal.closeCalendar();
+	sw.close();
+	smd.close();
+	resetDate(no,i);
+	if (getIdValue("sel_Rec_Type" + no) == "1") {
+	    cal.setYearVisible(1);
+		cal.openCalendar();
+		cal.extraEvent = function(){
+		    changeXmlValue(1, i, cal.year, cal.month, cal.day);
+				};
+    } else if (getIdValue("sel_Rec_Type" + no) == "2") {
+        smd.open();
+        smd.extraEvent = function () {
+            changeXmlValue(2, i, getIdValue(smd.monthId), getIdValue(smd.dayId));
+        };
+	}else if(getIdValue("sel_Rec_Type" + no) == "3"){
+		sw.open();
+		sw.extraEvent = function(){
+		    changeXmlValue(3, i, getIdValue(sw.monthId), getIdValue(sw.weekId), getIdValue(sw.dayId));
+				};
+	}
+}
+function syncXmlDateType(no){
+	var str = "";
+	str = "Holiday" + no.toFill(2);
+	no = no % 10;
+	if (no == 0) { 
+        no = 10;
+    }
+	hx.setNodeValue(getIdValue("sel_Date_Type" + no), str, "dateType");
+}
+function changeXmlValue(){
+	//args[0]	type
+	//args[1]	focus no.
+	//args[2]
+	//args[3]
+	//args[4]
+	//if type = 1
+	//	args[2] => yyyy
+	//	args[3] => mm
+	//	args[4] => dd
+	//if type = 2
+	//	args[2] => mm
+	//	args[3] => dd
+	//if type = 3
+	//	args[2] => month
+	//	args[3] => week
+	//	args[4] => day
+	var args = arguments;
+	var str = "";
+	str = "Holiday" + args[1].toFill(2);
+	if(args[0] == "1"){
+	    hx.setNodeValue(args[2] , str, "oncetimeYear")
+	        .setNodeValue(args[3] , str, "oncetimeMonth")
+	        .setNodeValue(args[4] , str, "oncetimeDay");
+	}else if(args[0] == "2"){
+	    hx.setNodeValue(args[2], str, "mdateMonth")
+            .setNodeValue(args[3], str, "mdateDay");
+	}else if(args[0] == "3"){
+	    hx.setNodeValue(args[2], str, "mweekdayMonth")
+            .setNodeValue(args[3], str, "mweekdayWeeknum")
+            .setNodeValue(args[4], str, "mweekdayWday");
+	}
+}
+function resetDate(i,setIdx1){
+	cal.closeCalendar();
+	sw.close();
+	smd.close();
+	var str = "";
+	str = "Holiday" + setIdx1.toFill(2);
+
+	hx.setNodeValue(getIdValue("sel_Rec_Type" + i), str, "recurrentType");
+	
+	if(getIdValue("sel_Rec_Type" + i) == "0"){
+		setIdValue("btn_Detail" + i,"");
+	}else if(getIdValue("sel_Rec_Type" + i) == "1"){
+		cal.inputId = "btn_Detail" + i;
+		cal.setInputValue(hx.getNodeValue(str, "oncetimeYear").toInt(), hx.getNodeValue(str, "oncetimeMonth").toInt() + 1, hx.getNodeValue(str, "oncetimeDay").toInt());
+		cal.setDateFormat(parent.g_date_fmt_ary[parent.g_date_fmt]);
+	}else if(getIdValue("sel_Rec_Type" + i) == "2"){
+        smd.inputId = "btn_Detail" + i;
+        smd.setInputValue(hx.getNodeValue(str, "mdateMonth").toInt(), 0, hx.getNodeValue(str, "mdateDay").toInt());
+	}else if(getIdValue("sel_Rec_Type" + i) == "3"){
+		sw.inputId = "btn_Detail" + i;
+		sw.setInputValue(hx.getNodeValue(str, "mweekdayMonth").toInt(), hx.getNodeValue(str, "mweekdayWeeknum").toInt(), hx.getNodeValue(str, "mweekdayWday").toInt());
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/ScheduleHoliday.xml");
+    
+	var str = "";
+	for (var i = 1; i <= 10; i++) {
+		str = "Holiday" + i.toFill(2);
+		setIdValue("sel_Date_Type" + i, hx.getNodeValue(str, "dateType"));
+		setIdValue("sel_Rec_Type" + i, hx.getNodeValue(str, "recurrentType"));
+		
+		resetDate(i,i);
+	}
+}
+function changePage(cmd) {
+    if (cmd == 1) {
+        if (pageIdx > 1) {
+            pageIdx--;
+        }
+    }
+    else if (cmd == 2) {
+        if (pageIdx < 3)
+        { pageIdx++; }
+    }
+    initTabHoliday();
+    var startIdx, endIdx;
+    startIdx = (pageIdx - 1) * 10 + 1;
+    endIdx = pageIdx * 10;
+    var i = 1;
+    for (var j = startIdx; j <= endIdx; j++) {
+        str = "Holiday" + j.toFill(2);
+
+        setIdValue("sel_Date_Type" + i, hx.getNodeValue(str, "dateType"));
+        setIdValue("sel_Rec_Type" + i, hx.getNodeValue(str, "recurrentType"));
+        resetDate(i, j);
+        i++;
+    }
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/ScheduleHoliday.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function setLanguage(){
+	setIdInnerHTML("td_list_of_holidays"	,hl.get("LIST_OF_HOLIDAYS"));
+	setIdInnerHTML("td_No"			,"No.");
+	setIdInnerHTML("td_Date_Type"		,hl.get("DATE_TYPE"));
+	setIdInnerHTML("td_Recurrent_Type"	,hl.get("RECURRENT_TYPE"));
+	setIdInnerHTML("td_Details"		,hl.get("DETAILS"));
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+
+	setIdValue("pre_Page_btn", hl.get("PREVIOUS"));
+	setIdValue("next_Page_btn", hl.get("NEXT"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table id="tab_holiday" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td id="td_list_of_holidays" class="txtLeft" colspan="7"></td>
+			</tr>
+			<tr>
+				<td id="td_No" class="txtLeft"></td>
+				<td width="10"></td>
+				<td id="td_Date_Type" class="txtLeft"></td>
+				<td width="10"></td>
+				<td id="td_Recurrent_Type" class="txtLeft"></td>
+				<td width="10"></td>
+				<td id="td_Details" class="txtLeft"></td>
+			</tr>            
+		</table>
+        <table>
+            <tr>
+                <td style="width:30px;"></td>
+                <td>
+                    <input type="button" id="pre_Page_btn" class="btnStyle" value="Previous" style="width:100px;" onclick="changePage(1)" />
+                </td>
+                <td>
+                    <input type="button" id="next_Page_btn" class="btnStyle" value="Next" style="width:100px;" onclick="changePage(2)" />
+                </td>
+                <td style="width:70px;"></td>
+                <td id="PageCountText"></td>
+            </tr>
+        </table>
+		<div id="calendar"></div>
+		<div id="selectweek"></div>
+        <div id="selectmonthdate"></div>
+	</div>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="Apply to" style="width:120px;" onclick="SetXML();" />
+	</div>
+</body>
+</html>

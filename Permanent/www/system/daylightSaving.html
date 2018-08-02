@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+
+function init(){
+	setLanguage();
+	setHx.setUrl("../" + parent.g_device_xml_name);
+	GetXML();
+	initFunc();
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var str = "DaylightSaving";
+    EFDEF_("^td_").className("txtLeft");
+
+
+    setIdDisplay("td_Enable", "table-cell");
+    funcNum = setHx.getNodeChildSize("DAYLIGHTSAV");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("DAYLIGHTSAV", Cnt)) {
+            case "StartDate":
+                setIdDisplay("td_Enable", "table-cell");
+                setIdDisplay("chk_Enable", "table-cell");
+                setIdDisplay("td_Start_Date", "table-cell");
+                setIdDisplay("td_Start_Date_sel", "table-cell");
+
+                setIdInnerHTML("td_Enable", hl.get("DAYLIGHT_SAVING_COMPLETE"));
+                setIdInnerHTML("td_Start_Date", hl.get("START_DATE"));
+
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavStartDateMonth").split(",");
+                var hs = new HandleSelect("sel_StartDate_M", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavStartDatest").split(",");
+                var hs = new HandleSelect("sel_StartDate_W", 0);
+                for (i = 0; i < type.length; i++) {
+                    if (type[i] == "Last") {
+                        hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                    } else {
+                        hs.addOpt(i, hl.get(type[i].substr(1, 2).toUpperCase() + type[i].substr(0, 1)), i);
+                    }
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavStartDateday").split(",");
+                var hs = new HandleSelect("sel_StartDate_WD", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+
+                setIdChecked("chk_Enable", hx.getNodeValue(str, "dlsEnable"));
+
+                setIdValue("sel_StartDate_M", hx.getNodeValue(str, "startMon"));
+                setIdValue("sel_StartDate_W", hx.getNodeValue(str, "startWeek"));
+                setIdValue("sel_StartDate_WD", hx.getNodeValue(str, "startWeekDay"));
+                break;
+            case "StartTime":
+                setIdDisplay("td_Start_Time", "table-cell");
+                setIdDisplay("td_Start_Time_sel", "table-cell");
+                setIdInnerHTML("td_Start_Time", hl.get("START_TIME") + " (hh:mm)");
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavStartTimehh").split(",");
+                var hs = new HandleSelect("sel_StartTime_H", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavStartTimemm").split(",");
+                var hs = new HandleSelect("sel_StartTime_M", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+                setIdValue("sel_StartTime_H", hx.getNodeValue(str, "startFromHour"));
+                setIdValue("sel_StartTime_M", hx.getNodeValue(str, "startFromMin"));
+                break;
+            case "SetTo":
+                setIdDisplay("td_Set_To", "table-cell");
+                setIdDisplay("td_Set_To_sel", "table-cell");
+                setIdInnerHTML("td_Set_To", hl.get("SET_TO"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavSettohh").split(",");
+                var hs = new HandleSelect("sel_SetTo_H", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavSettomm").split(",");
+                var hs = new HandleSelect("sel_SetTo_M", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+
+                setIdValue("sel_SetTo_H", hx.getNodeValue(str, "setHour"));
+                setIdValue("sel_SetTo_M", hx.getNodeValue(str, "setMin"));
+                break;
+            case "EndDate":
+                setIdDisplay("td_End_Date", "table-cell");
+                setIdDisplay("td_End_Date_sel", "table-cell");
+                setIdInnerHTML("td_End_Date", hl.get("END_DATE"));
+
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavEndDateMonth").split(",");
+                var hs = new HandleSelect("sel_EndDate_M", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavEndDatest").split(",");
+                var hs = new HandleSelect("sel_EndDate_W", 0);
+                for (i = 0; i < type.length; i++) {
+                    if (type[i] == "Last") {
+                        hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                    } else {
+                        hs.addOpt(i, hl.get(type[i].substr(1, 2).toUpperCase() + type[i].substr(0, 1)), i);
+                    }
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavEndDateday").split(",");
+                var hs = new HandleSelect("sel_EndDate_WD", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(type[i].toUpperCase()), i);
+                }
+
+                setIdValue("sel_EndDate_M", hx.getNodeValue(str, "endMon"));
+                setIdValue("sel_EndDate_W", hx.getNodeValue(str, "endWeek"));
+                setIdValue("sel_EndDate_WD", hx.getNodeValue(str, "endWeekDay"));
+                break;
+            case "EndTime":
+                setIdDisplay("td_End_Time", "table-cell");
+                setIdDisplay("td_End_Time_sel", "table-cell");
+                setIdInnerHTML("td_End_Time", hl.get("END_TIME") + "(hh:mm)");
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavEndTimehh").split(",");
+                var hs = new HandleSelect("sel_EndTime_H", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+                var type = parent.SetHx.getNodeValue("SystemSetting", "DaylightSavEndTimemm").split(",");
+                var hs = new HandleSelect("sel_EndTime_M", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], i);
+                }
+
+                setIdValue("sel_EndTime_H", hx.getNodeValue(str, "endFromHour"));
+                setIdValue("sel_EndTime_M", hx.getNodeValue(str, "endFromMin"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+
+function GetXML(){
+    hx.setUrl("../cgi-bin/DaylightSaving.xml");
+}
+function SetXML(){
+			
+	var hx2 = new HandleXml();
+	var str = "DaylightSaving";
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdDisplay("td_Enable", "table-cell");
+	funcNum = setHx.getNodeChildSize("DAYLIGHTSAV");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName("DAYLIGHTSAV", Cnt)) {
+			case "StartDate":
+			    hx.setNodeValue(getIdChecked("chk_Enable"), str, "dlsEnable");
+			    hx.setNodeValue(getIdValue("sel_StartDate_M"), str, "startMon");
+			    hx.setNodeValue(getIdValue("sel_StartDate_W"), str, "startWeek");
+			    hx.setNodeValue(getIdValue("sel_StartDate_WD"), str, "startWeekDay");
+				break;
+			case "StartTime":
+			    hx.setNodeValue(getIdValue("sel_StartTime_H"), str, "startFromHour");
+			    hx.setNodeValue(getIdValue("sel_StartTime_M"), str, "startFromMin");
+				break;
+			case "SetTo":
+			    hx.setNodeValue(getIdValue("sel_SetTo_H"), str, "setHour");
+			    hx.setNodeValue(getIdValue("sel_SetTo_M"), str, "setMin");
+				break;
+			case "EndDate":
+			    hx.setNodeValue(getIdValue("sel_EndDate_M"), str, "endMon");
+			    hx.setNodeValue(getIdValue("sel_EndDate_W"), str, "endWeek");
+			    hx.setNodeValue(getIdValue("sel_EndDate_WD"), str, "endWeekDay");
+				break;
+			case "EndTime":
+			    hx.setNodeValue(getIdValue("sel_EndTime_H"), str, "endFromHour");
+			    hx.setNodeValue(getIdValue("sel_EndTime_M"), str, "endFromMin");
+			    break;
+			case "#text":   //******* for chrome
+			    funcNum++;
+			    break;
+		}
+    }
+
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/DaylightSaving.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+	    alert(hl.get("SUCCESS"));
+	    parent.checkDST_NV();
+	}else{
+		alert(hl.get("FAIL"));
+	}
+
+	parent.showMsg(hx.getNode("DLS_SETTING").xml,"xml");
+}
+function changeAP(obj,targetId){
+	if(getIdValue(obj) >= 12){
+		setIdValue(targetId,1);
+	}else{
+		setIdValue(targetId,0);
+	}
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+	parent.setSelectHour(EFDEF_id("sel_StartTime_H"));
+	parent.setSelectHour(EFDEF_id("sel_SetTo_H"));
+	parent.setSelectHour(EFDEF_id("sel_EndTime_H"));
+	setIdValue("btn_Save",hl.get("SAVE"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Enable" width="200px" style="display: none;"></td>
+				<td align="left">
+					<input type="checkbox" id="chk_Enable" style="display: none;"/>
+				</td>
+			</tr>
+			<tr><td></td></tr>
+			<tr>
+				<td id="td_Start_Date" style="display: none;"></td>
+				<td align="left" id="td_Start_Date_sel" style="display: none;">
+					<select id="sel_StartDate_M" style="width:70px;"></select>
+					<select id="sel_StartDate_W" style="width:70px;"></select>
+					<select id="sel_StartDate_WD" style="width:auto;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Start_Time" style="display: none;"></td>
+				<td align="left" id="td_Start_Time_sel"  style="display: none;">
+	  				<select id="sel_StartTime_H" style="width:70px;"></select>
+	  				<select id="sel_StartTime_M" style="width:70px;">
+  						<option value="0">00</option>
+		  				<option value="1">30</option>
+  					</select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Set_To" style="display: none;"></td>
+				<td align="left" id="td_Set_To_sel"  style="display: none;">
+	  				<select id="sel_SetTo_H" style="width:70px;"></select>
+					<select id="sel_SetTo_M" style="width:70px;">
+						<option value="0">00</option>
+						<option value="1">30</option>
+					</select>
+				</td>
+			</tr>
+			<tr><td></td></tr>
+			<tr>
+				<td id="td_End_Date" style="display: none;"></td>
+				<td align="left" id="td_End_Date_sel" style="display: none;">
+					<select id="sel_EndDate_M" style="width:70px;"></select>
+					<select id="sel_EndDate_W" style="width:70px;"></select>
+					<select id="sel_EndDate_WD" style="width:auto;"></select>							
+				</td>
+			</tr>
+			<tr>
+				<td id="td_End_Time" style="display: none;"></td>
+				<td id="td_End_Time_sel" align="left" style="display: none;">
+	  				<select id="sel_EndTime_H" style="width:70px;"></select>
+	  				<select id="sel_EndTime_M" style="width:70px;">
+  						<option value="0">00</option>
+	  					<option value="30">30</option>
+  					</select>
+				</td>
+			</tr>			
+		</table>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

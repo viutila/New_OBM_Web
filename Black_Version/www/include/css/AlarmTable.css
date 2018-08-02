@@ -1,0 +1,81 @@
+.at_tab{
+	background-color: #000000;
+}
+.at_tab td{
+	height: 20px;
+}
+.at_tab_info{
+	background-color: #000000;
+}
+.at_tab_info td{
+	height: 20px;
+}
+.at_bar{
+	height: 25px;
+	text-align: center;
+	color: #FFFFFF;
+	background: url(../../img/title_blue_bg.jpg) repeat-x;
+}
+.at_tab_Sub{
+	border: solid 2px #000000;
+}
+.at_tab_Sub_Sel{
+	border: solid 2px #FF0000;
+}
+.at_td_off{
+	text-align: center;
+	font-size: 12px;
+	cursor: default;
+	background-color: #9993A1;
+}
+.at_td_on{
+	text-align: center;
+	font-size: 12px;
+	cursor: default;
+	background-color: #F9CDA0;
+}
+.at_info{
+	color: #FFFFFF;
+}
+.at_info_off{
+	text-align: center;
+	color: #000000;
+	background-color: #9993A1;
+}
+.at_info_on{
+	text-align: center;
+	color: #000000;
+	background-color: #F9CDA0;
+}
+.at_img{
+/*
+this width = .at_tabSub width * 2
+*/
+	border: solid 4px #000000;
+}
+.at_td_Left{
+	text-align: center;
+	width: 100px;
+	color: #FFFFFF;
+	background-color: #808080;
+	border: solid 2px #000000;
+}
+.at_td_Left_Up{
+	width: 100px;
+	color: #FFFFFF;
+	background-color: #000000;
+	border: solid 2px #000000;
+}
+.at_aim{
+	width: 1px;
+	height: 300px;
+	border: solid 1px #FFFFFF;
+	background-color: #FFFFFF;
+}
+.at_block{
+	font-size: 0px;
+	width: 10px;
+	height: 20px;
+	border: solid 1px #FF0000;
+	cursor: default;
+}

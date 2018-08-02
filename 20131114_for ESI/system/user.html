@@ -1,0 +1,2050 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="../include/js/stupidtable.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hxUG = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+
+var sel_flag = null;
+var type_flag = null;
+var add_flag = 0;
+var change_pass_flag = 0;
+var own_level = parent.LoginHx.getNodeValue("level");
+var add_User = 0;
+var open_CAFT_Flag = 0;
+var total_CH_Num = parent.g_total_ch_num;
+var addUserRight = 1;
+//var total_cam_Num = parent.g_total_ch_num;
+var total_cam_Num = 256;
+function init(){
+	sm = new ScreenMask("","sm");
+	setHx.setUrl("../" + parent.g_device_xml_name);
+	GetXML();
+	initTable(0, CountEnableAddTagNo());
+	
+	initUserGroupTable();
+	initUserGroupTableFunc();
+	initCameraAccessTable();
+	setLanguage();
+}
+function setUserLv(){
+
+	if(parent.g_user_lv == 1 || parent.g_user_lv == 2 ){
+		setIdDisplay("btn_add","none");
+		setIdDisplay("btn_delete","none");
+		setIdDisplay("td_login","none");
+		setIdDisplay("td_logoff","none");
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/User.xml");
+    hxUG.setUrl("../cgi-bin/UserGroup.xml");
+	var funcNum = 0;
+	var Cnt = 0;
+	funcNum = setHx.getNodeChildSize("USER");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName("USER", Cnt)) {
+	        case "Login":
+	            setIdChecked("chk_User_Login", hx.getNodeValue("Login", "userLogin"));
+	            setIdDisplay("td_login", "table-cell");
+	            break;
+	        case "Autologoff":
+	            setIdChecked("chk_Auto_Logoff", hx.getNodeValue("Login", "autoLogOff"));
+	            setIdDisplay("td_logoff", "table-cell");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/User.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function HandleTableSort() {
+    $("#tbl_list").stupidtable();
+    EFDEF_id("th_Username").click();
+    EFDEF_id("th_Level").click();
+
+    var ht = new HandleTable("tbl_list");
+}
+function initTable(startIdx, endIdx){
+	var ht = new HandleTable("tbl_list");
+	var str;
+	var showNo = 0;
+	if (startIdx != 0) {
+	    showNo = 10;
+	}
+	//hx.getNodeChildSize("UserProfile")
+	for (var i = startIdx; i < endIdx; i++) {
+	//for (var i = 0; i < hx.getNodeChildSize("UserProfile"); i++) {
+	    str = "User" + (i + 1).toFill(2);
+	    ht.insertRow().id("tbl_tr_" + i)
+				.onmouseover(
+					function () {
+					    if (getIdClass(this) != "tr_sel") {
+					        setIdClass(this, "tr_hover");
+					    }
+					})
+				.onmouseout(
+					function () {
+					    if (getIdClass(this) != "tr_sel") {
+					        setIdClass(this, "tr_normal");
+					    }
+					})
+				.onclick(
+					function () {
+					    sel_flag = this.id.split("_")[2].toInt() + 1;
+					    //sel_flag = i + 1;
+					    for (var i = startIdx; i < endIdx; i++) {
+					        setIdClass("tbl_tr_" + i, "tr_normal");
+					    }
+					    setIdClass(this, "tr_sel");
+					});
+			ht.insertCell().className("txtCenter")
+					.width(60)
+					.innerHTML(showNo + 1);
+			ht.insertCell().className("txtLeft")
+					.width(230)
+					.innerHTML(parent.efDecode(hx.getNodeValue(str, "username")));
+			ht.insertCell().className("txtLeft")
+					.width(150);
+					var tmpLv = "";
+					if (hx.getNodeValue(str, "level") == "Admin") {
+					    tmpLv = hl.get("ADMIN");
+		            } else if (hx.getNodeValue(str, "level") == "Manager") {
+					    tmpLv = hl.get("MANAGER");
+		            } else if (hx.getNodeValue(str, "level") == "Operator") {
+		                tmpLv = hl.get("OPERATOR");
+		            } else if (hx.getNodeValue(str, "level") == "") {
+						tmpLv = hl.get("DISABLE");
+					}
+					setIdInnerHTML(ht.td,tmpLv);
+			ht.insertCell().className("txtLeft")
+					.width(150);			
+					var tmpStatus = "";
+					if (hx.getNodeValue(str, "status") == "0") {
+						tmpStatus = hl.get("DISABLE");
+		            } else if (hx.getNodeValue(str, "status") == "1") {
+						tmpStatus = hl.get("ENABLE");
+					}
+		setIdInnerHTML(ht.td, tmpStatus);
+
+		if (parent.efDecode(hx.getNodeValue(str, "username")) == "") {
+		    setIdDisplay(ht.tr, "none");
+		    //ht.deleteRow(ht.tr.rowIndex);
+		}else{
+		    var user_level_int = 0;
+		    if (hx.getNodeValue(str, "level") == "Admin") {
+		        user_level_int = 3;
+		    } else if (hx.getNodeValue(str, "level") == "Manager") {
+		        user_level_int = 2;
+		    } else if (hx.getNodeValue(str, "level") == "Operator") {
+		        user_level_int = 1;
+		    } else if (hx.getNodeValue(str, "level") == "0") {
+		        user_level_int = 0;
+		    }
+
+			if (parent.efDecode(parent.g_user_name) == parent.efDecode(hx.getNodeValue(str, "username"))) {
+				setIdDisplay(ht.tr,"table-row");
+				showNo++;
+            } else if (parent.g_user_lv > user_level_int) {
+                setIdDisplay(ht.tr, "table-row");
+				showNo++;
+            } else if (parent.g_user_lv == user_level_int) {
+            {
+                if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+                    setIdDisplay(ht.tr, "none");
+                    //ht.deleteRow(ht.tr.rowIndex);
+                }
+                else {
+                    setIdDisplay(ht.tr, "table-row");
+                    showNo++;
+                }
+            }
+			}else{
+                setIdDisplay(ht.tr, "none");
+                //ht.deleteRow(ht.tr.rowIndex);
+            }
+		}
+    }
+
+    for (var i = 0; i < 10; i++) {
+        if (EFDEF_id("tbl_list").rows[i] != undefined) {
+            if (EFDEF_id("tbl_list").rows[i].style.display == "block") {
+                EFDEF_id("tbl_list").rows[i].click();
+                break;
+            }
+        }
+    }
+}
+function getEnableAddTagNo(){
+	var tmpNo = -1;
+	for (var i = 1; i < hx.getNodeChildSize("UserProfile"); i++) {
+		str = "User" + i.toFill(2);
+		if (parent.efDecode(hx.getNodeValue(str, "username")) == "") {
+			tmpNo = i;
+			break;
+		}
+	}
+	return tmpNo;
+}
+function CountEnableAddTagNo() {
+    var tmpNo = 0;
+    var rst = 0;
+
+    for (var i = 1; i < hx.getNodeChildSize("UserProfile"); i++) {
+        var str = "User" + i.toFill(2);
+        if (parent.efDecode(hx.getNodeValue(str, "username")) != "") {
+
+            var user_level_int = 0;
+            if (hx.getNodeValue(str, "level") == "Admin") {
+                user_level_int = 3;
+            } else if (hx.getNodeValue(str, "level") == "Manager") {
+                user_level_int = 2;
+            } else if (hx.getNodeValue(str, "level") == "Operator") {
+                user_level_int = 1;
+            } else if (hx.getNodeValue(str, "level") == "0") {
+                user_level_int = 0;
+            }
+
+            if (parent.efDecode(parent.g_user_name) == parent.efDecode(hx.getNodeValue(str, "username"))) {
+                tmpNo++;
+            } else if (parent.g_user_lv > user_level_int) {
+                tmpNo++;
+            } else if (parent.g_user_lv == user_level_int) {
+            {
+                if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+                        
+                }
+                else {
+                    tmpNo++;
+                }
+            }
+            } else {
+
+            }
+
+            if (tmpNo == 10) {
+                rst = i;
+                break;
+            }
+        }
+        if (i == hx.getNodeChildSize("UserProfile") - 1 && tmpNo <= 10) {
+            rst = i;
+        }
+    }
+    return rst;
+}
+function clearTable(){
+	var ht = new HandleTable("tbl_list");
+	//ht.clear();
+	while (ht.getRowSize() > 1) {
+	    ht.deleteRow(ht.getRowSize()-1);
+    }
+}
+function initEditTable(){
+	setIdValue("username","");
+	setIdValue("txt_Password","");
+	setIdValue("txt_Confirm","");
+	setIdValue("sel_level", own_level);
+	setIdValue("sel_status",1);
+}
+function openEdit(type){
+    type_flag = type;
+    selectUserLevelHandle();
+	initEditTable();
+	setIdDisplay("tr_level","table-row");
+	setIdDisplay("tr_status","table-row");
+	if (type == 1) {  //******* Edit User
+	    setIdVisibility("tr_Confirm", 0);
+	    add_User = 0;
+	    if (sel_flag != null) {
+
+	        setIdValue("txt_Password", "12345678");
+
+	        EFDEF_("txt_Password").readOnly(1)
+					.onclick(function () {
+					    if (getIdReadOnly(this)) {
+					        if (window.confirm(hl.get("EDIT_PASSWORD") + "?")) {
+					            //hx.setNodeValue(1,"USER" + (sel_flag + 1).toFill(2),"USE_PWD");
+					            change_pass_flag = 1;
+					            setIdValue(this, "");
+					            setIdReadOnly(this, 0);
+					            setIdVisibility("tr_Confirm", 1);
+					            this.focus();
+					            this.select();
+					        } else {
+					            setIdReadOnly(this, 1);
+					        }
+					    }
+					});
+					//.onfocus(getIdOnclick("txt_Password"));
+	        setIdVisibility("mask1", 1);
+	        setIdDisplay("div_edit", "block");
+	        var str = "User" + sel_flag.toFill(2);
+	        setIdValue("username", parent.efDecode(hx.getNodeValue(str, "username")));
+	        setIdValue("sel_level", hx.getNodeValue(str, "level"));
+	        setIdValue("sel_status", hx.getNodeValue(str, "status"));
+
+
+	        //******* Set User Right checkbox
+	        var funcNum = 0;
+	        var Cnt = 0;
+	        funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+	        for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	            switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+	                case "OwnLevel":
+	                    setIdChecked("chk_UserRight_01", hx.getNodeValue(str, "btnUserManageOwn"));
+	                    break;
+	                case "ClearLog":
+	                    setIdChecked("chk_UserRight_02", hx.getNodeValue(str, "btnClearLogs"));
+	                    break;
+	                case "FirmwareUpgrade":
+	                    setIdChecked("chk_UserRight_03", hx.getNodeValue(str, "pageMisc"));
+	                    break;
+	                case "DiskSetting":
+	                    setIdChecked("chk_UserRight_04", hx.getNodeValue(str, "pageDisk"));
+	                    break;
+	                case "RecordSetting":
+	                    setIdChecked("chk_UserRight_05", hx.getNodeValue(str, "pageRecord"));
+	                    break;
+	                case "LiveAudio":
+	                    setIdChecked("chk_UserRight_06", hx.getNodeValue(str, "iconLiveAudio"));
+	                    break;
+	                case "PlaybackAudio":
+	                    setIdChecked("chk_UserRight_07", hx.getNodeValue(str, "iconPbAudio"));
+	                    break;
+	                case "ArchivalFunction":
+	                    setIdChecked("chk_UserRight_08", hx.getNodeValue(str, "iconArchive"));
+	                    break;
+	                case "SystemLogView":
+	                    setIdChecked("chk_UserRight_09", hx.getNodeValue(str, "btnSysLogViewExport"));
+	                    break;
+	                case "UserManagement":
+	                    setIdChecked("chk_UserRight_10", hx.getNodeValue(str, "pageUserManage"));
+	                    break;
+	                case "DateTimeSetting":
+	                    setIdChecked("chk_UserRight_11", hx.getNodeValue(str, "pageDateTime"));
+	                    break;
+	                case "DisplaySetting":
+	                    setIdChecked("chk_UserRight_12", hx.getNodeValue(str, "pageDisplay"));
+	                    break;
+	                case "NetworkSetting":
+	                    setIdChecked("chk_UserRight_13", hx.getNodeValue(str, "pageNetwork"));
+	                    break;
+	                case "ScheduleSetting":
+	                    setIdChecked("chk_UserRight_14", hx.getNodeValue(str, "pageSchedule"));
+	                    break;
+	                case "AlarmEventSetting":
+	                    setIdChecked("chk_UserRight_15", hx.getNodeValue(str, "pageAlarmEvent"));
+	                    break;
+	                case "CameraSetting":
+	                    setIdChecked("chk_UserRight_16", hx.getNodeValue(str, "pageCamera"));
+	                    break;
+	                case "PlaybackSearch":
+	                    setIdChecked("chk_UserRight_17", hx.getNodeValue(str, "iconPbSearch"));
+	                    break;
+	                case "OSDDisplayMode":
+	                    setIdChecked("chk_UserRight_18", hx.getNodeValue(str, "iconDispMode"));
+	                    break;
+	                case "PTZ":
+	                    setIdChecked("chk_UserRight_19", hx.getNodeValue(str, "iconPTZ"));
+	                    break;
+	                case "ChangOwnPassword":
+	                    setIdChecked("chk_UserRight_20", hx.getNodeValue(str, "btnEditOwnPass"));
+	                    break;
+	                case "#text":   //******* for chrome
+	                    funcNum++;
+	                    break;
+	            }
+	        }
+
+	        if (parent.efDecode(parent.g_user_name) == parent.efDecode(hx.getNodeValue(str, "username"))) {
+	            setURMcheck01(1, 1);
+	            selectOwnHandle();
+	            if (parent.LoginHx.getNodeValue("btnEditOwnPass") == 0) {
+	                setIdDisabled("txt_Password", 1);
+	            } else {
+	                setIdDisabled("txt_Password", 0);
+	            }
+	        }
+	        else {
+	            setURMcheck01(0,1);
+	            setURMcheck02();
+	            setIdDisabled("txt_Password", 1);
+            }
+
+	    } else {
+	        alert(hl.get("PLZ_CHOOSE_USER"));
+	    }
+	} else if (type == 0) {  //***** Add User
+	    if (addUserRight == 0) {
+	        alert("You have no rights to add user.");
+	        return;
+        }
+	    add_User = 1;
+	    setIdDisabled("username", 0);
+	    setIdVisibility("tr_Confirm", 1);
+	    setIdDisabled("txt_Password", 0);
+	    if (getEnableAddTagNo() >= 0) {
+	        EFDEF_("txt_Password").readOnly(0).onclick(null).onfocus(null);
+	        add_flag = getEnableAddTagNo();
+	        //sm.open();
+	        setIdVisibility("mask1", 1);
+	        setIdDisplay("div_edit", "block");
+
+
+	        selectUserLevelHandle();
+
+	        if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+	            var dftLevel;
+	            if (own_level == "Manager") {
+	                dftLevel = "Operator";
+	            } else if (own_level == "Operator") {
+
+	            }
+	            setIdValue("sel_level", dftLevel);
+	        } else {
+	            setIdValue("sel_level", own_level);
+	        }
+	        
+	        setURMcheck01(0,0);
+	        setURMcheck02();
+	        selLevel();
+	    } else {
+	        alert(hl.get("CANT_ADD_USER"));
+	    }
+	} else if (type == 2) {    //***** Copy User
+	    if (addUserRight == 0) {
+	        alert("You have no rights to add user.");
+	        return;
+	    }
+	    add_User = 1;
+	    setIdDisabled("username", 0);
+	    setIdVisibility("tr_Confirm", 1);
+	    setIdDisabled("txt_Password", 0);
+	    if (sel_flag != null) {
+	        if (getEnableAddTagNo() >= 0) {
+	            EFDEF_("txt_Password").readOnly(0).onclick(null).onfocus(null);
+	            add_flag = getEnableAddTagNo();
+	            //sm.open();
+
+	            setIdVisibility("mask1", 1);
+	            setIdDisplay("div_edit", "block");
+	            var str = "User" + sel_flag.toFill(2);
+	            setIdValue("username", "");
+	            setIdValue("sel_level", hx.getNodeValue(str, "level"));
+	            var dftLevel;
+	            if (own_level == hx.getNodeValue(str, "level") && parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+	                dftLevel = "Operator";
+	                setIdValue("sel_level", dftLevel);
+	            }
+
+	            setIdValue("sel_status", hx.getNodeValue(str, "status"));
+	            
+	            setURMcheck01(0,0);
+	            setURMcheck02();
+	            selLevel();
+	            //******* Set User Right checkbox
+	            var funcNum = 0;
+	            var Cnt = 0;
+	            funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+	            for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	                switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+	                    case "OwnLevel":
+	                        setIdChecked("chk_UserRight_01", hx.getNodeValue(str, "btnUserManageOwn"));
+	                        break;
+	                    case "ClearLog":
+	                        setIdChecked("chk_UserRight_02", hx.getNodeValue(str, "btnClearLogs"));
+	                        break;
+	                    case "FirmwareUpgrade":
+	                        setIdChecked("chk_UserRight_03", hx.getNodeValue(str, "pageMisc"));
+	                        break;
+	                    case "DiskSetting":
+	                        setIdChecked("chk_UserRight_04", hx.getNodeValue(str, "pageDisk"));
+	                        break;
+	                    case "RecordSetting":
+	                        setIdChecked("chk_UserRight_05", hx.getNodeValue(str, "pageRecord"));
+	                        break;
+	                    case "LiveAudio":
+	                        setIdChecked("chk_UserRight_06", hx.getNodeValue(str, "iconLiveAudio"));
+	                        break;
+	                    case "PlaybackAudio":
+	                        setIdChecked("chk_UserRight_07", hx.getNodeValue(str, "iconPbAudio"));
+	                        break;
+	                    case "ArchivalFunction":
+	                        setIdChecked("chk_UserRight_08", hx.getNodeValue(str, "iconArchive"));
+	                        break;
+	                    case "SystemLogView":
+	                        setIdChecked("chk_UserRight_09", hx.getNodeValue(str, "btnSysLogViewExport"));
+	                        break;
+	                    case "UserManagement":
+	                        setIdChecked("chk_UserRight_10", hx.getNodeValue(str, "pageUserManage"));
+	                        break;
+	                    case "DateTimeSetting":
+	                        setIdChecked("chk_UserRight_11", hx.getNodeValue(str, "pageDateTime"));
+	                        break;
+	                    case "DisplaySetting":
+	                        setIdChecked("chk_UserRight_12", hx.getNodeValue(str, "pageDisplay"));
+	                        break;
+	                    case "NetworkSetting":
+	                        setIdChecked("chk_UserRight_13", hx.getNodeValue(str, "pageNetwork"));
+	                        break;
+	                    case "ScheduleSetting":
+	                        setIdChecked("chk_UserRight_14", hx.getNodeValue(str, "pageSchedule"));
+	                        break;
+	                    case "AlarmEventSetting":
+	                        setIdChecked("chk_UserRight_15", hx.getNodeValue(str, "pageAlarmEvent"));
+	                        break;
+	                    case "CameraSetting":
+	                        setIdChecked("chk_UserRight_16", hx.getNodeValue(str, "pageCamera"));
+	                        break;
+	                    case "PlaybackSearch":
+	                        setIdChecked("chk_UserRight_17", hx.getNodeValue(str, "iconPbSearch"));
+	                        break;
+	                    case "OSDDisplayMode":
+	                        setIdChecked("chk_UserRight_18", hx.getNodeValue(str, "iconDispMode"));
+	                        break;
+	                    case "PTZ":
+	                        setIdChecked("chk_UserRight_19", hx.getNodeValue(str, "iconPTZ"));
+	                        break;
+	                    case "ChangOwnPassword":
+	                        setIdChecked("chk_UserRight_20", hx.getNodeValue(str, "btnEditOwnPass"));
+	                        break;
+	                    case "#text":   //******* for chrome
+	                        funcNum++;
+	                        break;
+	                }
+	            }
+	        } else {
+	            alert(hl.get("CANT_ADD_USER"));
+	        }
+	    } else {
+	        alert(hl.get("PLZ_CHOOSE_USER"));
+	    }
+    }
+}
+function saveData(){
+    if (type_flag == 0 || type_flag == 2) {
+		//add
+		var str = "User" + add_flag.toFill(2);
+		if (checkCharAndNum(EFDEF_id("txt_Password"))) {
+			if(getIdValue("txt_Password") == getIdValue("txt_Confirm") && getIdValue("txt_Password").trim() != ""){
+				//if(CheckCharKeyin("username",1) && CheckCharKeyin("username",3,1,12)){
+			    if (getIdValue("username").trim() != "") {
+			        if (checkUserExist(getIdValue("username"))) {
+			            hx.setNodeValue(parent.efEncode(getIdValue("username")), str, "username")
+							.setNodeValue(getIdValue("sel_level"), str, "level")
+							.setNodeValue(getIdValue("sel_status"), str, "status")
+                            .setNodeValue(parent.efEncode(getIdValue("txt_Password")), str, "password");
+
+			            var funcNum = 0;
+			            var Cnt = 0;
+			            funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+			            for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+			                switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+			                    case "OwnLevel":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_01"), str, "btnUserManageOwn");
+			                        break;
+			                    case "ClearLog":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_02"), str, "btnClearLogs");
+			                        break;
+			                    case "FirmwareUpgrade":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_03"), str, "pageMisc");
+			                        break;
+			                    case "DiskSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_04"), str, "pageDisk");
+			                        break;
+			                    case "RecordSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_05"), str, "pageRecord");
+			                        break;
+			                    case "LiveAudio":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_06"), str, "iconLiveAudio");
+			                        break;
+			                    case "PlaybackAudio":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_07"), str, "iconPbAudio");
+			                        break;
+			                    case "ArchivalFunction":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_08"), str, "iconArchive");
+			                        break;
+			                    case "SystemLogView":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_09"), str, "btnSysLogViewExport");
+			                        break;
+			                    case "UserManagement":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_10"), str, "pageUserManage");
+			                        break;
+			                    case "DateTimeSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_11"), str, "pageDateTime");
+			                        break;
+			                    case "DisplaySetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_12"), str, "pageDisplay");
+			                        break;
+			                    case "NetworkSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_13"), str, "pageNetwork");
+			                        break;
+			                    case "ScheduleSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_14"), str, "pageSchedule");
+			                        break;
+			                    case "AlarmEventSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_15"), str, "pageAlarmEvent");
+			                        break;
+			                    case "CameraSetting":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_16"), str, "pageCamera");
+			                        break;
+			                    case "PlaybackSearch":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_17"), str, "iconPbSearch");
+			                        break;
+			                    case "OSDDisplayMode":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_18"), str, "iconDispMode");
+			                        break;
+			                    case "PTZ":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_19"), str, "iconPTZ");
+			                        break;
+			                    case "ChangOwnPassword":
+			                        hx.setNodeValue(getIdChecked("chk_UserRight_20"), str, "btnEditOwnPass");
+			                        break;
+			                    case "#text":   //******* for chrome
+			                        funcNum++;
+			                        break;
+			                }
+			            }
+
+			            setIdDisplay("div_edit", "none");
+			            setIdVisibility("mask1", 0);
+			            sel_flag = null;
+			            clearTable();
+			            //GetXML();
+			            open_CAFT_Flag = 0;
+			            initTable(0, CountEnableAddTagNo());
+			        } else {
+			            alert(hl.get("USER_EXIST"));
+			        }
+			    } else {
+			        alert(hl.get("ENTER_THE_USER_NAME"));
+                }
+			}else{
+                alert(hl.get("PASSWORD_ERROR"));
+			}
+		}
+	}else if(type_flag == 1){
+		//edit
+		var str = "User" + sel_flag.toFill(2);
+		//if(hx.getNodeValue(str,"USE_PWD") == "1"){
+		if (change_pass_flag == 1)
+		{
+		    if (checkCharAndNum(EFDEF_id("txt_Password"))) {
+				if(getIdValue("txt_Password") == getIdValue("txt_Confirm") && getIdValue("txt_Password").trim() != ""){
+				    hx.setNodeValue(parent.efEncode(getIdValue("username")), str, "username")
+                        .setNodeValue(parent.efEncode(getIdValue("txt_Password")), str, "password");
+						//.setNodeValue(1, str, "usePassword")
+					change_pass_flag = 0;
+				}
+				else{
+				    hx.setNodeValue("", str, "password");
+					alert(hl.get("PASSWORD_ERROR"));
+					return "";
+				}
+			}
+		}else{
+            hx.setNodeValue("", str, "password");
+		}
+			
+		if(CheckCharKeyin("username",1) && CheckCharKeyin("username",3,1,16)){
+		    hx.setNodeValue(parent.efEncode(getIdValue("username")), str, "username")
+				.setNodeValue(getIdValue("sel_level")	,str,"level")
+				.setNodeValue(getIdValue("sel_status"), str, "status");
+			
+            var funcNum = 0;
+			var Cnt = 0;
+			funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+			for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+				switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+					case "OwnLevel":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_01"), str, "btnUserManageOwn");
+					    break;
+					case "ClearLog":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_02"), str, "btnClearLogs");
+					    break;
+					case "FirmwareUpgrade":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_03"), str, "pageMisc");
+					    break;
+					case "DiskSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_04"), str, "pageDisk");
+					    break;
+					case "RecordSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_05"), str, "pageRecord");
+					    break;
+					case "LiveAudio":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_06"), str, "iconLiveAudio");
+					    break;
+					case "PlaybackAudio":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_07"), str, "iconPbAudio");
+					    break;
+					case "ArchivalFunction":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_08"), str, "iconArchive");
+					    break;
+					case "SystemLogView":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_09"), str, "btnSysLogViewExport");
+					    break;
+					case "UserManagement":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_10"), str, "pageUserManage");
+					    break;
+					case "DateTimeSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_11"), str, "pageDateTime");
+					    break;
+					case "DisplaySetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_12"), str, "pageDisplay");
+					    break;
+					case "NetworkSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_13"), str, "pageNetwork");
+					    break;
+					case "ScheduleSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_14"), str, "pageSchedule");
+					    break;
+					case "AlarmEventSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_15"), str, "pageAlarmEvent");
+					    break;
+					case "CameraSetting":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_16"), str, "pageCamera");
+					    break;
+					case "PlaybackSearch":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_17"), str, "iconPbSearch");
+					    break;
+					case "OSDDisplayMode":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_18"), str, "iconDispMode");
+					    break;
+					case "PTZ":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_19"), str, "iconPTZ");
+					    break;
+					case "ChangOwnPassword":
+					    hx.setNodeValue(getIdChecked("chk_UserRight_20"), str, "btnEditOwnPass");
+					    break;
+					case "#text":   //******* for chrome
+					    funcNum++;
+					    break;
+				}
+			}
+
+			clearTable();
+			//GetXML();
+			initTable(0, CountEnableAddTagNo());
+			setIdDisplay("div_edit", "none");
+			//sm.close();
+			setIdVisibility("mask1", 0);
+			sel_flag = null;
+		}
+		
+	}
+}
+function CopyUser() {
+
+}
+function selectOwnHandle() {
+    var select = EFDEF_id("sel_level");
+    for (i = 0; i < select.options.length; i++) {
+        select.options[i] = null;
+    }
+
+    var hs = new HandleSelect("sel_level", 0);
+    if (own_level == "Admin") {
+        hs.addOpt(0, hl.get("ADMIN"), "Admin")
+	        .addOpt(1, hl.get("MANAGER"), "Manager")
+	        .addOpt(2, hl.get("OPERATOR"), "Operator");
+    } else if (own_level == "Manager") {
+        hs.addOpt(0, hl.get("MANAGER"), "Manager")
+            .addOpt(1, hl.get("OPERATOR"), "Operator");
+    } else if (own_level == "Operator") {
+        hs.addOpt(0, hl.get("OPERATOR"), "Operator");
+    }
+}
+function selectUserLevelHandle() {
+    var hs = new HandleSelect("sel_level", 0);
+    if (own_level == "Admin") {
+        if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+            hs.addOpt(0, hl.get("MANAGER"), "Manager")
+              .addOpt(1, hl.get("OPERATOR"), "Operator");
+        } else {
+            hs.addOpt(0, hl.get("ADMIN"), "Admin")
+	          .addOpt(1, hl.get("MANAGER"), "Manager")
+	          .addOpt(2, hl.get("OPERATOR"), "Operator");
+        }
+    } else if (own_level == "Manager") {
+        if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+            hs.addOpt(0, hl.get("OPERATOR"), "Operator");
+        } else {
+            hs.addOpt(0, hl.get("MANAGER"), "Manager")
+              .addOpt(1, hl.get("OPERATOR"), "Operator");
+        }
+    } else if (own_level == "Operator") {
+        if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+            hs.addOpt(0, hl.get("OPERATOR"), "Operator");
+            addUserRight = 0;
+        } else {
+            hs.addOpt(0, hl.get("OPERATOR"), "Operator");
+        }
+    }
+}
+function checkUserExist(inputName){
+    for (var i = 0; i < hx.getNodeChildSize("UserProfile") - 2; i++) {
+		str = "User" + (i + 1).toFill(2);
+		if(hx.getNodeValue(str,"level") != ""){
+		    if (parent.efDecode(hx.getNodeValue(str, "username")) == inputName) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+function delUser(){
+	if(sel_flag != null){
+	    //if(sel_flag != 0 && countAdminNum() > 1){
+	    if (window.confirm(hl.get("WARNING_SENTENCE33"))) {
+	        var str = "User" + sel_flag.toFill(2);
+	        if ( parent.efDecode(parent.g_user_name) != parent.efDecode(hx.getNodeValue(str, "username"))) {
+	            if (countAdminNum() >= 1) {
+	                hx.setNodeValue(parent.efEncode("  852456"), str, "username")
+		          .setNodeValue("", str, "level");
+	                clearTable();
+	                initTable(0, CountEnableAddTagNo());
+	                sel_flag = null;
+	            } else {
+	                alert(hl.get("CANT_DEL_ADMIN"));
+	            }
+	        }
+	        else {
+	            alert(hl.get("CANT_DEL_ADMIN"));
+            }
+	        
+	    }
+	}else{
+		alert(hl.get("PLZ_CHOOSE_USER"));
+	}
+}
+function countAdminNum(){
+	var tmpNo = 0;
+	for (var i = 1; i < hx.getNodeChildSize("UserProfile"); i++) {
+		str = "User" + i.toFill(2);
+		if(hx.getNodeValue(str,"level") == "Admin"){
+			tmpNo++;
+		}
+	}
+	return tmpNo;
+}
+function cancelEdit(){
+    change_pass_flag = 0;
+    open_CAFT_Flag = 0;
+	setIdDisplay("div_edit","none");
+	setIdVisibility("mask1", 0);
+}
+function setLogin(){
+    hx.setNodeValue(getIdChecked("chk_User_Login"), "Login", "userLogin");
+}
+function setLogoff(){
+    hx.setNodeValue(getIdChecked("chk_Auto_Logoff"), "Login", "autoLogOff");
+}
+function setLanguage(){
+    setIdInnerHTML("th_Username", hl.get("USERNAME"));
+    setIdInnerHTML("th_Status", hl.get("STATUS"));
+    setIdInnerHTML("th_Level", hl.get("LEVEL"));
+
+	setIdInnerHTML("edit_td_Username",hl.get("USERNAME"));
+	setIdInnerHTML("edit_td_new_pwd", hl.get("PASSWORD"));
+	setIdInnerHTML("edit_td_confirm",hl.get("CONFIRM"));
+	setIdInnerHTML("edit_td_Level", hl.get("USER_GROUP"));
+	setIdInnerHTML("edit_td_Status",hl.get("STATUS"));
+	setIdInnerHTML("span_UserLogin", hl.get("LOGIN"));
+	setIdInnerHTML("span_AutoLogoff", hl.get("AUTO_USER_LOG_OFF"));
+
+	setIdValue("btn_Save",hl.get("SAVE"));
+	setIdValue("btn_Cancel", hl.get("CANCEL"));
+	
+	setIdValue("btn_Cam_Access_Save", hl.get("SAVE"));
+	setIdValue("btn_Cam_Access_Cancel", hl.get("CANCEL"));
+
+	setIdValue("pre_Page_btn", hl.get("PREVIOUS"));
+	setIdValue("next_Page_btn", hl.get("NEXT"));
+
+
+	selectUserLevelHandle();
+	setIdValue("sel_level", own_level);
+
+	var hs = new HandleSelect("sel_status",0);
+	hs.addOpt(0,hl.get("DISABLE"),"0")
+		.addOpt(1, hl.get("ENABLE"), "1");
+
+	setIdValue("btn_Save1", hl.get("SAVE"));
+    //*** user group table
+
+	if (setHx.getNode("LocalAccess")) {//20130424  julia add 
+	    setIdInnerHTML("td_LA_live", hl.get("LIVE"));
+	    setIdInnerHTML("td_LA_playback", hl.get("PLAYBACK"));
+	    setIdInnerHTML("td_LA_PTZ", hl.get("PTZ"));
+	}
+	setIdInnerHTML("td_RA_live", hl.get("LIVE"));
+	setIdInnerHTML("td_RA_playback", hl.get("PLAYBACK"));
+	setIdInnerHTML("td_RA_PTZ", hl.get("PTZ"));
+
+
+
+	setIdValue("btn_Cam_access", hl.get("CAMERA_ACCESS"));
+	setIdInnerHTML("UserRight_txt", hl.get("USER_RIGHT"));
+}
+
+function changePage(idx) {
+    //GetXML();
+    clearTable();
+    var cnt1 = CountEnableAddTagNo();
+    if (idx == 1) {
+        initTable(0, CountEnableAddTagNo());
+    }
+    else {
+        initTable(CountEnableAddTagNo(), 20);
+    }
+}
+function initUserGroupTable() {
+    var ht = new HandleTable("User_Group_list");
+    for (var i = 1; i < 21; i++) {
+        ht.insertRow().id("tr_" + i.toFill(2)).display("none");
+        ht.insertCell().width(400).id("td_" + i.toFill(2));
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_UserRight_" + i.toFill(2) + "'/>");
+
+    }
+
+    EFDEF_("^td_").className("txtLeft");
+}
+function initUserGroupTableFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+            case "OwnLevel":
+                setIdDisplay("tr_01", "table-row");
+                setIdInnerHTML("td_01", hl.get("MANAGER_USER_LEVEL"));
+                break;
+            case "ClearLog":
+                setIdDisplay("tr_02", "table-row");
+                setIdInnerHTML("td_02", hl.get("CLEAR_LOG"));
+                break;
+            case "FirmwareUpgrade":
+                setIdDisplay("tr_03", "table-row");
+                setIdInnerHTML("td_03", hl.get("FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD"));
+                break;
+            case "DiskSetting":
+                setIdDisplay("tr_04", "table-row");
+                setIdInnerHTML("td_04", hl.get("DISK_SETTING"));
+                break;
+            case "RecordSetting":
+                setIdDisplay("tr_05", "table-row");
+                setIdInnerHTML("td_05", hl.get("RECORD_SETTING"));
+                break;
+            case "LiveAudio":
+                setIdDisplay("tr_06", "table-row");
+                setIdInnerHTML("td_06", hl.get("LIVE_AUDIO"));
+                break;
+            case "PlaybackAudio":
+                setIdDisplay("tr_07", "table-row");
+                setIdInnerHTML("td_07", hl.get("PLAYBACK_AUDIO"));
+                break;
+            case "ArchivalFunction":
+                setIdDisplay("tr_08", "table-row");
+                setIdInnerHTML("td_08", hl.get("ARCHIVAL_FUNCTION"));
+                break;
+            case "SystemLogView":
+                setIdDisplay("tr_09", "table-row");
+                setIdInnerHTML("td_09", hl.get("SYSTEM_LOG_VIEW"));
+                break;
+            case "UserManagement":
+                setIdDisplay("tr_10", "table-row");
+                setIdInnerHTML("td_10", hl.get("USER_MANAGEMENT"));
+                break;
+            case "DateTimeSetting":
+                setIdDisplay("tr_11", "table-row");
+                setIdInnerHTML("td_11", hl.get("DATE_SETTING"));
+                break;
+            case "DisplaySetting":
+                setIdDisplay("tr_12", "table-row");
+                setIdInnerHTML("td_12", hl.get("DISPLAY_SETTING"));
+                break;
+            case "NetworkSetting":
+                setIdDisplay("tr_13", "table-row");
+                setIdInnerHTML("td_13", hl.get("NETWORK_SETTING"));
+                break;
+            case "ScheduleSetting":
+                setIdDisplay("tr_14", "table-row");
+                setIdInnerHTML("td_14", hl.get("SCHEDULE_SETTING"));
+                break;
+            case "AlarmEventSetting":
+                setIdDisplay("tr_15", "table-row");
+                setIdInnerHTML("td_15", hl.get("ALARM_EVENT_SETTING"));
+                break;
+            case "CameraSetting":
+                setIdDisplay("tr_16", "table-row");
+                setIdInnerHTML("td_16", hl.get("CAMERA_SETTING"));
+                break;
+            case "PlaybackSearch":
+                setIdDisplay("tr_17", "table-row");
+                setIdInnerHTML("td_17", hl.get("PLAYBACK_SEARCH"));
+                break;
+            case "OSDDisplayMode":
+                setIdDisplay("tr_18", "table-row");
+                setIdInnerHTML("td_18", hl.get("OSD_DISPLAY_MODE"));
+                break;
+            case "PTZ":
+                setIdDisplay("tr_19", "table-row");
+                setIdInnerHTML("td_19", hl.get("PTZ"));
+                break;
+            case "ChangOwnPassword":
+                setIdDisplay("tr_20", "table-row");
+                setIdInnerHTML("td_20", hl.get("CHANGE_OWN_PASSWORD"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }	
+}
+function initCameraAccessTable() {
+    var ht_head = new HandleTable("Camera_Access_Head");
+    ht_head.insertRow();
+    ht_head.insertCell().height(50).width(120);
+    if (setHx.getNode("LocalAccess")) {//20130424 julia add NVR no local
+        ht_head.insertCell().className("txtCenter").attr("colSpan", 3).innerHTML(hl.get("LOCAL_ACCESS"));
+        ht_head.insertCell().width(80);
+    }
+    ht_head.insertCell().className("txtCenter").attr("colSpan", 3).innerHTML(hl.get("REMOTER_ACCESS"));
+
+
+    ht_head.insertRow();
+    ht_head.insertCell();
+    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+        ht_head.insertCell().id("td_LA_live").className("txtCenter").width(80);
+        ht_head.insertCell().id("td_LA_playback").className("txtCenter").width(80);
+        ht_head.insertCell().id("td_LA_PTZ").className("txtCenter").width(80);
+
+        ht_head.insertCell().width(80);
+    }
+    ht_head.insertCell().id("td_RA_live").className("txtCenter").width(80);
+    ht_head.insertCell().id("td_RA_playback").className("txtCenter").width(80);
+    ht_head.insertCell().id("td_RA_PTZ").className("txtCenter").width(80);
+    var ht = new HandleTable("Camera_Access_List");
+    ht.insertRow();
+    ht.insertCell().width(120).id("td_all").innerHTML(hl.get("ALL")).className("txtLeft");
+    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_LiveAll' onclick='selCamAccessAll(1)' />");
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_PlaybackAll' onclick='selCamAccessAll(2)' />");
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_PTZAll' onclick='selCamAccessAll(3)' />");
+        ht.insertCell().width(80);
+    }
+    ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_LiveAll' onclick='selCamAccessAll(4)' />");
+    ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_PlaybackAll' onclick='selCamAccessAll(5)' />");
+    ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_PTZAll' onclick='selCamAccessAll(6)' />");
+
+    for (var i = 1; i <= total_cam_Num; i++) {
+        ht.insertRow();
+        ht.insertCell().width(120).id("td_cam_" + i).innerHTML(hl.get("CAMERA") +" " +i).className("txtLeft");
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_Live_" + i + "' onclick='syncBtn1();'/>");
+            ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_Playback_" + i + "' onclick='syncBtn2();'/>");
+            ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_LA_PTZ_" + i + "' onclick='syncBtn3();'/>");
+
+            ht.insertCell().width(80);
+        }
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_Live_" + i + "' onclick='syncBtn4();'/>");
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_Playback_" + i + "' onclick='syncBtn5();'/>");
+        ht.insertCell().width(80).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_RA_PTZ_" + i + "' onclick='syncBtn6();'/>");
+
+    }
+
+   
+}
+function SaveDataCamAccess() {
+    var str;
+    var LA_Live = 0;
+    var LA_Playback = 0;
+    var LA_PTZ = 0;
+    var RA_Live = 0;
+    var RA_Playback = 0;
+    var RA_PTZ = 0;
+
+    if (type_flag == 0 || type_flag == 2) {   //***** Add & Copy User
+        str = "User" + add_flag.toFill(2);
+    }
+    else {
+        str = "User" + sel_flag.toFill(2);
+    }
+
+    for (var i = 0; i < total_cam_Num; i++) {
+        if (setHx.getNode("LocalAccess")) {//20130424 julia add for NVR no loacl
+            if (getIdChecked("chk_LA_Live_" + (i + 1))) {
+                LA_Live = LA_Live + Math.pow(2, i);
+            }
+            if (getIdChecked("chk_LA_Playback_" + (i + 1))) {
+                LA_Playback = LA_Playback + Math.pow(2, i);
+            }
+            if (getIdChecked("chk_LA_PTZ_" + (i + 1))) {
+                LA_PTZ = LA_PTZ + Math.pow(2, i);
+            }
+        }
+
+        if (getIdChecked("chk_RA_Live_" + (i + 1))) {
+            RA_Live = RA_Live + Math.pow(2, i);
+        }
+        if (getIdChecked("chk_RA_Playback_" + (i + 1))) {
+            RA_Playback = RA_Playback + Math.pow(2, i);
+        }
+        if (getIdChecked("chk_RA_PTZ_" + (i + 1))) {
+            RA_PTZ = RA_PTZ + Math.pow(2, i);
+        }
+    }
+    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+        hx.setNodeValue(LA_Live, str, "LocalChnAccess", "ctrlLiveChnmap");
+        hx.setNodeValue(LA_Playback, str, "LocalChnAccess", "ctrlPbChnmap");
+        hx.setNodeValue(LA_PTZ, str, "LocalChnAccess", "ctrlPtzChnmap");
+    }
+    hx.setNodeValue(RA_Live, str, "RemoteChnAccess", "ctrlLiveChnmap");
+    hx.setNodeValue(RA_Playback, str, "RemoteChnAccess", "ctrlPbChnmap");
+    hx.setNodeValue(RA_PTZ, str, "RemoteChnAccess", "ctrlPtzChnmap");
+    open_CAFT_Flag = 1;
+    OpenCamAccessDiv(0);
+}
+function OpenCamAccessDiv(flag) {
+    if (flag == 1) {
+        setIdDisplay("div_edit1", "block");
+        setIdDisplay("div_edit", "none");
+
+        if (type_flag == 1 || type_flag == 2) {   //***** Edit & Copy User
+            
+            str = "User" + sel_flag.toFill(2);
+        }
+        else {
+            str = "User" + add_flag.toFill(2);
+        }
+        hx.getNodeValue(str, "ctrlLiveChnmap");
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            LA_Live_Access = hx.getNodeValue(str, "LocalChnAccess", "ctrlLiveChnmap").toInt().toString(2);
+            LA_Playback_Access = hx.getNodeValue(str, "LocalChnAccess", "ctrlPbChnmap").toInt().toString(2);
+            LA_PTZ_Access = hx.getNodeValue(str, "LocalChnAccess", "ctrlPtzChnmap").toInt().toString(2);
+        }
+        RA_Live_Access = hx.getNodeValue(str, "RemoteChnAccess", "ctrlLiveChnmap").toInt().toString(2);
+        RA_Playback_Access = hx.getNodeValue(str, "RemoteChnAccess", "ctrlPbChnmap").toInt().toString(2);
+        RA_PTZ_Access = hx.getNodeValue(str, "RemoteChnAccess", "ctrlPtzChnmap").toInt().toString(2);
+
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            LA_Live_Access = chAccessHandle(LA_Live_Access);
+            LA_Playback_Access = chAccessHandle(LA_Playback_Access);
+            LA_PTZ_Access = chAccessHandle(LA_PTZ_Access);
+        }
+        RA_Live_Access = chAccessHandle(RA_Live_Access);
+        RA_Playback_Access = chAccessHandle(RA_Playback_Access);
+        RA_PTZ_Access = chAccessHandle(RA_PTZ_Access);
+
+        for (var i = 0; i < total_cam_Num; i++) {
+            if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                setIdChecked("chk_LA_Live_" + (i + 1), LA_Live_Access.substr(total_CH_Num - 1 - i, 1));
+                setIdChecked("chk_LA_Playback_" + (i + 1), LA_Playback_Access.substr(total_CH_Num - 1 - i, 1));
+                setIdChecked("chk_LA_PTZ_" + (i + 1), LA_PTZ_Access.substr(total_CH_Num - 1 - i, 1));
+            }
+            setIdChecked("chk_RA_Live_" + (i + 1), RA_Live_Access.substr(total_CH_Num - 1 - i, 1));
+            setIdChecked("chk_RA_Playback_" + (i + 1), RA_Playback_Access.substr(total_CH_Num - 1 - i, 1));
+            setIdChecked("chk_RA_PTZ_" + (i + 1), RA_PTZ_Access.substr(total_CH_Num - 1 - i, 1));
+        }
+        
+        if (open_CAFT_Flag == 0) {
+            if (type_flag == 0) {
+                for (var i = 0; i < total_cam_Num; i++) {
+                    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                        setIdChecked("chk_LA_Live_" + (i + 1), 0);
+                        setIdChecked("chk_LA_Playback_" + (i + 1), 0);
+                        setIdChecked("chk_LA_PTZ_" + (i + 1), 0);
+                    }
+                    setIdChecked("chk_RA_Live_" + (i + 1), 0);
+                    setIdChecked("chk_RA_Playback_" + (i + 1), 0);
+                    setIdChecked("chk_RA_PTZ_" + (i + 1), 0);
+
+                    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                        setIdDisabled("chk_LA_Live_" + (i + 1), 0);
+                        setIdDisabled("chk_LA_Playback_" + (i + 1), 0);
+                        setIdDisabled("chk_LA_PTZ_" + (i + 1), 0);
+                    }
+
+                    setIdDisabled("chk_RA_Live_" + (i + 1), 0);
+                    setIdDisabled("chk_RA_Playback_" + (i + 1), 0);
+                    setIdDisabled("chk_RA_PTZ_" + (i + 1), 0);
+                }
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_LiveAll", 0);
+                    setIdDisabled("chk_LA_PlaybackAll", 0);
+                    setIdDisabled("chk_LA_PTZAll", 0);
+                }
+                setIdDisabled("chk_RA_LiveAll", 0);
+                setIdDisabled("chk_RA_PlaybackAll", 0);
+                setIdDisabled("chk_RA_PTZAll", 0);
+            } else if (type_flag == 2) {
+                for (var i = 0; i < total_cam_Num; i++) {
+                    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                        setIdDisabled("chk_LA_Live_" + (i + 1), 0);
+                        setIdDisabled("chk_LA_Playback_" + (i + 1), 0);
+                        setIdDisabled("chk_LA_PTZ_" + (i + 1), 0);
+                    }
+                    setIdDisabled("chk_RA_Live_" + (i + 1), 0);
+                    setIdDisabled("chk_RA_Playback_" + (i + 1), 0);
+                    setIdDisabled("chk_RA_PTZ_" + (i + 1), 0);
+                }
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_LiveAll", 0);
+                    setIdDisabled("chk_LA_PlaybackAll", 0);
+                    setIdDisabled("chk_LA_PTZAll", 0);
+                }
+                setIdDisabled("chk_RA_LiveAll", 0);
+                setIdDisabled("chk_RA_PlaybackAll", 0);
+                setIdDisabled("chk_RA_PTZAll", 0);
+            }
+        }
+
+
+        for (var i = 0; i < total_cam_Num; i++) {
+            if (getIdChecked("chk_UserRight_17") == 0) {
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_Playback_" + (i + 1), 1);
+                    setIdDisabled("chk_LA_PlaybackAll", 1);
+                }
+                setIdDisabled("chk_RA_Playback_" + (i + 1).toFill(2), 1);
+                setIdDisabled("chk_RA_PlaybackAll", 1);
+            }
+            else {
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_Playback_" + (i + 1), 0);
+                    setIdDisabled("chk_LA_PlaybackAll", 0);
+                }
+                setIdDisabled("chk_RA_Playback_" + (i + 1), 0);
+                setIdDisabled("chk_RA_PlaybackAll", 0);
+            }
+            if (getIdChecked("chk_UserRight_19") == 0) {
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_PTZ_" + (i + 1), 1);
+                    setIdDisabled("chk_LA_PTZAll", 1);
+                }
+                setIdDisabled("chk_RA_PTZ_" + (i + 1), 1);
+                setIdDisabled("chk_RA_PTZAll", 1);
+            }
+            else {
+                if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_PTZ_" + (i + 1), 0);
+                    setIdDisabled("chk_LA_PTZAll", 0);
+                }
+                setIdDisabled("chk_RA_PTZ_" + (i + 1), 0);
+                setIdDisabled("chk_RA_PTZAll", 0);
+            }
+        }
+
+        //******* disabled when edit self
+        if (parent.efDecode(parent.g_user_name) == parent.efDecode(hx.getNodeValue(str, "username")) && type_flag == 1) {
+            for (var i = 0; i < total_cam_Num; i++) {
+                if (setHx.getNode("LocalAccess")) {///20130424  julia add  NVR no local
+                    setIdDisabled("chk_LA_Live_" + (i + 1), 1);
+                    setIdDisabled("chk_LA_Playback_" + (i + 1), 1);
+                    setIdDisabled("chk_LA_PTZ_" + (i + 1), 1);
+                }
+                setIdDisabled("chk_RA_Live_" + (i + 1), 1);
+                setIdDisabled("chk_RA_Playback_" + (i + 1), 1);
+                setIdDisabled("chk_RA_PTZ_" + (i + 1), 1);
+            }
+            if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+                setIdDisabled("chk_LA_LiveAll", 1);
+                setIdDisabled("chk_LA_PlaybackAll", 1);
+                setIdDisabled("chk_LA_PTZAll", 1);
+            }
+            setIdDisabled("chk_RA_LiveAll", 1);
+            setIdDisabled("chk_RA_PlaybackAll", 1);
+            setIdDisabled("chk_RA_PTZAll", 1);
+        }
+        //*******
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            syncBtn1(); syncBtn2(); syncBtn3();
+        } else {
+            setIdLeft("div_edit1",350);
+            setIdLeft("div_edit_btn",180);
+        }
+        syncBtn4(); syncBtn5(); syncBtn6();
+        setURMcheck03();
+        checkAllChkEnable();
+
+    } else {
+        setIdDisplay("div_edit1", "none");
+        setIdDisplay("div_edit", "block");
+    }
+}
+
+function chAccessHandle(p) {
+    var str = p;
+    if (str.length < total_cam_Num) {
+        var lenth = str.length;
+        for (var i = 1; i <= total_cam_Num - lenth; i++) {
+            str = "0" + str;
+        }
+    }
+    return str;
+}
+
+function setMouseOver(id, flag) {
+    var srcStr = EFDEF_id(id).src;
+    if (flag == 0) {     
+        if (srcStr.lastIndexOf("over") > -1) {
+            EFDEF_id(id).src = srcStr.substr(0, srcStr.lastIndexOf("over")) + ".png";
+        }
+        else {
+            
+        }
+    } else if (flag == 1) {
+        if (srcStr.lastIndexOf("over") > -1) {
+
+        }
+        else {
+            EFDEF_id(id).src = srcStr.substr(0, srcStr.lastIndexOf(".")) + "over.png";
+        }
+    }
+}
+function selLevel() {
+    var str;
+    if (getIdValue("sel_level") == "Admin") {
+        str = "Admin";
+    } else if (getIdValue("sel_level") == "Manager") {
+        str = "Manager";
+    } else if (getIdValue("sel_level") == "Operator") {
+        str = "Operator";
+    }
+
+    var funcNum = 0;
+    var Cnt = 0;
+    funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+            case "OwnLevel":
+                setIdChecked("chk_UserRight_01", hxUG.getNodeValue(str, "btnUserManageOwn"));
+                break;
+            case "ClearLog":
+                setIdChecked("chk_UserRight_02", hxUG.getNodeValue(str, "btnClearLogs"));
+                break;
+            case "FirmwareUpgrade":
+                setIdChecked("chk_UserRight_03", hxUG.getNodeValue(str, "pageMisc"));
+                break;
+            case "DiskSetting":
+                setIdChecked("chk_UserRight_04", hxUG.getNodeValue(str, "pageDisk"));
+                break;
+            case "RecordSetting":
+                setIdChecked("chk_UserRight_05", hxUG.getNodeValue(str, "pageRecord"));
+                break;
+            case "LiveAudio":
+                setIdChecked("chk_UserRight_06", hxUG.getNodeValue(str, "iconLiveAudio"));
+                break;
+            case "PlaybackAudio":
+                setIdChecked("chk_UserRight_07", hxUG.getNodeValue(str, "iconPbAudio"));
+                break;
+            case "ArchivalFunction":
+                setIdChecked("chk_UserRight_08", hxUG.getNodeValue(str, "iconArchive"));
+                break;
+            case "SystemLogView":
+                setIdChecked("chk_UserRight_09", hxUG.getNodeValue(str, "btnSysLogViewExport"));
+                break;
+            case "UserManagement":
+                setIdChecked("chk_UserRight_10", hxUG.getNodeValue(str, "pageUserManage"));
+                break;
+            case "DateTimeSetting":
+                setIdChecked("chk_UserRight_11", hxUG.getNodeValue(str, "pageDateTime"));
+                break;
+            case "DisplaySetting":
+                setIdChecked("chk_UserRight_12", hxUG.getNodeValue(str, "pageDisplay"));
+                break;
+            case "NetworkSetting":
+                setIdChecked("chk_UserRight_13", hxUG.getNodeValue(str, "pageNetwork"));
+                break;
+            case "ScheduleSetting":
+                setIdChecked("chk_UserRight_14", hxUG.getNodeValue(str, "pageSchedule"));
+                break;
+            case "AlarmEventSetting":
+                setIdChecked("chk_UserRight_15", hxUG.getNodeValue(str, "pageAlarmEvent"));
+                break;
+            case "CameraSetting":
+                setIdChecked("chk_UserRight_16", hxUG.getNodeValue(str, "pageCamera"));
+                break;
+            case "PlaybackSearch":
+                setIdChecked("chk_UserRight_17", hxUG.getNodeValue(str, "iconPbSearch"));
+                break;
+            case "OSDDisplayMode":
+                setIdChecked("chk_UserRight_18", hxUG.getNodeValue(str, "iconDispMode"));
+                break;
+            case "PTZ":
+                setIdChecked("chk_UserRight_19", hxUG.getNodeValue(str, "iconPTZ"));
+                break;
+            case "ChangOwnPassword":
+                setIdChecked("chk_UserRight_20", hxUG.getNodeValue(str, "btnEditOwnPass"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    if (str == "Admin") {
+        for (var i = 1; i < 21; i++) {
+            setIdDisabled("chk_UserRight_" + i.toFill(2), 1);
+        }
+    }
+}
+function selLevelChg() {
+    var str;
+    if (getIdValue("sel_level") == "Admin") {
+        str = "Admin";
+    } else if (getIdValue("sel_level") == "Manager") {
+        str = "Manager";
+    } else if (getIdValue("sel_level") == "Operator") {
+        str = "Operator";
+    }
+
+    var funcNum = 0;
+    var Cnt = 0;
+    funcNum = setHx.getNodeChildSize("USERMANAGEMENT");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERMANAGEMENT", Cnt)) {
+
+            case "OwnLevel":
+                setIdChecked("chk_UserRight_01", hxUG.getNodeValue(str, "btnUserManageOwn"));
+                break;
+            case "ClearLog":
+                setIdChecked("chk_UserRight_02", hxUG.getNodeValue(str, "btnClearLogs"));
+                break;
+            case "FirmwareUpgrade":
+                setIdChecked("chk_UserRight_03", hxUG.getNodeValue(str, "pageMisc"));
+                break;
+            case "DiskSetting":
+                setIdChecked("chk_UserRight_04", hxUG.getNodeValue(str, "pageDisk"));
+                break;
+            case "RecordSetting":
+                setIdChecked("chk_UserRight_05", hxUG.getNodeValue(str, "pageRecord"));
+                break;
+            case "LiveAudio":
+                setIdChecked("chk_UserRight_06", hxUG.getNodeValue(str, "iconLiveAudio"));
+                break;
+            case "PlaybackAudio":
+                setIdChecked("chk_UserRight_07", hxUG.getNodeValue(str, "iconPbAudio"));
+                break;
+            case "ArchivalFunction":
+                setIdChecked("chk_UserRight_08", hxUG.getNodeValue(str, "iconArchive"));
+                break;
+            case "SystemLogView":
+                setIdChecked("chk_UserRight_09", hxUG.getNodeValue(str, "btnSysLogViewExport"));
+                break;
+            case "UserManagement":
+                setIdChecked("chk_UserRight_10", hxUG.getNodeValue(str, "pageUserManage"));
+                break;
+            case "DateTimeSetting":
+                setIdChecked("chk_UserRight_11", hxUG.getNodeValue(str, "pageDateTime"));
+                break;
+            case "DisplaySetting":
+                setIdChecked("chk_UserRight_12", hxUG.getNodeValue(str, "pageDisplay"));
+                break;
+            case "NetworkSetting":
+                setIdChecked("chk_UserRight_13", hxUG.getNodeValue(str, "pageNetwork"));
+                break;
+            case "ScheduleSetting":
+                setIdChecked("chk_UserRight_14", hxUG.getNodeValue(str, "pageSchedule"));
+                break;
+            case "AlarmEventSetting":
+                setIdChecked("chk_UserRight_15", hxUG.getNodeValue(str, "pageAlarmEvent"));
+                break;
+            case "CameraSetting":
+                setIdChecked("chk_UserRight_16", hxUG.getNodeValue(str, "pageCamera"));
+                break;
+            case "PlaybackSearch":
+                setIdChecked("chk_UserRight_17", hxUG.getNodeValue(str, "iconPbSearch"));
+                break;
+            case "OSDDisplayMode":
+                setIdChecked("chk_UserRight_18", hxUG.getNodeValue(str, "iconDispMode"));
+                break;
+            case "PTZ":
+                setIdChecked("chk_UserRight_19", hxUG.getNodeValue(str, "iconPTZ"));
+                break;
+            case "ChangOwnPassword":
+                setIdChecked("chk_UserRight_20", hxUG.getNodeValue(str, "btnEditOwnPass"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    if (str == "Admin") {
+        for (var i = 1; i < 21; i++) {
+            setIdDisabled("chk_UserRight_" + i.toFill(2), 1);
+        }
+    }
+    else {
+        for (var i = 1; i < 21; i++) {
+            setIdDisabled("chk_UserRight_" + i.toFill(2), 0);
+        }
+        setURMcheck02();
+    }
+}
+function selCamAccessAll(selCamFlag) {
+    var str;
+    var checkedS;
+    if (selCamFlag==1){
+        str = "LA_Live";
+    } else if (selCamFlag==2){
+        str = "LA_Playback";
+    } else if (selCamFlag==3){
+        str = "LA_PTZ";
+    } else if (selCamFlag==4){
+        str = "RA_Live";
+    } else if (selCamFlag==5){
+        str = "RA_Playback";
+    } else if (selCamFlag==6){
+        str = "RA_PTZ";
+    }
+
+    if (getIdChecked("chk_" + str + "All")) {
+        checkedS = 1;
+    } else {
+        checkedS = 0;
+    }
+
+    for (var i = 1; i <= total_cam_Num; i++) {
+        setIdChecked("chk_" + str + "_" + i,checkedS);
+    }
+}
+function setURMcheck01(flag, userNameFlag) {
+    setIdDisabled("username", userNameFlag);
+    setIdDisabled("sel_level", flag);
+    setIdDisabled("sel_status", flag);
+
+    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+        setIdDisabled("chk_LA_LiveAll", flag);
+        setIdDisabled("chk_LA_PlaybackAll", flag);
+        setIdDisabled("chk_LA_PTZAll", flag);
+    }
+    setIdDisabled("chk_RA_LiveAll", flag);
+    setIdDisabled("chk_RA_PlaybackAll", flag);
+    setIdDisabled("chk_RA_PTZAll", flag);
+    for (var i = 0; i < total_cam_Num; i++) {
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            setIdDisabled("chk_LA_Live_" + (i + 1), flag);
+            setIdDisabled("chk_LA_Playback_" + (i + 1), flag);
+            setIdDisabled("chk_LA_PTZ_" + (i + 1), flag);
+        }
+        setIdDisabled("chk_RA_Live_" + (i + 1), flag);
+        setIdDisabled("chk_RA_Playback_" + (i + 1), flag);
+        setIdDisabled("chk_RA_PTZ_" + (i + 1), flag);
+    }
+    for (var i = 1; i < 21; i++) {
+        setIdDisabled("chk_UserRight_" + i.toFill(2), flag);
+    }
+}
+function setURMcheck02() {
+    if (parent.LoginHx.getNodeValue("btnUserManageOwn") == 0) {
+        setIdDisabled("chk_UserRight_01", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_01", 0);
+    }
+    if (parent.LoginHx.getNodeValue("btnClearLogs") == 0) {
+        setIdDisabled("chk_UserRight_02", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_02", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageMisc") == 0) {
+        setIdDisabled("chk_UserRight_03", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_03", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageDisk") == 0) {
+        setIdDisabled("chk_UserRight_04", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_04", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageRecord") == 0) {
+        setIdDisabled("chk_UserRight_05", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_05", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconLiveAudio") == 0) {
+        setIdDisabled("chk_UserRight_06", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_06", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconPbAudio") == 0) {
+        setIdDisabled("chk_UserRight_07", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_07", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconArchive") == 0) {
+        setIdDisabled("chk_UserRight_08", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_08", 0);
+    }
+    if (parent.LoginHx.getNodeValue("btnSysLogViewExport") == 0) {
+        setIdDisabled("chk_UserRight_09", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_09", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageUserManage") == 0) {
+        setIdDisabled("chk_UserRight_10", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_10", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageDateTime") == 0) {
+        setIdDisabled("chk_UserRight_11", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_11", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageDisplay") == 0) {
+        setIdDisabled("chk_UserRight_12", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_12", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageNetwork") == 0) {
+        setIdDisabled("chk_UserRight_13", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_13", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageSchedule") == 0) {
+        setIdDisabled("chk_UserRight_14", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_14", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageAlarmEvent") == 0) {
+        setIdDisabled("chk_UserRight_15", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_15", 0);
+    }
+    if (parent.LoginHx.getNodeValue("pageCamera") == 0) {
+        setIdDisabled("chk_UserRight_16", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_16", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconPbSearch") == 0) {
+        setIdDisabled("chk_UserRight_17", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_17", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconDispMode") == 0) {
+        setIdDisabled("chk_UserRight_18", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_18", 0);
+    }
+    if (parent.LoginHx.getNodeValue("iconPTZ") == 0) {
+        setIdDisabled("chk_UserRight_19", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_19", 0);
+    }
+    if (parent.LoginHx.getNodeValue("btnEditOwnPass") == 0) {
+        setIdDisabled("chk_UserRight_20", 1);
+    }
+    else {
+        setIdDisabled("chk_UserRight_20", 0);
+    }
+
+    var str;
+    if (getIdValue("sel_level") == "Admin") {
+        str = "Admin";
+    } else if (getIdValue("sel_level") == "Manager") {
+        str = "Manager";
+    } else if (getIdValue("sel_level") == "Operator") {
+        str = "Operator";
+    }
+
+    if (str == "Admin") {
+        for (var i = 1; i < 21; i++) {
+            setIdDisabled("chk_UserRight_" + i.toFill(2), 1);
+        }
+    }
+}
+function setURMcheck03() {
+    var RA_Live_Access3 = chAccessHandle(parent.RemoteCtrlLiveChnmap.toInt().toString(2));
+    var RA_Playback_Access3 = chAccessHandle(parent.RemoteCtrlPBChnmap.toInt().toString(2));
+    var RA_PTZ_Access3 = chAccessHandle(parent.RemoteCtrlPTZChnmap.toInt().toString(2));
+
+    if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+        var LA_Live_Access3 = chAccessHandle(parent.LocalCtrlLiveChnmap.toInt().toString(2));
+        var LA_Playback_Access3 = chAccessHandle(parent.LocalCtrlPBChnmap.toInt().toString(2));
+        var LA_PTZ_Access3 = chAccessHandle(parent.LocalCtrlPTZChnmap.toInt().toString(2));
+    }
+    for (var i = 0; i < total_cam_Num; i++) {
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            if (LA_Live_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+                setIdDisabled("chk_LA_Live_" + (i + 1), 1);
+            }
+            if (LA_Playback_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+                setIdDisabled("chk_LA_Playback_" + (i + 1), 1);
+            }
+            if (LA_PTZ_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+                setIdDisabled("chk_LA_PTZ_" + (i + 1), 1);
+            }
+        }
+        if (RA_Live_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+            setIdDisabled("chk_RA_Live_" + (i + 1), 1);
+        }
+        if (RA_Playback_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+            setIdDisabled("chk_RA_Playback_" + (i + 1), 1);
+        }
+        if (RA_PTZ_Access3.substr(total_cam_Num - 1 - i, 1) == 0) {
+            setIdDisabled("chk_RA_PTZ_" + (i + 1), 1);
+        }
+    }
+}
+function checkAllChkEnable() {
+
+    for (var i = 0; i < total_cam_Num; i++) {
+        if (setHx.getNode("LocalAccess")) {//20130424  julia add  NVR no local
+            if (getIdDisabled("chk_LA_Live_" + (i + 1)) == 1) {
+                setIdDisabled("chk_LA_LiveAll", 1);
+            }
+            if (getIdDisabled("chk_LA_Playback_" + (i + 1)) == 1) {
+                setIdDisabled("chk_LA_PlaybackAll", 1);
+            }
+            if (getIdDisabled("chk_LA_PTZ_" + (i + 1)) == 1) {
+                setIdDisabled("chk_LA_PTZAll", 1);
+            }
+        }
+        if (getIdDisabled("chk_RA_Live_" + (i + 1)) == 1) {
+            setIdDisabled("chk_RA_LiveAll", 1);
+        }
+        if (getIdDisabled("chk_RA_Playback_" + (i + 1)) == 1) {
+            setIdDisabled("chk_RA_PlaybackAll", 1);
+        }
+        if (getIdDisabled("chk_RA_PTZ_" + (i + 1)) == 1) {
+            setIdDisabled("chk_RA_PTZAll", 1);
+        }
+    }
+}
+function syncBtn1() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_LA_Live_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_LA_LiveAll", 1);
+    } else {
+        setIdChecked("chk_LA_LiveAll", 0);
+    }
+}
+function syncBtn2() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_LA_Playback_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_LA_PlaybackAll", 1);
+    } else {
+        setIdChecked("chk_LA_PlaybackAll", 0);
+    }
+}
+function syncBtn3() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_LA_PTZ_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_LA_PTZAll", 1);
+    } else {
+        setIdChecked("chk_LA_PTZAll", 0);
+    }
+}
+function syncBtn4() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_RA_Live_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_RA_LiveAll", 1);
+    } else {
+        setIdChecked("chk_RA_LiveAll", 0);
+    }
+}
+function syncBtn5() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_RA_Playback_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_RA_PlaybackAll", 1);
+    } else {
+        setIdChecked("chk_RA_PlaybackAll", 0);
+    }
+}
+function syncBtn6() {
+    var allFlag = 1;
+    var objs = EFDEF_("^chk_RA_PTZ_").obj;
+    for (var i = 0; i < objs.length; i++) {
+        if (!getIdChecked(objs[i])) {
+            allFlag = 0;
+        }
+    }
+    if (allFlag == 1) {
+        setIdChecked("chk_RA_PTZAll", 1);
+    } else {
+        setIdChecked("chk_RA_PTZAll", 0);
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+			</tr>
+			<tr>
+				<td colspan="4" valign="top">
+					<div style="width: auto;height: 325px;border: solid 1px #CCCCCC;">
+						<table id="tbl_list" border="0" cellspacing="0" cellpadding="0">
+                            <tHead>
+                                <tr>
+                                    <th style="width:60px;"></th>
+                                    <th id="th_Username" class="txtLeft" style="width:230px;" data-sort="string"></th>
+                                    <th id="th_Level" class="txtLeft" style="width:150px;" data-sort="string"></th>
+                                    <th id="th_Status" class="txtLeft" style="width:150px;"></th>
+                                </tr>
+                            </tHead>
+                            <tbody>
+                            
+                            </tbody>
+                        </table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+                    <table>
+                        <tr>
+                            <td style="width: 40px"></td>
+                            <td id="td_login" class="txtRight" style="width:170px; display:none;">
+					            <span id="span_UserLogin"></span>
+					            <input type="checkbox" id="chk_User_Login" onclick="setLogin();"/>
+				            </td>
+				            <td id="td_logoff" class="txtRight" style="width:370px; display:none;">
+					            <span id="span_AutoLogoff"></span>
+					            <input type="checkbox" id="chk_Auto_Logoff" onclick="setLogoff();"/>
+				            </td>
+                        </tr>
+                    </table>
+                </td>
+			</tr>
+		</table>
+	
+    <div id="div_edit3" style="position: absolute;top: 30px;left: 620px;">
+        <table>
+            <tr>
+                <td>
+                    <img id="img3" alt="Copy" src="../img/menu/user-copy.png" onclick="openEdit(2);" onmousemove="setMouseOver(this,1);" onmouseout="setMouseOver(this,0);" />
+                </td>
+                <td>
+                    <img id="img1" alt="Edit" src="../img/menu/user-edit.png" onclick="openEdit(1);" onmousemove="setMouseOver(this,1);" onmouseout="setMouseOver(this,0);" />
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img id="img_add" alt="Add" src="../img/menu/user-add.png" onclick="openEdit(0);" onmousemove="setMouseOver(this,1);" onmouseout="setMouseOver(this,0);" />
+                </td>
+                <td>
+                    <img id="img2" alt="Delete" src="../img/menu/user-delete.png" onclick="delUser();" onmousemove="setMouseOver(this,1);" onmouseout="setMouseOver(this,0);" />
+                </td>
+            </tr>
+            <tr>
+                <td style="height:100px"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" id="pre_Page_btn" class="btnStyle" value="Previous" style="width:120px;" onclick="changePage(1)" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" id="next_Page_btn" class="btnStyle" value="Next" style="width:120px;" onclick="changePage(2)" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();" />
+                </td>
+            </tr>
+        </table>	
+    </div>
+    </div>
+    <div id="div_edit" style="position: absolute;top: 50px;left: 200px;display: none;z-index: 91;background-color: #C8C8C8;">
+    <table>
+        <tr>
+            <td>
+                <table border="0" cellspacing="0" cellpadding="5" style="border: solid 1px #FFFFFF;">
+			        <tr>
+				        <td colspan="3" style="width: 310px;height: 20px;background: url(../img/title_blue_bg.jpg) repeat -x;"></td>
+			        </tr>
+			        <tr>
+				        <td id="edit_td_Username" class="txtLeft" width="150"></td>
+				        <td width="150">
+					        <input type="text" id="username" maxlength="16" value="" style="width:110px;" onblur="CheckTitle(this);"/>
+				        </td>
+			        </tr>
+                    <tr id="tr_level">
+				        <td id="edit_td_Level" class="txtLeft" width="180"></td>
+				        <td width="150">
+					        <select id="sel_level" style="width:110px;" onchange="selLevelChg();"></select>
+				        </td>
+			        </tr>
+			        <tr id="tr_status">
+				        <td id="edit_td_Status" class="txtLeft" width="150"></td>
+				        <td width="150">
+					        <select id="sel_status" style="width:110px;"></select>
+				        </td>
+			        </tr>
+                    <tr>
+				        <td id="edit_td_new_pwd" class="txtLeft" width="150"></td>
+				        <td width="150">
+					        <input type="password" id="txt_Password" maxlength="16" value="" style="width:150px;" onblur="CheckTitle(this);"/>
+				        </td>
+			        </tr>
+			        <tr id="tr_Confirm" style="visibility: hidden;">
+				        <td id="edit_td_confirm" class="txtLeft" width="150"></td>
+				        <td width="150">
+					        <input type="password" id="txt_Confirm" maxlength="16" value="" style="width:150px;" onblur="CheckTitle(this);"/>
+				        </td>
+			        </tr>
+                    <tr>
+                        <td></td>
+                        <td width="150">
+                            <input type="button" id="btn_Cam_access" class="btnStyle" onclick="OpenCamAccessDiv(1);" />
+                        </td>
+                    </tr>
+			        <tr>
+				        <td class="txtRight" width="150">
+					        <input type="button" id="btn_Save1" class="btnStyle" value="Save" style="width:80px;" onclick="saveData();" />
+				        </td>
+				        <td width="150" class="txtLeft">
+					        <input type="button" id="btn_Cancel" class="btnStyle" value="Cancel" style="width:80px;" onclick="cancelEdit();" />
+				        </td>
+			        </tr>
+		        </table>
+            </td>
+            <td>
+                <span id="UserRight_txt" class="txtLeft">User Right</span>
+                <table id="User_Group_list" cellspacing="5"></table>
+            </td>
+        </tr>
+    </table>
+	</div>
+    <div id="div_edit1" style="position: absolute;top: 50px;left: 200px; height: 650px; display: none;z-index: 92;background-color: #C8C8C8;">
+        <div >
+            <table id="Camera_Access_Head" cellspacing="5"></table>
+        </div>
+        <div style="height:520px; overflow:auto;">
+            <table id="Camera_Access_List" cellspacing="5"></table>
+        </div>
+        <div id="div_edit_btn" style="position: absolute;top: 615px;left: 480px;z-index: 92;"><!--20130424 julia add id-->
+            <table>
+            <tr>
+                <td class="txtRight" width="150">
+			        <input type="button" id="btn_Cam_Access_Save" class="btnStyle" value="Save" style="width:80px;" onclick="SaveDataCamAccess();" />
+		        </td>
+		        <td width="150" class="txtLeft">
+			        <input type="button" id="btn_Cam_Access_Cancel" class="btnStyle" value="Cancel" style="width:80px;" onclick="OpenCamAccessDiv(0);" />
+		        </td>
+            </tr>
+            </table>
+        </div>
+        
+        
+    </div>
+    <div id="sm"></div>
+    <div id="mask1" class="ScreenMask"></div>
+</body>
+</html>

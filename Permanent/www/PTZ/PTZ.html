@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var hx = new HandleXml();
+var selCam = 0;
+var chnAccesCtrl = chAccessHandle(parent.RemoteCtrlPTZChnmap.toInt().toString(2));
+function init(){
+	GetXML();
+	initCameraList();
+	initStepList();
+	initSelectCamera();
+	setLanguage();
+	if (parent.firstTimeFlag == 0) {
+	    parent.firstTimeFlag = 1;
+	    parent.openLiveStreamAppletLivePage();
+	}
+	parent.ChangAppletPosition(parent.appletWidth, parent.appletHeight - 30, 170, 274);
+	refresh();
+	parent.cgi.step = 2;
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Camera.xml");
+}
+function initCameraList(){
+	var hs = new HandleSelect("sel_cam",0);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		hs.addOpt(i,i + 1,i);
+	}
+}
+function initStepList(){
+	var steplist=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+	var hs = new HandleSelect("sel_step",0);
+	for(var i = 0; i < steplist.length; i++){
+		hs.addOpt(i,steplist[i]+" X",steplist[i]);
+	}
+	hs.addOpt(i,"Continious",-9999);
+	sel_step.value = -9999;
+	setIdVisibility("sel_step", "0");
+	setIdVisibility("td_step", "0");
+}
+function selectCamera(){
+    var str = "camera" + getIdSelectText("sel_cam");
+    var flag = hx.getNodeValue(str, "enablePtz");
+
+	if(flag > 0){
+	    parent.cgi.ptzId = hx.getNodeValue(str, "ptzID");
+	}else{
+		parent.cgi.ptzId = 0;
+	}
+    parent.setSingleChannelScreen(getIdValue("sel_cam").toInt());
+    selCam = getIdValue("sel_cam").toInt();
+    parent.subMenuFrm.enableFlag = chnAccesCtrl.substr(parent.g_total_ch_num - 1 - selCam, 1);
+}
+function initSelectCamera() {
+    var str = "camera" + getIdSelectText("sel_cam");
+    var flag = hx.getNodeValue(str, "enablePtz");
+
+    if (flag > 0) {
+        parent.cgi.ptzId = hx.getNodeValue(str, "ptzID");
+    } else {
+        parent.cgi.ptzId = 0;
+    }
+    selCam = getIdValue("sel_cam").toInt();
+}
+function selectStep(){
+	var stepval=getIdValue("sel_step");
+	parent.cgi.step=stepval;
+}
+function setLanguage(){
+	setIdInnerHTML("td_Cam"		,hl.get("CAMERA"));
+	setIdInnerHTML("td_step"	,hl.get("STEP"));
+}
+function disconnectEKB200() {
+    var rst = parent.applet.disconnectEKB200();
+}
+function chAccessHandle(p) {
+    var str = p;
+    if (str.length < parent.g_total_ch_num) {
+        var lenth = str.length;
+        for (var i = 1; i <= parent.g_total_ch_num - lenth; i++) {
+            str = "0" + str;
+        }
+    }
+    return str;
+}
+</script>
+</head>
+<body onload="" onunload="parent.SetAppletVisible(0);disconnectEKB200();">
+	<div style="position: absolute;top: 745px;">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+                <td id="td_Cam" class="txtRight" width="160"></td>
+				<td width="150"><select id="sel_cam" style="width:100px;" onChange="selectCamera();"></select></td>
+				<td id="td_step" class="txtRight" width="40"></td>
+				<td width="85"><select id="sel_step" style="width:85px;" onChange="selectStep();"></select></td>
+			</tr>
+		</table>
+	</div>
+
+    <script src="../include/js/jquery-1.8.2.js"></script>
+    <script src="../include/js/detect-zoom.js"></script>
+    <script>
+        function refresh() {
+            var width, height, ratio;
+            ratio = window.detectZoom.zoom();
+            if (ratio == 0) {
+                ratio = 1;
+            }
+            width = parent.appletWidth * ratio;
+            height = (parent.appletHeight - 30) * ratio;
+            parent.applet.resize(width, height);
+            parent.applet.setUILayout(width, height, 1);
+
+            parent.applet.setSingleChannelScreen(getIdValue("sel_cam"));
+        }
+        $(document).ready(function () {
+            init();
+            $(window).on('resize', refresh);
+        });
+    </script>
+</body>
+</html>

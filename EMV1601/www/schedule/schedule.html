@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScheduleTable.css">
+<link rel="stylesheet" type="text/css" href="../include/css/LoadingBar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScheduleTable.js"></script>
+<script type="text/javascript" src="../include/js/LoadingBar.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var IPCamOptionhx = new HandleXml();
+var st;		//ScheduleTable
+var sm;
+var lb;
+var mc;
+var resolution_array;
+var g_cam_flag = 0;
+
+function init() {
+    parent.initInstallCameraArray();
+    setHx.setUrl("../" + parent.g_device_xml_name);
+
+    if (parent.g_model_name_int == 0) {
+        
+    } else {
+        IPCamOptionhx.setUrl("../cgi-bin/IPCamVideoOptions.xml");
+        resolution_array = IPCamOptionhx.getNodeValue("camera01", "Main", "VideoFormat", "ResolutionsAvailable").split(",");
+    }
+    
+	setLanguage();
+	initCamera();
+	GetXML();
+	initScheduleTable();
+	sm = new ScreenMask("","sm");
+	lb = new LoadingBar("","lb",210,20,200,260,"Loading In Progress...",180,260);
+	mc = new MultipleCheckbox("d","mc","",120,200,hl);
+	changeCamera(1);
+	unlockCamera();
+}
+function initScheduleTable(){
+    st = new ScheduleTable("st", hx, 600, null, 50, 70, null, 420, hl); //20101025 w:null->600
+    disableSelection(EFDEF_id("ScheduleTB"));
+}
+function initCamera(){
+	var ht = new HandleTable("tbl_Camera");
+	ht.insertRow();
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		if ( i>15 && (i%16==0) ){
+			ht.insertRow();
+		}
+	    ht.insertCell().id("cam" + i)
+				.width(30)
+				.innerHTML(i + 1)
+				.onclick(
+					function () {
+					    for (var i = 0; i < parent.g_total_ch_num; i++) {
+					        setIdClass('cam' + i, 'td_center');
+					    }
+
+					    if (parent.g_model_name_int == 0) {     //******* 20130617 added specific resolutions by different ip cams for X86NVR and ENVR by John
+					        
+					    }
+					    else {
+					        IPCamOptionhx.setUrl("../cgi-bin/IPCamVideoOptions.xml");
+					        resolution_array = IPCamOptionhx.getNodeValue("camera" + getIdInnerHTML(this).toInt().toFill(2), "Main", "VideoFormat", "ResolutionsAvailable").split(",");
+                        }
+
+					    setIdClass(this, 'td_center_Sel');
+					    sm.open();
+					    lb.show();
+					    delayChange(getIdInnerHTML(this).toInt());
+					})
+				.onmouseover(function () {
+				    setIdCursor(this, "pointer");
+				})
+				.onmouseout(function () {
+				    setIdCursor(this, "default");
+				});
+				if(i == 0){
+					setIdClass(ht.td,"td_center_Sel");
+				}else{
+					setIdClass(ht.td,"td_center");
+ 				}
+	}
+}
+function selSyncCameras(){
+	var tmpAry = new Array();
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		tmpAry.push(i + 1);
+	}
+	sm.open();
+	mc.setTitle(hl.get("APPLY_TO_CAMERAS"))
+			.setAry(tmpAry);
+	
+	mc.setCols(4)
+	.setSelectedText(g_cam_flag)
+	.createList()
+	.setFuncOk(syncCameras)
+	.setFuncCancel(cancelSync)
+	.open();
+}
+function syncCameras(){
+	lb.show();
+	setTimeout("syncCamerasAct()",1000);
+}
+function syncCamerasAct(){
+	for(var i = 0;i < mc.aryChecked.length;i++){
+		if(mc.aryChecked[i]){
+			st.syncCameras(i);
+		}
+	}
+	if(!st.checkFps()){
+		alert("overflow");
+		setIdDisabled("btn_Save", 1);
+	}else{
+    setIdDisabled("btn_Save", 0);
+	}
+	sm.close();
+	lb.hide();
+}
+function selSyncDays(){
+	if(st.focusRow != ""){
+	    sm.open();
+	    var str;
+	    if (st.focusRow == "Holiday") {
+	        str = "Hol";
+	    } else if (st.focusRow == "Others") {
+	        str = "Oth";
+	    } else {
+	        str = st.focusRow;
+	    }
+		mc.setTitle(hl.get("APPLY_TO_DAYS"))
+			.setAry(st.daysAry2)
+			.setCols(3)
+			.setSelectedText(str)
+			.createList()
+			.setFuncOk(syncDays)
+			.setFuncCancel(cancelSync)
+			.open();
+	}else{
+		alert(hl.get("PLZ_CHOOSE_DATE"));
+	}
+}
+function syncDays(){
+	lb.show();
+	setTimeout("syncDaysAct()",1000);
+}
+function syncDaysAct(){
+	var tmpFocus = st.focusRow;
+	for(var i = 0;i < mc.aryChecked.length;i++){
+		if(mc.aryChecked[i]){
+			st.focusRow = tmpFocus;
+			st.syncDays(i);
+		}
+	}
+	st.refresh();
+	if(!st.checkFps()){
+		alert("overflow");
+		setIdDisabled("btn_Save", 1);
+	}else{
+    setIdDisabled("btn_Save", 0);
+	}
+	sm.close();
+	lb.hide();
+}
+function cancelSync(){
+	sm.close();
+}
+function delayChange(no){
+	setTimeout("changeCamera(" + no +");",1000);
+}
+function GetXML() {
+    hx.setUrl("../cgi-bin/Schedule.xml");
+}
+function changeCamera(no){
+	g_cam_flag = no;
+	st.hx = hx;
+	st.clearScheduleTable();
+	st.daysAry = new Array();
+	st.daysAry2 = new Array();
+	st.setRow(no, "Holiday", hl.get("HOL"));
+	st.setRow(no, "Others", hl.get("OTH"));
+	st.setRow(no, "Sun", hl.get("SUN"));
+	st.setRow(no,"Mon",hl.get("MON"));
+	st.setRow(no,"Tue",hl.get("TUE"));
+	st.setRow(no,"Wed",hl.get("WED"));
+	st.setRow(no,"Thu",hl.get("THU"));
+	st.setRow(no,"Fri",hl.get("FRI"));
+	st.setRow(no,"Sat",hl.get("SAT"));
+	sm.close();
+	lb.hide();
+	setIdDisplay("st", "inline");
+	setIdDisplay("div_btn", "inline");
+}
+function SetXML(){
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Schedule.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+
+function setLanguage(){
+	setIdInnerHTML("td_camera",hl.get("CAMERA"));
+	
+	setIdValue("btn_edit_timezone",hl.get("EDIT_TIMEZONE"));
+	setIdValue("btn_Apply_to_days",hl.get("APPLY_TO_DAYS"));
+	setIdValue("btn_Apply_to_Cameras",hl.get("APPLY_TO_CAMERAS"));
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+function lockCamera() {
+    EFDEF_("^cam").disabled(true);
+}
+function unlockCamera() {
+    EFDEF_("^cam").disabled(false);
+    /*if (parent.g_model_name_int == 0) {
+    } else {*/
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            if (!parent.installCameraArray[i]) {
+                setIdDisabled("cam" + i, 1);
+                setIdClass("cam" + i, "td_center");
+            }
+        }
+        if (!parent.installCameraArray[0]) {
+            setIdDisplay("st", "none");
+            setIdDisplay("div_btn", "none");
+            lb.hide();
+        }
+
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            if (parent.installCameraArray[i]) {
+                changeCamera(i + 1);
+                setIdClass("cam" + i, 'td_center_Sel');
+                break;
+            }
+        }
+    //}
+}
+function unlockCameraCE() {
+    /*if (parent.g_model_name_int == 0) {  
+    } else {*/
+        EFDEF_("^cam").disabled(false);
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            if (!parent.installCameraArray[i]) {
+                setIdDisabled("cam" + i, 1);
+            }
+        }
+    //}
+}
+</script>
+</head>
+<body onload="init();">
+    <div class="ClientFrame" style="z-index:6">
+		<table id="ScheduleTB" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td id="td_camera" class="txtCenter" width="60"></td>
+				<td width="550">
+					<table id="tbl_Camera" border="0" cellspacing="10" cellpadding="0"></table>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div id="st" style="border: solid 1px #FFFFFF; z-index:999;"></div>
+				</td>
+			</tr>
+		</table>
+
+        <div id="div_btn" style="position: absolute;left: 120px;width: auto;height: 40px;margin: 5px;z-index: -1;text-align: -moz-center;text-align: center;">
+		<input type="button" id="btn_edit_timezone" class="btnStyle" value="" onclick="st.openEdit();"/>
+		<input type="button" id="btn_Apply_to_days" class="btnStyle" value="" onclick="selSyncDays();"/>
+		<input type="button" id="btn_Apply_to_Cameras" class="btnStyle" value="" style="width:120px;" onclick="selSyncCameras();"/>
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+    </div>
+	
+	<div id="sm"></div>
+	<div id="lb"></div>
+	<div id="mc"></div>
+</body>
+</html>

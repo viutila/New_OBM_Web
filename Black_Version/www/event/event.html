@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx;
+var setHx = new HandleXml();
+var hx1 = new HandleXml();
+var hx2 = new HandleXml();
+var hx3 = new HandleXml();
+var hx4 = new HandleXml();
+var hx5 = new HandleXml();
+var hx6 = new HandleXml();
+var hx7 = new HandleXml();
+var hx8 = new HandleXml();
+var event_Ary;
+var eventName;
+var xmlstr;
+var XmlName;
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initEventArray();
+	setLanguage();
+	
+	GetXML();
+}
+function initEventArray() {
+    event_Ary = parent.SetHx.getNodeValue("EventSetting", "OtherEvent").split(",");
+    var tArray = parent.transLangArray(event_Ary);
+    var hs = new HandleSelect("sel_Event", 0);
+    for (var cnt = 0; cnt < event_Ary.length; cnt++) {
+        if (event_Ary[cnt] == "Disk Temperature") { //20130423 julia modify
+            hs.addOpt(cnt, hl.get("DISK_TEMP"), event_Ary[cnt]);
+        }else
+            hs.addOpt(cnt, hl.get(tArray[cnt]), event_Ary[cnt]);
+    }
+}
+function selectEvent(){
+    //hide all tr
+    EFDEF_("^td_").className("txtLeft");
+    EFDEF_("^tr_").display("none");
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+	eventName = getIdValue("sel_Event");
+	var outtype;
+	
+	setIdInnerHTML("td_Event", hl.get("EVENT"));
+	if (eventName == "Fan Failure") {//Fan Failure
+	    outtype = "OtherFanFailureAlarmType";
+	    hx = hx1;
+	    xmlstr = "Fan";
+	    XmlName = "EventFan.xml";
+	} else if (eventName == "Disk Temperature") {//System/Disk temp.
+	    outtype = "OtherSystemDisktempAlarmType";
+	    hx = hx2;
+	    xmlstr = "DiskTemperature";
+	    XmlName = "EventDiskTemperature.xml";
+	} else if (eventName == "Disk Failure") {//Disk Failure"
+	    outtype = "OtherDiskFailureAlarmType";
+	    hx = hx3;
+	    xmlstr = "DiskFail";
+	    XmlName = "EventDiskFail.xml";
+	} else if (eventName == "Disk Full") {//Disk full warning
+	    outtype = "OtherDiskfullwarningAlarmType";
+	    hx = hx4;
+	    xmlstr = "DiskFull";
+	    XmlName = "EventDiskFull.xml";
+	} else if (eventName == "Disk Off") {//Disk Off
+	    outtype = "OtherEventDiskOffOutputType";
+	    hx = hx5;
+	    xmlstr = "DiskOff";
+	    XmlName = "EventDiskOff.xml";
+	} else if (eventName == "Power Loss") {//Power Loss
+	    hx = hx6;
+	    xmlstr = "PowerLoss";
+	    XmlName = "EventPowerLoss.xml";
+	} else if (eventName == "Network Loss") {//Network Loss
+	    outtype = "OtherEventNetworkLossOutputType";
+	    hx = hx7;
+	    xmlstr = "NetworkLoss";
+	    XmlName = "EventNetworkLoss.xml";
+	} else {
+	    outtype = "OtherFanFailureAlarmType";
+	    hx = hx1;
+	    xmlstr = "Fan";
+	    XmlName = "EventFan.xml";
+	}
+	funcNum = setHx.getNodeChildSize("EVENT", xmlstr);
+
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName(xmlstr, Cnt)) {
+           
+            case "EmailNotify":
+                setIdDisplay("tr_Email_Notify", "table-row");
+                setIdInnerHTML("td_Email_Notify", hl.get("EMAIL_NOTIFY"));
+                setIdChecked("chk_Email_Notify", hx.getNodeValue("emailNotify"));
+                break;
+            case "Log":
+                setIdDisplay("tr_Log", "table-row");
+                setIdInnerHTML("td_Log", hl.get("LOG"));
+                setIdChecked("chk_Log", hx.getNodeValue("log"));
+                break;
+            case "Buzzer":
+                setIdDisplay("tr_Buzzer", "table-row");
+                if (eventName == "Disk Off") {
+                    setIdDisabled("chk_Buzzer", 1);
+                } else {
+                    setIdDisabled("chk_Buzzer", 0);
+                }
+                setIdInnerHTML("td_Buzzer", hl.get("BUZZER"));
+                setIdChecked("chk_Buzzer", hx.getNodeValue("buzzer"));
+                break;
+            case "NetworkAlarm":
+                setIdDisplay("tr_Network_Alarm", "table-row");
+                setIdInnerHTML("td_Network_Alarm", hl.get("NETWORK_ALARM"));
+                setIdChecked("chk_Network_Alarm", hx.getNodeValue("networkAlarm"));
+                break;
+            case "StopRecord":
+                setIdDisplay("tr_Stop_Recording", "table-row");
+                setIdInnerHTML("td_Stop_Recording", hl.get("STOP_RECORDING"));
+                setIdChecked("chk_Stop_Recording", hx.getNodeValue("stopRecord"));
+                break;
+            case "AlarmOutput":
+                setIdDisplay("tr_Alarm_Output", "table-row");
+                setIdInnerHTML("td_Alarm_Output", hl.get("ALARM_OUTPUT"));
+                parent.setSelectOutput(EFDEF_id("sel_Alarm_Output"), parent.g_OutputSum);
+                setIdValue("sel_Alarm_Output", hx.getNodeValue("alarmOutput"));
+                break;
+            case "OutputType":
+                setIdDisplay("tr_Output_Type", "table-row");
+                setIdInnerHTML("td_Output_Type", hl.get("OUTPUT_TYPE"));
+                var type = parent.SetHx.getNodeValue("EventSetting", outtype).split(",");
+                var tArray = parent.transLangArray(type);
+                var hs = new HandleSelect("sel_Output_Type", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), type[i].toLowerCase());
+                }
+                setIdValue("sel_Output_Type", hx.getNodeValue("alarmOutputType"));
+                chgOutputType();
+                break;
+            case "TimeoutDuration":
+                setIdInnerHTML("td_Timeout_Duration", hl.get("TIMEOUT_DURATION"));
+                setIdValue("txt_Timeout_Duration", hx.getNodeValue("timeoutDuration"));
+                break;
+
+            case "TempLimit":
+                setIdDisplay("tr_Temp_Warning_Limit", "table-row");
+                setIdInnerHTML("td_Temp_Warning_Limit", hl.get("TEMP_WARNING_LIMIT"));
+                var temp = parent.SetHx.getNodeValue("EventSetting", "OtherSystemDisktempWarningLimit").split(",");
+                var hs = new HandleSelect("sel_Temp_Warning_Limit", 0);
+                for (i = 0; i < temp.length; i++) {
+                    hs.addOpt(i, temp[i], temp[i].split("c")[0].split(" ")[0]);
+                }
+                setIdValue("sel_Temp_Warning_Limit", hx.getNodeValue("diskTempLimit"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }
+    }
+}
+function chgOutputType(){
+	if(getIdValue("sel_Output_Type") == "timeout" || getIdValue("sel_Output_Type") == "trans+timeout"){
+	    setIdDisplay("tr_Timeout_Duration", "table-row");
+	}else{
+	    setIdDisplay("tr_Timeout_Duration", "none");
+	}
+}
+function GetXML(){
+    //hx.setUrl("http://"+parent.g_ip+"/Event.xml");
+    hx1.setUrl("../cgi-bin/EventFan.xml");
+    hx2.setUrl("../cgi-bin/EventDiskTemperature.xml");
+    hx3.setUrl("../cgi-bin/EventDiskFail.xml");
+    hx4.setUrl("../cgi-bin/EventDiskFull.xml");
+    hx5.setUrl("../cgi-bin/EventDiskOff.xml");
+    hx6.setUrl("../cgi-bin/EventPowerLoss.xml");
+    hx7.setUrl("../cgi-bin/EventNetworkLoss.xml");
+    hx8.setUrl("../cgi-bin/EventFan.xml");
+	selectEvent();
+}
+
+function SetXML(){
+    var tmphx = new HandleXml();
+    var funcNum = 0;
+    var Cnt = 0;
+    funcNum = setHx.getNodeChildSize("EVENT", xmlstr);
+
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName(xmlstr, Cnt)) {
+
+	        case "EmailNotify":
+	            hx.setNodeValue(getIdChecked("chk_Email_Notify"), "emailNotify");
+	            break;
+	        case "Log":
+	            hx.setNodeValue(getIdChecked("chk_Log"),"log");
+	            break;
+	        case "Buzzer":
+	            hx.setNodeValue(getIdChecked("chk_Buzzer"), "buzzer");
+	            break;
+	        case "NetworkAlarm":
+	            hx.setNodeValue(getIdChecked("chk_Network_Alarm"), "networkAlarm");
+	            break;
+	        case "StopRecord":
+	            hx.setNodeValue(getIdChecked("chk_Stop_Recording"), "stopRecord");
+	            break;
+	        case "AlarmOutput":
+	            hx.setNodeValue(getIdValue("sel_Alarm_Output"), "alarmOutput");
+	            break;
+	        case "OutputType":
+	            hx.setNodeValue(getIdValue("sel_Output_Type"), "alarmOutputType");
+	            break;
+	        case "TimeoutDuration":
+	            hx.setNodeValue(getIdValue("txt_Timeout_Duration"), "timeoutDuration");
+	            break;
+	        case "TempLimit":
+	            hx.setNodeValue(getIdValue("sel_Temp_Warning_Limit"), "diskTempLimit");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+
+	    }
+
+	}
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/" + XmlName, newxml);
+
+	tmphx.setXml(ajax.data);
+	if (tmphx.getNodeValue("result") == "1") {
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+
+function setLanguage(){
+    setIdValue("btn_Save", hl.get("SAVE"));
+}
+
+//-->
+</script>
+</head>
+<body onload="init();" onkeydown="controller(event);">
+	<div class="ClientFrame">
+    <div style="width:800px" align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Event" width="100"></td>
+				<td width="200">
+					<select id="sel_Event" style="width:auto;" onChange="selectEvent();"></select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+			</tr>
+        </table>
+        <table><tr><td>
+        <table border="0" cellspacing="5" cellpadding="0">
+			<tr id="tr_Log" style="display:none">
+				<td id="td_Log" width="200px"></td>
+                <td>
+					<input type="checkbox" id="chk_Log"/>
+				</td>
+			</tr>
+            <tr id="tr_Buzzer" style="display:none">
+                <td id="td_Buzzer" width="200px"></td>
+				<td>
+					<input type="checkbox" id="chk_Buzzer"/>
+				</td>
+		    </tr>
+            <tr id="tr_Email_Notify" style="display:none">
+				<td id="td_Email_Notify" width="200px"></td>
+                <td>
+					<input type="checkbox" id="chk_Email_Notify"/>
+				</td>
+			</tr>
+            <tr id="tr_Network_Alarm" style="display:none">				
+				<td id="td_Network_Alarm" width="200px"></td>
+                <td>
+					<input type="checkbox" id="chk_Network_Alarm"/>
+				</td>
+			</tr>
+            <tr id="tr_Stop_Recording" style="display:none">
+				<td id="td_Stop_Recording" width="200px"></td>
+                <td>
+					<input type="checkbox" id="chk_Stop_Recording"/>
+				</td>
+			</tr>
+        </table></td></tr>
+        <tr><td>    
+        <table border="0" cellspacing="5" cellpadding="0">	
+			
+			<tr id="tr_Temp_Warning_Limit" style="display:none">
+				<td id="td_Temp_Warning_Limit" width="200px"></td>
+				<td>
+					<select id="sel_Temp_Warning_Limit" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Alarm_Output" style="display:none">
+				<td id="td_Alarm_Output" width="200px"></td>
+				<td>
+					<select id="sel_Alarm_Output" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Output_Type" style="display:none">
+				<td id="td_Output_Type" width="200px"></td>
+				<td>
+					<select id="sel_Output_Type" style="width:160px;" onchange="chgOutputType();"></select>						
+				</td>
+			</tr>
+			<tr id="tr_Timeout_Duration" style="display:none">
+				<td id="td_Timeout_Duration" width="200px"></td>
+				<td>
+					<input type="text" id="txt_Timeout_Duration" maxlength="16" style="width:60px;" onblur="CheckCharKeyin(this,0,10,150);"/>
+				</td>
+			</tr>									
+		</table>
+        </td></tr>
+        </table>
+	</div>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

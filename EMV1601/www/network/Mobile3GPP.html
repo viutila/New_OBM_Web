@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript"> 
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+ 
+function init() {
+	setLanguage();
+	GetXML();
+	initFunc();
+}
+
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkMobile.xml");
+    if (hx.getNodeValue("RemoteMobile", "subStreamType") == "1") {
+        setIdChecked("chk_H.264", 1);
+    }
+    else if (hx.getNodeValue("RemoteMobile", "subStreamType") == "2") {
+        setIdChecked("chk_MJPEG", 1);
+    }
+}
+
+function initFunc() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    var funcNum = 0;
+    var i, j, q;
+    funcNum = setHx.getNodeChildSize("REMOTEMOBILE");
+    for (i = 0; i < funcNum; i++) {
+
+        switch (setHx.getNodeChildName("REMOTEMOBILE", i)) {
+
+            case "H264":
+                setIdDisplay("chk_H.264", "inline");
+                if (hx.getNodeValue("RemoteMobile", "subStreamType") == "1") {
+                    setIdChecked("chk_H.264", 1);
+                }
+                break;
+            case "MJPEG":
+                setIdDisplay("chk_MJPEG", "inline");
+                if (hx.getNodeValue("RemoteMobile", "subStreamType") == "2") {
+                    setIdChecked("chk_MJPEG", 1);
+                }
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+
+    }
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+    var funcNum = 0;
+    var i, j, q;
+    var str = "RemoteMobile";
+
+    if (getIdChecked("chk_MJPEG")) {
+        hx.setNodeValue(2, "RemoteMobile", "subStreamType");
+    } else if (getIdChecked("chk_H.264")) {
+        hx.setNodeValue(1, "RemoteMobile", "subStreamType");
+    }
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/NetworkMobile.xml", newxml);
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+    parent.showMsg(hx.getXml().xml, "xml");
+}
+ 
+function setLanguage(){
+
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+	setIdInnerHTML("h264txt", hl.get("MSG_H264"));
+	setIdInnerHTML("mjpegtxt", hl.get("MOBILEFOCUS_OR_OTHER_SMART_PHONES") + "</br>" + hl.get("WARNING_SENTENCE38"));
+}
+function change(chk){
+	if(chk==1){
+	setIdChecked("chk_MJPEG",0);
+	setIdChecked("chk_H.264",1);
+	}
+	else if(chk==0){
+	setIdChecked("chk_H.264",0);
+	setIdChecked("chk_MJPEG",1);
+	}
+	else alert("fail");
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="2">
+			<tr>
+				<td class="txtLeft"><input type="checkbox" id="chk_H.264" onclick="change(1);" style="display:none"/> H.264</td>
+			</tr>
+            <tr>
+                 <td id="h264txt" width="700px" colspan="2" class="txtLeft"></td>
+			</tr>
+            <tr>
+                <td style="height:80px"></td>
+            </tr>
+			<tr>
+				<td class="txtLeft"><input type="checkbox" id="chk_MJPEG" onclick="change(0);" style="display:none"/> MJPEG</td>
+			</tr>
+            <tr>
+                <td id="mjpegtxt" width="900px" colspan="2" class="txtLeft"></td>
+            </tr>
+		</table>
+    </div>
+    <div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();">
+	</div>
+</body>
+</html>

@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var callScreenModeFlag = 0;
+
+function init(){
+	setLanguage();
+	setHx.setUrl("../" + parent.g_device_xml_name);
+	GetXML();
+	initFunc();
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    var str = "DateTime";
+    EFDEF_("^td_").className("txtLeft");
+
+    funcNum = setHx.getNodeChildSize("MONITOROSD");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("MONITOROSD", Cnt)) {
+            case "MainCameraTitle":
+                setIdDisplay("td_Main_Monitor", "table-cell");
+                setIdDisplay("td_Camera_Title", "table-cell");
+                setIdDisplay("chk_CameraTitle", "inline");
+                setIdInnerHTML("td_Main_Monitor", hl.get("MAIN_MONITOR"));
+                setIdInnerHTML("td_Camera_Title", hl.get("TITLE"));
+                setIdChecked("chk_CameraTitle", hx.getNodeValue("MainMonitor", "showCameraTitle"));
+                break;
+            case "MainDateTime":
+                setIdDisplay("td_Date_Time", "table-cell");
+                setIdDisplay("chk_DateTime", "inline");
+                setIdInnerHTML("td_Date_Time", hl.get("DATE_TIME"));
+                setIdChecked("chk_DateTime", hx.getNodeValue("MainMonitor", "showDateTime"));
+                break;
+            case "MainEventStatus":
+                setIdDisplay("td_Event_Status", "table-cell");
+                setIdDisplay("chk_EventStatus", "inline");
+                setIdInnerHTML("td_Event_Status", hl.get("EVENT_STATUS"));
+                setIdChecked("chk_EventStatus", hx.getNodeValue("MainMonitor", "showEventStatus"));
+                break;
+            case "MainHDDStatus":
+                setIdDisplay("td_HDD_Status", "table-cell");
+                setIdDisplay("chk_HDDStatus", "inline");
+                setIdInnerHTML("td_HDD_Status", hl.get("HDD_STATUS"));
+                setIdChecked("chk_HDDStatus", hx.getNodeValue("MainMonitor", "showHddStatus"));
+                break;
+            case "MainTextInsert":
+                setIdDisplay("td_Text_Insert", "table-cell");
+                setIdDisplay("chk_Textinsert", "inline");
+                setIdInnerHTML("td_Text_Insert", hl.get("TEXT_INSERT"));
+                setIdChecked("chk_Textinsert", hx.getNodeValue("MainMonitor", "textInsert"));
+                break;
+            case "MainPlaybackDateTime":
+                setIdDisplay("td_Playback_Date_Time", "table-cell");
+                setIdDisplay("chk_PlaybackDateTime", "inline");
+                setIdInnerHTML("td_Playback_Date_Time", hl.get("PLAYBACK_DATE_TIME"));
+                setIdChecked("chk_PlaybackDateTime", hx.getNodeValue("MainMonitor", "showPbDateTime"));
+
+                break;
+            case "MainPlaybackStatus":
+                setIdDisplay("td_Playback_Status", "table-cell");
+                setIdDisplay("chk_Playbackstatus", "inline");
+                setIdInnerHTML("td_Playback_Status", hl.get("PLAYBACK_STATUS"));
+                setIdChecked("chk_Playbackstatus", hx.getNodeValue("MainMonitor", "showPbStatus"));
+                break;
+            case "MainScreenMode":
+                setIdDisplay("td_Screen_Mode", "table-cell");
+                setIdDisplay("sel_Screen_Mode", "inline");
+                setIdInnerHTML("td_Screen_Mode", hl.get("SCREEN_MODE"));
+
+                var np;
+                if (parent.g_dvr_sys == 0) {
+                    np = "N";
+                }
+                else {
+                    np = "P";
+                }
+
+
+                var type = parent.SetHx.getNodeValue("DisplaySetting", "MainMonitorScreenMode_" + np).split(",");
+                var hs = new HandleSelect("sel_Screen_Mode", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_Screen_Mode", hx.getNodeValue("MainMonitor", "resolutionWidth") + "x" + hx.getNodeValue("MainMonitor", "resolutionHeight"));
+                break;
+            case "CallCameraTitle":
+                setIdDisplay("td_Call_Monitor", "table-cell");
+                setIdDisplay("td_Camera_Title2", "table-cell");
+                setIdDisplay("chk_CameraTitle2", "inline");
+                setIdInnerHTML("td_Call_Monitor", hl.get("CALL_MONITOR"));
+                setIdInnerHTML("td_Camera_Title2", hl.get("TITLE"));
+                setIdChecked("chk_CameraTitle2", hx.getNodeValue("CallMonitor", "showCameraTitle"));
+                break;
+            case "CallDateTime":
+                setIdDisplay("td_Date_Time2", "table-cell");
+                setIdDisplay("chk_DateTime2", "inline");
+                setIdInnerHTML("td_Date_Time2", hl.get("DATE_TIME"));
+                setIdChecked("chk_DateTime2", hx.getNodeValue("CallMonitor", "showDateTime"));
+                break;
+            case "CallEventStatus":
+                setIdDisplay("td_Event_Status2", "table-cell");
+                setIdDisplay("chk_EventStatus2", "inline");
+                setIdInnerHTML("td_Event_Status2", hl.get("EVENT_STATUS"));
+                setIdChecked("chk_EventStatus2", hx.getNodeValue("CallMonitor", "showEventStatus"));
+                break;
+            case "CallHDDStatus":
+                setIdDisplay("td_HDD_Status2", "table-cell");
+                setIdDisplay("chk_HDDStatus2", "inline");
+                setIdInnerHTML("td_HDD_Status2", hl.get("HDD_STATUS"));
+                setIdChecked("chk_HDDStatus2", hx.getNodeValue("CallMonitor", "showHddStatus"));
+                break;
+            case "CallTextInsert":
+                setIdDisplay("td_Text_Insert2", "table-cell");
+                setIdDisplay("chk_Textinsert2", "inline");
+                setIdInnerHTML("td_Text_Insert2", hl.get("TEXT_INSERT"));
+                setIdChecked("chk_Textinsert2", hx.getNodeValue("CallMonitor", "textInsert"));
+                break;
+            case "CallPlaybackDateTime":
+                setIdDisplay("td_Playback_Date_Time2", "table-cell");
+                setIdDisplay("chk_PlaybackDateTime2", "inline");
+                setIdInnerHTML("td_Playback_Date_Time2", hl.get("PLAYBACK_DATE_TIME"));
+                setIdChecked("chk_PlaybackDateTime2", hx.getNodeValue("CallMonitor", "showPbDateTime"));
+                break;
+            case "CallPlaybackStatus":
+                setIdDisplay("td_Playback_Status2", "table-cell");
+                setIdDisplay("chk_Playbackstatus2", "inline");
+                setIdInnerHTML("td_Playback_Status2", hl.get("PLAYBACK_STATUS"));
+                setIdChecked("chk_Playbackstatus2", hx.getNodeValue("CallMonitor", "showPbStatus"));
+                break;
+            case "CallScreenMode":
+                setIdDisplay("td_Screen_Mode2", "table-cell");
+                setIdDisplay("sel_Screen_Mode2", "inline");
+                setIdInnerHTML("td_Screen_Mode2", hl.get("SCREEN_MODE"));
+                callScreenModeFlag = 1;
+                var np;
+                if (parent.g_dvr_sys == 0) {
+                    np = "N";
+                }
+                else {
+                    np = "P";
+                }
+                var type = parent.SetHx.getNodeValue("DisplaySetting", "CallMonitorScreenMode_" + np).split(",");
+                var hs = new HandleSelect("sel_Screen_Mode2", 0);
+                for (i = 0; i < type.length; i++) {
+                    hs.addOpt(i, type[i], type[i]);
+                }
+                setIdValue("sel_Screen_Mode2", hx.getNodeValue("CallMonitor", "resolutionWidth") + "x" + hx.getNodeValue("CallMonitor", "resolutionHeight"));
+                break;
+            case "OutputDevice":
+                setIdDisplay("td_Output_Device", "table-row");
+                setIdDisplay("sel_Output_Device", "inline");
+                setIdInnerHTML("td_Output_Device", hl.get("OUTPUT_DEVICE"));
+                var hs = new HandleSelect("sel_Output_Device", 0);
+                hs.addOpt(0, "HDMI", "HDMI");
+                hs.addOpt(1, "VGA", "VGA");
+                setIdValue("sel_Output_Device", hx.getNodeValue("MainMonitor", "outputType"));
+                break;
+            case "TVFormat":
+                setIdDisplay("td_TV_Format", "table-row");
+                setIdDisplay("sel_TV_Format", "inline");
+                setIdInnerHTML("td_TV_Format", "TV Format");
+
+                var hs = new HandleSelect("sel_TV_Format", 0);
+                hs.addOpt(0, "NTSC", "NTSC");
+                hs.addOpt(1, "PAL", "PAL");
+                setIdValue("sel_TV_Format", hx.getNodeValue("MainMonitor", "tv_format"));
+                break;
+            case "RecordingFormat":
+                setIdDisplay("td_Recording_Format", "table-row");
+                setIdDisplay("sel_Recording_Format", "inline");
+                setIdInnerHTML("td_Recording_Format", "Recording Format");
+
+                var hs = new HandleSelect("sel_Recording_Format", 0);
+                hs.addOpt(0, "WD1", "WD1");
+                hs.addOpt(1, "D1", "D1");
+                setIdValue("sel_Recording_Format", hx.getNodeValue("MainMonitor", "aspect_ratio"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+
+function GetXML(){
+    hx.setUrl("../cgi-bin/DisplayOSD.xml");
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+	var str = "MainMonitor";
+		//.setNodeValue(getIdValue("sel_osd_mode")		,str,"MNT_OUT")
+		//.setNodeValue(getIdValue("sel_hdmi_mode")		,str,"HDMI_MODE")
+	var funcNum = 0;
+	var Cnt = 0;
+	var i = 0;
+	var str = "DateTime";
+	EFDEF_("^td_").className("txtLeft");
+
+	funcNum = setHx.getNodeChildSize("MONITOROSD");
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName("MONITOROSD", Cnt)) {
+	        case "MainCameraTitle":
+	            hx.setNodeValue(getIdChecked("chk_CameraTitle"), "MainMonitor", "showCameraTitle");
+	            break;
+	        case "MainDateTime":
+	            hx.setNodeValue(getIdChecked("chk_DateTime"), "MainMonitor", "showDateTime");
+	            break;
+	        case "MainEventStatus":
+	            hx.setNodeValue(getIdChecked("chk_EventStatus"), "MainMonitor", "showEventStatus");
+	            break;
+	        case "MainHDDStatus":
+	            hx.setNodeValue(getIdChecked("chk_HDDStatus"), "MainMonitor", "showHddStatus");
+	            break;
+	        case "MainTextInsert":
+	            hx.setNodeValue(getIdChecked("chk_Textinsert"), "MainMonitor", "textInsert");
+	            break;
+	        case "MainPlaybackDateTime":
+	            hx.setNodeValue(getIdChecked("chk_PlaybackDateTime"), "MainMonitor", "showPbDateTime");
+	            break;
+	        case "MainPlaybackStatus":
+	            hx.setNodeValue(getIdChecked("chk_Playbackstatus"), "MainMonitor", "showPbStatus");
+	            break;
+	        case "MainScreenMode":
+	            var res = getIdValue("sel_Screen_Mode").split("x");
+	            hx.setNodeValue(res[0], "MainMonitor", "resolutionWidth");
+	            hx.setNodeValue(res[1], "MainMonitor", "resolutionHeight");
+	            break;
+	        case "CallCameraTitle":
+	            hx.setNodeValue(getIdChecked("chk_CameraTitle2"), "CallMonitor", "showCameraTitle");
+	            break;
+	        case "CallDateTime":
+	            hx.setNodeValue(getIdChecked("chk_DateTime2"), "CallMonitor", "showDateTime");
+	            break;
+	        case "CallEventStatus":
+	            hx.setNodeValue(getIdChecked("chk_EventStatus2"), "CallMonitor", "showEventStatus");
+	            break;
+	        case "CallHDDStatus":
+	            hx.setNodeValue(getIdChecked("chk_HDDStatus2"), "CallMonitor", "showHddStatus");
+	            break;
+	        case "CallTextInsert":
+	            hx.setNodeValue(getIdChecked("chk_Textinsert2"), "CallMonitor", "textInsert");
+	            break;
+	        case "CallPlaybackDateTime":
+	            hx.setNodeValue(getIdChecked("chk_PlaybackDateTime2"), "CallMonitor", "showPbDateTime");
+	            break;
+	        case "CallPlaybackStatus":
+	            hx.setNodeValue(getIdChecked("chk_Playbackstatus2"), "CallMonitor", "showPbStatus");
+	            break;
+	        case "CallScreenMode":
+	            var res = getIdValue("sel_Screen_Mode2").split("x");
+	            hx.setNodeValue(res[0], "CallMonitor", "resolutionWidth");
+	            hx.setNodeValue(res[1], "CallMonitor", "resolutionHeight");
+	            break;
+	        case "OutputDevice":
+	            hx.setNodeValue(getIdValue("sel_Output_Device"), "MainMonitor", "outputType");
+	            break;
+	        case "TVFormat":
+	            hx.setNodeValue(getIdValue("sel_TV_Format"), "MainMonitor", "tv_format");
+	        case "RecordingFormat":
+	            hx.setNodeValue(getIdValue("sel_Recording_Format"), "MainMonitor", "aspect_ratio");
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+
+	//var newxml = hx.getXml().xml.replace(/\t/g, "");
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/DisplayOSD.xml", newxml);
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+	setIdValue("btn_Save", hl.get("SAVE"));
+}
+function setConfirm() {
+    var res1 = getIdValue("sel_Screen_Mode").split("x")[0];
+    var res2 = getIdValue("sel_Screen_Mode2").split("x")[0];
+    var outputDevice = getIdValue("sel_Output_Device");
+
+    var setres1 = hx.getNodeValue("MainMonitor", "resolutionWidth");
+    var setres2 = hx.getNodeValue("CallMonitor", "resolutionWidth");
+    var setoutputDevice = hx.getNodeValue("MainMonitor", "outputType");
+
+    if (callScreenModeFlag == 0) {  //******* ECOR960x1 8F2: no call monitor
+        if (res1 != setres1) {
+            if (window.confirm("Resolution selected higher than the monitor can support\nmay cause the screen to black out after rebootion the DVR.\nDo you want to continue?")) {
+                SetXML();
+            }
+        }
+        else {
+            SetXML();
+        }
+    } else { //******* X4
+        if ((res1 != setres1) || (res2 != setres2) || (outputDevice != setoutputDevice)) {
+            if (window.confirm("Resolution selected higher than the monitor can support\nmay cause the screen to black out after rebootion the DVR.\nDo you want to continue?")) {
+                SetXML();
+            }
+        }
+        else {
+            SetXML();
+        }
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <table border="0" cellspacing="5" cellpadding="0">
+    <tr>
+        <td valign="top">
+            <table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Main_Monitor" class="txtLeft" width="200px" style="display: none;"></td>
+				<td width="50px"></td>
+			</tr>
+			<tr>
+				<td id="td_Camera_Title" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_CameraTitle" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Date_Time" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_DateTime" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Event_Status" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_EventStatus" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_HDD_Status" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_HDDStatus" style="display: none;"/>
+				</td>
+			</tr>
+			<tr id="tr_Text_Insert">
+				<td id="td_Text_Insert" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_Textinsert" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Playback_Date_Time" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_PlaybackDateTime" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Playback_Status" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_Playbackstatus" style="display: none;"/>
+				</td>
+			</tr>
+            <tr>
+                <td id="td_Screen_Mode" style="display: none;"></td>
+				<td>
+                    <select id="sel_Screen_Mode" style="display: none;"></select>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Output_Device" style="display: none;"></td>
+				<td>
+                    <select id="sel_Output_Device" style="display: none;"></select>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_TV_Format" style="display: none;"></td>
+				<td>
+                    <select id="sel_TV_Format" style="display: none;"></select>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Recording_Format" style="display: none;"></td>
+				<td>
+                    <select id="sel_Recording_Format" style="display: none;"></select>
+				</td>
+            </tr>
+		    </table>
+        </td>
+        <td valign="top">
+            <table id="tbl_call" border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Call_Monitor" class="txtLeft" width="200px" style="display: none;"></td>
+				<td width="50px"></td>
+			</tr>
+			<tr>
+				<td id="td_Camera_Title2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_CameraTitle2" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Date_Time2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_DateTime2" style="display: none;"/>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Event_Status2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_EventStatus2" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_HDD_Status2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_HDDStatus2" style="display: none;"/>
+				</td>
+			</tr>
+			<tr id="tr1">
+				<td id="td_Text_Insert2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_Textinsert2" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Playback_Date_Time2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_PlaybackDateTime2" style="display: none;"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Playback_Status2" style="display: none;"></td>
+				<td>
+					<input type="checkbox" id="chk_Playbackstatus2" style="display: none;"/>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Screen_Mode2" style="display: none;"></td>
+				<td>
+                    <select id="sel_Screen_Mode2" style="display: none;"></select>
+				</td>
+			</tr>
+		    </table>
+        </td>
+    </tr>
+	</table>
+
+	</div>
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="setConfirm();"/>
+	</div>
+</body>
+</html>

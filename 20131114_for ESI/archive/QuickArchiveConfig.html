@@ -1,0 +1,514 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ProcessBar.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/cgi.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/ProcessBar.js"></script>
+<script type="text/javascript">
+    var hl = parent.hl;
+    var ajax = new AjaxClass();
+    var setHx = new HandleXml();
+    var hx = new HandleXml();
+    var hx1 = new HandleXml();
+    var hx2 = new HandleXml();
+	var cgi;
+    var sm; 	//ScreenMask
+    var pb;
+    var timeoutFlag = 0;
+    var video_type = 0;
+    var oavs;
+function init() {
+    cgi = new cgi();
+    GetXML();
+    setLanguage();
+    sm = new ScreenMask("m", "sm");
+    pb = new ProcessBar("d", "pb", 200, 500, 370, 20, "Process Bar", 180, 630);
+    showQuerySize();
+}
+function GetXML() {
+    setHx.setUrl("../cgi-bin/Express.xml");
+}
+function SetXML() {
+    setHx.setNodeValue(getIdValue("sel_Archive_Interval"), "archiveInterval");
+    setHx.setNodeValue("-1", "currentTime");
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = setHx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(setHx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/Express.xml", newxml);
+
+    var hx2 = new HandleXml();
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        showQuerySize();
+        return 1;
+    } else {
+        return 0;
+    }
+}
+function ArchiveFile() { //for remote
+    parent.g_lock_menu = 1;
+    var tmpCam = 0;
+    for (var i = 0; i < parent.g_total_ch_num; i++) {  //20120323  julia add for ipcam
+        tmpCam += i.toPow(2);
+    }
+    var tmpHx = new HandleXml();
+    tmpHx.setUrl("../cgi-bin/Express.xml");
+    var eTime = tmpHx.getNodeValue("currentTime").toInt(); //eTime is now time
+    var acInterval = parseInt(tmpHx.getNodeValue("archiveInterval")) * 60;
+    var sTime = eTime - acInterval;
+    var ar_type = 0;
+    var video_type = 0;
+	parent.applet.StandardArchive(parent.g_ip, parent.g_port, tmpCam, sTime, eTime, ar_type, video_type, null, 0, 0);
+    //setIdDisabled("btn_copy_1", true);
+    pb.show();
+    pb.setValue(0);
+    setIdDisplay("div_cancel", "block");
+    timeoutFlag = setTimeout("getProcessStatus();", 100);
+}
+function getProcessStatus() {
+    var tmpStatus = 0;
+    tmpStatus = parent.archive_progress;
+    parent.showMsg("Progress:" + tmpStatus);
+
+    if (tmpStatus == "-1") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert("Can't Get Session ID.");
+        //pb1.setValue(0);
+        //ReleaseArchive();
+        setIdDisplay("div_cancel", "none");
+        sm.close();
+        pb.hide();
+        ReleaseArchiveSuccess();
+        return;
+    }
+    else if (tmpStatus == "-2") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert(hl.get("CANT_FIND_DATA"));
+        //pb1.setValue(0);
+        //ReleaseArchive();
+        setIdDisplay("div_cancel", "none");
+        sm.close();
+        pb.hide();
+        ReleaseArchiveSuccess();
+        return;
+    }
+    else if (tmpStatus == "-3") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        //alert(hl.get("CANT_FIND_DATA"));
+        //pb1.setValue(0);
+        setIdDisplay("div_cancel", "none");
+        sm.close();
+        pb.hide();
+        ReleaseArchiveSuccess();
+        return;
+    }
+
+    showMsg("Progress:" + tmpStatus);
+    if (tmpStatus >= 100) {
+        tmpStatus = 100;
+        clearTimeout(timeoutFlag);
+        pb.setValue(tmpStatus);
+        alert(hl.get("SUCCESS"));
+        parent.g_lock_menu = 0;
+        setIdDisplay("div_cancel", "none");
+        sm.close();
+        pb.hide();
+        ReleaseArchiveSuccess();
+    } else if (tmpStatus == -1) {
+        //cancel();
+        alert(hl.get("FAIL"));
+        ReleaseArchive();
+    } else {
+        timeoutFlag = setTimeout("getProcessStatus();", 100);
+        pb.setValue(tmpStatus);
+    }
+}
+function cancelCopy() {
+    setIdDisplay("div_cancel", "none");
+    sm.close();
+    pb.hide();
+    pb.setValue(0);
+    ReleaseArchive();
+}
+function ReleaseArchive() {
+    clearTimeout(timeoutFlag);
+    pb.setValue(0);
+    parent.g_lock_menu = 0;
+    parent.applet.CancelArchive();
+    parent.archive_progress = -99;
+    alert(hl.get("ARCHIVE_ABORT"));
+}
+function ReleaseArchiveSuccess() {
+    clearTimeout(timeoutFlag);
+    pb.setValue(0);
+    parent.g_lock_menu = 0;
+    //cgi.cancelArchive();
+
+    parent.applet.CancelArchive();
+    parent.archive_progress = -99;
+    //alert(hl.get("ARCHIVE_ABORT"));
+}
+function setLanguage() {
+    EFDEF_("^td_").className("txtLeft");
+    var funcNum = parent.testHx.getNodeChildSize("QUICKARCHIVE");
+    for (var Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (parent.testHx.getNodeChildName("QUICKARCHIVE", Cnt)) {
+            case "QuickArchiveInterval":
+                setIdDisplay("tr_configuration", "inline");
+                setIdInnerHTML("leg_Configuration", hl.get("CONFIGURATIONS"));
+                setIdInnerHTML("td_Interval", hl.get("ARCHIVE_INTERVAL"));
+                setIdValue("bt_Config",hl.get("APPLY"));
+                var interval = parent.SetHx.getNodeValue("Archive", "QuickArchiveInterval").split(",");
+                var hs = new HandleSelect("sel_Archive_Interval", 0);
+                for (i = 0; i < interval.length; i++) {
+                    if (i == 1) {
+                        var getLangStr = "S" + interval[i].split(" ")[0] + "MIN";
+                    } else {
+                        var getLangStr = "T" + interval[i].split(" ")[0] + "MIN";
+                    }
+                    hs.addOpt(i, hl.get(getLangStr), interval[i].split(" ")[0]);
+                }
+                setIdValue("sel_Archive_Interval", setHx.getNodeValue("archiveInterval"));
+                break;
+            case "CopyType":
+                setIdInnerHTML("td_Copy_Type", 		hl.get("COPY_TYPE"));
+                break;
+            case "DataSize":
+                setIdInnerHTML("td_Size", 			hl.get("DATA_SIZE"));
+                break;        
+        }
+    }
+    setIdValue("btn_cancel", 			hl.get("CANCEL"));
+    var hs = new HandleSelect("sel_Copy_Type", 0);
+    hs.addOpt(0, hl.get("REMOTE"), "0");
+    	//.addOpt(1, hl.get("COPY_AT_DVR"), "1");
+}
+function ArchiveDecision() {
+    //alert(cgi.MediaStatus());
+        var mstmp = BreakResult(cgi.MediaStatus(), "result");
+        if (mstmp == 1) {
+						var tmpData = cgi.MediaStatus();
+						hx.setXml(tmpData);
+						var msvalue = hx.getNodeValue("archive_result", "media_status").toInt();
+						var mttmp = hx.getNodeValue("archive_result", "media_type").toInt();
+						var mdstmp = hx.getNodeValue("archive_result", "media_size").toInt();
+						var dstmp = hx.getNodeValue("archive_result", "data_size").toInt();
+						parent.showMsg(tmpData);
+
+           if (msvalue == -3) {
+               setIdInnerHTML("td_Value", "* " + dstmp + " MB");
+           }
+           else {
+               setIdInnerHTML("td_Value", dstmp + " MB");
+           }
+
+           switch (msvalue) {
+
+               case -2:
+                   alert("No available media. Insert media with at least " + dstmp + " MB of free space");
+                   //setIdInnerHTML("td_Copy_S", "No Media");
+                   setIdInnerHTML("td_Copy_S", "");
+                   setIdInnerHTML("td_CopyTo", "");
+                   setIdInnerHTML("td_CopyPlace", "");
+                   parent.g_lock_menu = 0;
+                   break;
+               case 0:
+                   //alert("Media Ready");
+                   if (mdstmp < 3 || dstmp < 1) {
+                       alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                       setIdInnerHTML("td_Copy_S", "");
+					   parent.g_lock_menu = 0;
+                   }
+				   else {
+				            setIdInnerHTML("td_Copy_S", "");
+                            sm.open();
+                            pb.show()
+		                    .setValue(0)
+		                    .setProcessFlag(0)
+		                    .setMsg("Copying....")
+		                    .setFinishFn(function () {
+		                        alert(hl.get("SUCCESS"));
+		                    });
+                           CopyAdvance();
+                           setIdInnerHTML("td_Copy_S", mdstmp+" MB Free");
+                           //setIdInnerHTML("td_Value", dstmp + "MB"); 
+                   }
+                   break;
+               case -3:
+                   //alert("No Enough Space");
+                       alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                       setIdInnerHTML("td_Copy_S", "");
+                       setIdInnerHTML("td_CopyPlace", "");
+                       setIdInnerHTML("td_CopyTo", "");
+                       parent.g_lock_menu = 0;
+                   break;
+               case -4:
+                   //alert("No Space");
+                   alert("Insufficient space. The requested archive needs " + dstmp + " MB of free storage space.");
+                   //setIdInnerHTML("td_Copy_S", "No Space");
+                   setIdInnerHTML("td_Copy_S", "");
+                   setIdInnerHTML("td_CopyTo", "");
+                   setIdInnerHTML("td_CopyPlace", "");
+                   parent.g_lock_menu = 0;
+                   break; 
+               case -1:
+                   //alert("Under Search");
+                   setIdInnerHTML("td_Copy_S", "Checking...");
+                   setTimeout("ArchiveDecision()", 1000);
+           }
+           if (msvalue != -1)//20100929 Ruby modify
+           	timechange();
+        }
+       else{
+       	 parent.g_lock_menu = 0;
+       	 alert("MediaStatus Fail");
+       }
+}
+function BreakResult(strtag,str) {
+    hx.setXml(strtag);
+    return hx.getNodeValue(str).toInt();
+}
+function DoCopy() {
+    setIdInnerHTML("td_CopyTo", "");
+    setIdInnerHTML("td_CopyPlace", "");
+    setIdInnerHTML("td_Copy_S", "");
+    setIdInnerHTML("td_star", "");
+    setIdInnerHTML("td_end", "");
+    setIdInnerHTML("td_Times", "");
+    setIdInnerHTML("td_Value", "");
+    if (getIdValue("sel_Copy_Type") == 0) {
+        /*
+	    var sx = SetXML();
+        if (sx == 1) {
+			ArchiveFile();
+		}        else alert("SetXML Fail");
+        */
+        sm.open();
+        ArchiveFile();
+    }
+    else if (getIdValue("sel_Copy_Type") == 1) {
+        var sx = SetXML();
+        if (sx == 1) {
+            //alert(cgi.QuickArchive());
+            //setIdInnerHTML("td_Copy_S", "Checking...");
+            var qatmp = BreakResult(cgi.QuickArchive(), "result");
+            if (qatmp == 1) {
+                parent.g_lock_menu = 1;
+                ArchiveDecision();
+                ShowCopyPlace();
+            }
+            else {
+                parent.g_lock_menu = 0;
+                alert("QuickArchive Fail");
+            }
+        }
+        else alert("SetXML Fail");
+    }
+    else alert("fail");
+}
+function ShowCopyPlace() { //neil 11/15
+    //hx1.setUrl("../QuickArchive.xml");
+    //var str = "QUICKARCHIVE";
+    //var setmedia = hx1.getNodeValue(str, "DEV");
+
+    var tmpData = cgi.MediaStatus();
+    hx2.setXml(tmpData);
+    var msvalue = hx2.getNodeValue("archive_result", "media_status").toInt();
+    var mttmp = hx2.getNodeValue("archive_result", "media_type").toInt();
+    if (mttmp == 0 && msvalue != -2 && msvalue != -4) {
+        setIdInnerHTML("td_CopyTo", hl.get("COPY_TO"));
+        setIdInnerHTML("td_CopyPlace", hl.get("USB"));
+    }
+    else if (mttmp == 1 && msvalue != -2 && msvalue != -4) {
+        setIdInnerHTML("td_CopyTo", hl.get("COPY_TO"));
+        setIdInnerHTML("td_CopyPlace", hl.get("CD/DVD"));
+    }
+    else {
+        setIdInnerHTML("td_CopyTo", "");
+        setIdInnerHTML("td_CopyPlace", "");
+    }
+}
+function SetConfig() {
+    setIdInnerHTML("td_CopyTo", "");
+    setIdInnerHTML("td_CopyPlace", "");
+    setIdInnerHTML("td_Copy_S", "");
+    if (SetXML() == 1) alert("Success");
+    else alert("Fail");
+}
+function timechange() {
+        var tmpData = cgi.QueryArchiveInterval();
+        parent.showMsg("QueryArchiveInterval:" + tmpData);
+		hx.setXml(tmpData);
+		var rtmp = hx.getNodeValue("archive_result", "result").toInt();
+		var stvalue = hx.getNodeValue("archive_result", "start_time");
+		var etvalue = hx.getNodeValue("archive_result", "end_time");
+		var dtime = etvalue - stvalue;
+
+    if (rtmp == 1) {
+        if (stvalue.toInt() == 0) {
+            setIdInnerHTML("td_star","START TIME "+"N/A");
+        } else {
+            var st1;
+            st1 = new Date(stvalue.toInt() * 1000).format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt], true);
+            setIdInnerHTML("td_star", "START TIME"+ st1);
+        }
+
+        if (etvalue.toInt() == 0) {
+            setIdInnerHTML("td_end", "END TIME  "+"N/A");
+        } else {
+            var st2;
+            st2 = new Date(etvalue.toInt() * 1000).format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt], true);
+            setIdInnerHTML("td_end", "END TIME  " + st2);
+        }
+        if (stvalue.toInt() != 0 && etvalue.toInt() != 0) {
+            dtime = ((dtime / 60).toFixed(0)).toInt();
+            setIdInnerHTML("td_Times", dtime+" Min");
+        }
+        else {
+            setIdInnerHTML("td_Times", "N/A");
+        }
+    }
+    else alert("Time Fail");
+
+}
+function CopyAdvance() {
+    var tmpData = BreakResult(cgi.ArchiveStatus(), "result");
+		window.status="Copy:" + tmpData;
+		if (tmpData != -1) {
+		    pb.setValue(tmpData);
+		    if (tmpData >= 100) {
+		    	parent.g_lock_menu = 0;
+		       sm.close();
+		       pb.hide();
+		    } else {
+		        setTimeout("CopyAdvance()", 1000);
+		    }
+		} else {
+		    parent.g_lock_menu = 0;
+		    alert("Local Interrupted");
+		    sm.close();
+		    pb.hide();
+		}
+}
+function showQuerySize() {
+    var size = getQuerySize().toString() + " MB";
+    setIdInnerHTML("td_Copy_Size_Val", size);
+}
+function getQuerySize() {
+    var tmpCam = 0;
+    for (var i = 0; i < parent.g_total_ch_num; i++) {   //20120322  julia add for ipcam
+        if (1==1) { //***** archive all channels
+            tmpCam += i.toPow(2);
+        }
+    }
+
+    var tmpHx = new HandleXml();
+    tmpHx.setUrl("../cgi-bin/Express.xml");
+    var eTime = tmpHx.getNodeValue("currentTime").toInt(); //eTime is now time
+    var acInterval = parseInt(tmpHx.getNodeValue("archiveInterval")) * 60;
+    var sTime = eTime - acInterval;
+    var video_type = 0;
+    var size = parent.applet.GetQuerySize(parent.g_ip, parent.g_port, tmpCam, sTime, eTime, video_type);
+    return size;
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div style="width:500px" align="left">
+		<table>
+            <tr id="tr_configuration" style="display:none">
+                <td>
+                <fieldset>
+                <legend id="leg_Configuration">Configuration</legend>
+                <table>
+                <tr>
+                <td id="td_Interval" align="right" width="200px"></td>
+				<td ><select id="sel_Archive_Interval" style="width:100px; height: 20px;" name="D1"></select></td>
+                <td width="100" align="right"><input type="button" id="bt_Config" class="btnStyle"  value="Apply" style="width:80px;" onclick="SetConfig();"/></td>
+                </tr>
+                </table>
+                </fieldset>
+                </td>
+            </tr>
+            <tr>
+				<td width="500">
+                        <!--<span id="leg_Configuration" class="txtLeft"></span>-->
+                        <table id="tbl_Configuration" border="0" cellspacing="10" cellpadding="0">
+                            <tr>
+				                <td id="td_CopyTo"></td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center" id="td_CopyPlace"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+				                <!--<td><select id="sel_Copy_To" style="width:100px; height: 20px;" name="D2"></select></td>-->
+                                <td id="td_Copy_S" ></td>
+			                </tr>
+                        </table>
+                </td>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                <td>
+                    <table align="left" id="tbl_CT" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            
+                            <td id="td_Copy_Type" width="200" height="50"></td>
+                            <td width="200"><select id="sel_Copy_Type" style="width:120px; height: 20px;" name="D0"></select></td>
+                            <td width="200"><input type="button" id="bt_Copy" class="btnStyle" value="Copy" style="width:120px;" onclick="DoCopy();"></td>
+                        </tr>
+                        <tr>
+                            <td id="td_Size" align="right"></td>
+                            <td id = "td_Copy_Size_Val"></td>
+                            <td>
+                                <table  id="TableT" height="0" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                    <td id="td_Times" ></td>
+                                    <td width="10px"></td>
+                                    <td id="td_Value" ></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <br />
+        <br />
+        <table align="center" >
+             <tr>
+              <td id="td_star" align="center"></td>
+             </tr>
+             <tr>
+              <td id="td_end" align="center"></td>
+             </tr>
+	    </table>
+    </div>
+    </div>
+    <div id="sm"></div>
+	<div id="pb"></div>
+    <div id="div_cancel" style="position: absolute;top: 230px;left: 650px;display: none;z-index: 92;">
+		<input type="button" id="btn_cancel" class="btnStyle" onclick="cancelCopy();"/>
+	</div>
+</body>
+</html>

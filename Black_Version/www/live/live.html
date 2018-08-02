@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<style>
+td
+{
+    font-family: verdana,helvetica,arial,sans-serif;
+    }
+</style>
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript">
+var hl = parent.frames["hl"];
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var refreshCount = 0;
+var hx_TwoWayCodec = new HandleXml();
+var twoWayCodecArray = new Array(parent.g_total_ch_num);
+function init() {
+    initLiveStream();
+    Get2WayCodec();
+    setLanguage();
+    parent.ChangAppletPosition(parent.appletWidth, parent.appletHeight, 170, 274);
+    GetHDDStatus();
+    GetFanStatus();
+    GetLoginUser();
+    if (parent.g_total_ch_num == 16) {
+        parent.g_ch_status = 4;
+    } else if (parent.g_total_ch_num == 8) {
+        parent.g_ch_status = 3;
+    } else if (parent.g_total_ch_num == 4) {
+        parent.g_ch_status = 2;
+    }
+    
+    refresh();
+}
+function initLiveStream() {
+    if (parent.firstTimeFlag == 0) {
+        parent.firstTimeFlag = 1;
+        parent.openLiveStreamAppletLivePage();
+    } else if (parent.firstTimeFlag == 1) {
+        if (parent.g_total_ch_num == 16) {
+            setTimeout('parent.changeViewMode(16)', 1000);
+        } else if (parent.g_total_ch_num == 8) {
+            setTimeout('parent.changeViewMode(9)', 1000);
+        } else if (parent.g_total_ch_num == 4) {
+            setTimeout('parent.changeViewMode(4)', 1000);
+        }
+    } else {
+        parent.firstTimeFlag = 1;
+    }
+}
+function Get2WayCodec() {
+    if (parent.g_model_name_int == 0) {
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            twoWayCodecArray[i] = 0;
+        }
+    } else if (parent.g_model_name_int == 1 || parent.g_model_name_int == 2) {
+        hx_TwoWayCodec.setUrl("../cgi-bin/IPCam.xml");
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            if (hx_TwoWayCodec.getNodeValue("camera" + (i + 1).toFill(2), "audioCodec") == "ADPCM") {
+                twoWayCodecArray[i] = 0;
+            } else if (hx_TwoWayCodec.getNodeValue("camera" + (i + 1).toFill(2), "audioCodec") == "G711") {
+                twoWayCodecArray[i] = 2;
+            }
+        }
+    } else {
+        hx_TwoWayCodec.setUrl("../cgi-bin/IPCam.xml");
+    }
+    parent.applet.setAudioEncodeInfo(twoWayCodecArray, twoWayCodecArray.length);
+}
+function GetHDDStatus() {
+    hx.setUrl("../cgi-bin/Disk.xml");
+    var str = "Disk";
+    var usepercent = 0;
+    var temperature = 0;
+    var overwrite;
+    var recDisk = 0;
+    var cLock = 0;
+    recDisk = parseInt(hx.getNodeValue("recordDdrive"));
+    usepercent = parseInt(hx.getNodeValue("recordPercentage"));
+    cLock = parseInt(hx.getNodeValue("currentLock"));
+
+    for (var i = 1; i <= 8; i++) {
+        if (hx.getNodeValue(str + i.toFill(2).toString(), "install") == 1) {
+            if (i == recDisk) {
+                temperature = parseInt(hx.getNodeValue(str + i.toFill(2).toString(), "temperature"));
+            }
+        }
+    }
+    hx.setUrl("../cgi-bin/Record.xml");
+    overwrite = hx.getNodeValue("Record", "recordOverwrite");
+
+    setIdInnerHTML("hdd_temp_val", temperature + "∘C");
+
+    if (usepercent == 100) {
+        if (overwrite == 1) {
+            setIdInnerHTML("hdd_usage_val", "Overwriting");
+        } else {
+            setIdInnerHTML("hdd_usage_val", "100%");
+        }
+        
+    }
+    else {
+        setIdInnerHTML("hdd_usage_val", usepercent.toString() + "%");
+    }
+    setIdInnerHTML("current_lock_val", cLock.toString() + "%");
+    
+}
+function GetFanStatus() {
+    hx.setUrl("../cgi-bin/Info.xml");
+    for (var i = 0; i < hx.getItemSize("Fan"); i++) {
+        var tmpInfo = hl.get("OK");
+        if (hx.getItemValue(i, "Fan") == "1") {
+            //tmpInfo = hl.get("OK");
+        } else {
+            tmpInfo = hl.get("FAIL");
+        }
+
+        setIdInnerHTML("fan_status_val", tmpInfo);
+    }
+}
+
+function GetLoginUser() {
+    setIdInnerHTML("Login_User", parent.efDecode(parent.g_user_name));
+}
+
+function getPeopleCountInfo()
+{
+	var args = arguments;
+	var tmpCh = args[0]!=null?args[0]:0;	
+	var xmlString = parent.cgi.PeopleCountInfo(tmpCh);		
+	var tmpHx = new HandleXml();
+	
+	tmpHx.setXml(xmlString);
+}
+function setLanguage() {
+    setIdInnerHTML("td_hdd_temp", hl.get("HDD_TEMP") + ":");
+    setIdInnerHTML("td_hdd_usage", hl.get("HDD_USAGE") + ":");
+    setIdInnerHTML("td_lock", hl.get("LOCK") + ":");
+    setIdInnerHTML("td_fan_status", hl.get("FAN_STATUS") + ":");
+    setIdInnerHTML("td_welcome", hl.get("WELCOME") + ":");
+}
+</script>
+</head>
+<body onload="" onunload="parent.SetAppletVisible(0);">
+    <div class="ClientFrame">
+        <table align ="right">
+            <tr>
+                <td id="td_hdd_temp" style="color:#65A097;max-width: 150px;"></td>
+                <td id="hdd_temp_val" style="color:#777777;max-width: 150px;"></td>
+                <td style="width:10px;"></td>
+                <td id="td_hdd_usage" style="color:#65A097;max-width: 150px;"></td>
+                <td id="hdd_usage_val" style="color:#777777;max-width: 150px;"></td>
+                <td style="width:10px;"></td>
+                <td id="td_lock" style="color:#65A097;max-width: 150px;"></td>
+                <td id="current_lock_val" style="color:#777777;max-width: 150px;"></td>
+                <td style="width:10px;"></td>
+                <td id="td_fan_status" style="color:#65A097;max-width: 150px;"></td>
+                <td id="fan_status_val" style="color:#777777;max-width: 150px;"></td>
+                <td style="width:10px;"></td>
+                <td id="td_welcome" style="color:#65A097;max-width: 150px;"></td>
+                <td id="Login_User" style="color:#777777;max-width: 150px;"></td>
+                <td style="width:50px"></td>
+            </tr>
+        </table>
+    </div>
+
+<script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+<script src="../include/js/detect-zoom.js"></script>
+<script>
+    function refresh() {
+        var width, height, ratio;
+        ratio = window.detectZoom.zoom();
+        if (ratio == 0) {
+            ratio = 1;
+        }
+        width = parent.appletWidth * ratio;
+        height = parent.appletHeight * ratio;
+        parent.applet.resize(width, height);
+        if (parent.g_ch_status == 0) {
+            parent.applet.setUILayout(width, height, 1);
+        } else if (parent.g_ch_status == 2) {
+            parent.applet.setUILayout(width, height, 4);
+        } else if (parent.g_ch_status == 3) {
+            parent.applet.setUILayout(width, height, 9);
+        } else if (parent.g_ch_status == 4) {
+            parent.applet.setUILayout(width, height, 16);
+        } else if (parent.g_ch_status == 5) {
+            parent.applet.setUILayout(width, height, 10);
+        } else if (parent.g_ch_status == 6) {
+            parent.applet.setUILayout(width, height, 8);
+        }
+    }
+    $(document).ready(function () {
+        init();
+        $(window).on('resize', refresh);
+    });
+</script>
+
+</body>
+</html>

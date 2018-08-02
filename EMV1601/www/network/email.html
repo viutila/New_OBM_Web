@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var change_pass_flag = 0;
+
+function init(){
+	setLanguage();
+	GetXML();
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkMail.xml");
+	var str = "Mail";
+
+	setIdValue("txt_SMTPServer", hx.getNodeValue(str, "hostName"));
+	setIdValue("txt_SMTPPort", hx.getNodeValue(str, "portNo"));
+	setIdChecked("chk_Authentication", hx.getNodeValue(str, "authentication"));
+
+	ssl = hx.getNodeValue(str, "ssl");
+	if (ssl == 0)   //20110906  julia add
+	    setIdChecked("chk_SSL", ssl);
+	else if (ssl >= 1) {
+	    if (ssl == 2) {
+	        setIdChecked("chk_SSL", 1);
+	        setIdChecked("chk_TLS", 1);
+	    } else {
+	        setIdChecked("chk_SSL", 1);
+	        setIdChecked("chk_TLS", 0);
+        }
+    }
+
+	setIdValue("txt_Username", hx.getNodeValue(str, "accountName"));
+	setIdValue("txt_Sender_Email", hx.getNodeValue(str, "senderEmailAddress"));
+	setIdValue("txt_Receiver_Email1", hx.getNodeValue(str, "receiverEmailAddress"));
+	setIdValue("txt_Receiver_Email2", hx.getNodeValue(str, "receiverEmailAddress2"));
+	setIdValue("txt_Receiver_Email3", hx.getNodeValue(str, "receiverEmailAddress3"));
+
+	setIdValue("txt_Email_Subject", hx.getNodeValue(str, "subject"));
+}
+
+function SetXML(){
+    var str = "Mail";
+	if (getIdChecked("chk_SSL")) {   //20110906  julia add
+	    if (getIdChecked("chk_TLS"))
+	        ssl = 2;
+	    else
+	        ssl = 1;
+	} else
+	    ssl = 0;
+
+
+	if (change_pass_flag == 1) {
+	    if (getIdValue("txt_Password") == getIdValue("txt_Confirm")) {  //getIdValue("txt_Password").trim() != ""
+	        hx.setNodeValue(getIdValue("txt_SMTPServer"), str, "hostName")
+		    .setNodeValue(getIdValue("txt_SMTPPort"), str, "portNo")
+		    .setNodeValue(getIdChecked("chk_Authentication"), str, "authentication")
+		    .setNodeValue(ssl, str, "ssl")
+		    .setNodeValue(getIdValue("txt_Username"), str, "accountName")
+            .setNodeValue(getIdValue("txt_Password"), str, "password")
+		    .setNodeValue(getIdValue("txt_Sender_Email"), str, "senderEmailAddress")
+		    .setNodeValue(getIdValue("txt_Receiver_Email1"), str, "receiverEmailAddress")
+		    .setNodeValue(getIdValue("txt_Receiver_Email2"), str, "receiverEmailAddress2")
+		    .setNodeValue(getIdValue("txt_Receiver_Email3"), str, "receiverEmailAddress3")
+		    .setNodeValue(getIdValue("txt_Email_Subject"), str, "subject");
+	    } else {
+	        alert(hl.get("PASSWORD_ERROR"));
+	        return;
+	    }
+	} else {
+	    hx.setNodeValue(getIdValue("txt_SMTPServer"), str, "hostName")
+		    .setNodeValue(getIdValue("txt_SMTPPort"), str, "portNo")
+		    .setNodeValue(getIdChecked("chk_Authentication"), str, "authentication")
+		    .setNodeValue(ssl, str, "ssl")
+		    .setNodeValue(getIdValue("txt_Username"), str, "accountName")
+		    .setNodeValue(getIdValue("txt_Sender_Email"), str, "senderEmailAddress")
+		    .setNodeValue(getIdValue("txt_Receiver_Email1"), str, "receiverEmailAddress")
+		    .setNodeValue(getIdValue("txt_Receiver_Email2"), str, "receiverEmailAddress2")
+		    .setNodeValue(getIdValue("txt_Receiver_Email3"), str, "receiverEmailAddress3")
+		    .setNodeValue(getIdValue("txt_Email_Subject"), str, "subject");
+    }
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/NetworkMail.xml", newxml);
+		
+	var hx2 = new HandleXml();
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+    change_pass_flag = 0;
+    parent.showMsg(hx.getNode("Mail").xml, "xml");
+}
+
+function setLanguage(){
+
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_SMTP_Server"		,hl.get("SMTP_SERVER"));
+	setIdInnerHTML("td_SMTP_Port"		,hl.get("SMTP_PORT"));
+	setIdInnerHTML("td_Authentication"	,hl.get("AUTHENTICATION"));
+	setIdInnerHTML("td_SSL"			,"SSL");
+	setIdInnerHTML("td_Username"		,hl.get("USERNAME"));
+	setIdInnerHTML("td_Password"		,hl.get("PASSWORD"));
+	setIdInnerHTML("td_Confirm"		,hl.get("CONFIRM"));
+	setIdInnerHTML("td_Sender_Email", hl.get("SENDER_MAIL"));
+	setIdInnerHTML("td_Receiver_Email1"	,hl.get("RECEIVER_EMAIL1"));
+	setIdInnerHTML("td_Receiver_Email2"	,hl.get("RECEIVER_EMAIL2"));
+	setIdInnerHTML("td_Receiver_Email3"	,hl.get("RECEIVER_EMAIL3"));
+	setIdInnerHTML("td_Email_Subject"	,hl.get("EMAIL_SUBJECT"));
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+	
+	setIdValue("txt_Password","123456789012345678901234567890");
+
+	EFDEF_("txt_Password").readOnly(1)
+		.onclick(function () {
+		    if (getIdReadOnly(this)) {
+		        if (window.confirm(hl.get("EDIT_PASSWORD") + "?")) {
+		            hx.setNodeValue(1, "EMAIL_SETTING", "USE_PWD");
+		            setIdValue(this, "");
+		            setIdReadOnly(this, 0);
+		            setIdVisibility("tr_Confirm", 1);
+		            this.focus();
+		            this.select();
+		            setTimeout("EFDEF_id('txt_Password').focus()", 500);
+		            change_pass_flag = 1;
+		        } else {
+		            setIdReadOnly(this, 1);
+		            this.blur();
+		            return false;
+		        }
+		    }
+		})
+		.onfocus(getIdOnclick("txt_Password"));
+}
+
+function checkNetworkMail(id,info)
+{
+	var mystr = EFDEF_id(id).value.replace(/^\s+|\s+EFDEF_/g,"");
+	EFDEF_id(id).value=mystr;
+	var flag=false;
+	var flagstr=false;
+	if(mystr==""){
+		flagstr = true;
+		return true;
+		}
+	flag = checkEmail(id,info);
+	if(flag==false) {
+		EFDEF_id(id).focus();
+		EFDEF_id(id).select();
+		}
+	return flag;
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_SMTP_Server" style="width:auto;"></td>
+				<td style="width:auto;">
+					<input type="text" id="txt_SMTPServer" maxlength="64" style="width:300px;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_SMTP_Port"></td>
+				<td align="left">
+					<input type="text" id="txt_SMTPPort" maxlength="5" style="width:100px;" onblur="CheckCharKeyin(this,0,1,65535);"/>
+				</td>
+			</tr>
+
+			<tr>
+                <td id="td_Authentication"></td>
+				<td class="txtLeft">
+					<input type="checkbox" id="chk_Authentication"/>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_SSL"></td>
+                <td class="txtLeft">
+					<input type="checkbox" id="chk_SSL"/>
+				</td>
+                
+                
+                <td width="30px" align="left">
+                    <input type="checkbox" id="chk_TLS" style="display:none"/>
+                </td>
+                <td id="td_TLS" style="display:none" width="30px" align="right">TLS</td>
+			</tr>
+
+			<tr>
+				<td id="td_Username"></td>
+				<td>
+					<input type="text" id="txt_Username" maxlength="32" style="width:300px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Password"></td>
+				<td>
+					<input type="password" id="txt_Password" maxlength="32" style="width:300px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>			
+			<tr id="tr_Confirm" style="visibility: hidden;">
+				<td id="td_Confirm"></td>
+				<td>
+					<input type="password" id="txt_Confirm" maxlength="32" style="width:300px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Sender_Email"></td>
+				<td>
+					<input type="text" id="txt_Sender_Email" maxlength="64" style="width:300px;"  onblur="checkNetworkMail(this,'');"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Receiver_Email1"></td>
+				<td>
+					<input type="text" id="txt_Receiver_Email1" maxlength="64" style="width:300px;" onblur="checkNetworkMail(this,'');"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Receiver_Email2"></td>
+				<td>
+					<input type="text" id="txt_Receiver_Email2" maxlength="64" style="width:300px;" onblur="checkNetworkMail(this,'');"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Receiver_Email3"></td>
+				<td>
+					<input type="text" id="txt_Receiver_Email3" maxlength="64" style="width:300px;" onblur="checkNetworkMail(this,'');"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Email_Subject"></td>
+				<td>
+					<input type="text" id="txt_Email_Subject" maxlength="32" style="width:300px;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>															
+		</table>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+
+</html>

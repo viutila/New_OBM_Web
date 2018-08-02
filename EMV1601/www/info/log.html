@@ -1,0 +1,470 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/Calendar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/TimeControl.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css"/>
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/HandlePage.js"></script>
+<script type="text/javascript" src="../include/js/Calendar.js"></script>
+<script type="text/javascript" src="../include/js/TimeControl.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hp;
+var cal1;	//calendar
+var cal2;	//calendar
+var tc1;	//TimeControl
+var tc2;	//TimeControl
+var g_eventFlag = 0;
+
+var rangeItem = 2;
+var pageItemNo = 10;
+var g_total = 0;
+
+function init(){
+	setLanguage();
+	initType();
+	initSelectDate();
+	checkkURM();
+}
+function initType(){
+	var ht = new HandleTable("tbl_type");
+	ht.insertRow();	
+		ht.insertCell().width(10);
+		ht.insertCell().attr("noWrap","true")
+				.className("txtRight")
+				.innerHTML(hl.get("CONFIGURATIONS"));
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch3'/>");
+		ht.insertCell().width(10);
+		ht.insertCell().attr("noWrap","true")
+				.className("txtRight")
+				.innerHTML(hl.get("EVENT"));
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch0'/>");
+		ht.insertCell().width(10);
+		ht.insertCell().attr("noWrap","true")
+				.className("txtRight")
+				.innerHTML(hl.get("RECORD"));
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch1'/>");
+		ht.insertCell().width(10);
+		ht.insertCell().attr("noWrap","true")
+				.className("txtRight")
+				.innerHTML(hl.get("OPERATION"));
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch4'/>");
+		ht.insertCell().width(10);
+		ht.insertCell().attr("noWrap","true")
+				.className("txtRight")
+				.innerHTML(hl.get("USER"));
+		ht.insertCell().width(30)
+				.innerHTML("<input type='checkbox' id='chk_ch2'/>");
+}
+function initSelectDate(){
+	cal1 = new Calendar('bids','cal1','SysDate1',parent.g_date_fmt_ary[parent.g_date_fmt],43,215,43,245,184,140);
+	cal2 = new Calendar('bids','cal2','SysDate2',parent.g_date_fmt_ary[parent.g_date_fmt],43,525,43,555,184,140);
+	tc1 = new TimeControl("","tc1",parent.g_time_fmt,"hM",80,20);
+	tc2 = new TimeControl("","tc2",parent.g_time_fmt,"hM",80,20);
+	
+	//handle time==================
+	var tmpHx = new HandleXml();
+	parent.GetTimeZone();
+	tmpHx.setUrl("../cgi-bin/DeviceTime.xml");
+	g_receive_time = tmpHx.getNodeValue("currentTime").toInt();
+
+	cal1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec - 86400) * 1000, true);
+	tc1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec - 86400) * 1000, true);
+
+	cal2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+	tc2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+}
+function getXML(){
+	getTotalCount();
+	if(g_total > 0){
+		setIdVisibility("div_sel",0);
+		setIdVisibility("Search_Thumbnail",1);
+		getPageItem(1);
+	}else{
+		alert("Can't find data");
+	}
+}
+function getTotalCount(){
+	var tmpHx = new HandleXml();
+	var sTime = getTimeSec(	cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+	var eTime = getTimeSec(	cal2.getYear(),
+				cal2.getMonth(),
+				cal2.getDay(),
+				tc2.getHr(),
+				tc2.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+
+	sTime = parent.checkDSTpar(sTime);
+	eTime = parent.checkDSTpar(eTime);
+	/*
+	showMsg("type: " + countType() + "\n" + 
+		"s_time: " + sTime + "\n" +
+		"e_time: " + eTime );
+	*/
+	var tmpData = parent.cgi.getLogTotal(countType(),sTime,eTime);
+	tmpHx.setXml(tmpData);
+	g_total = tmpHx.getNodeValue("result").toInt();
+}
+function countType(){
+	var tmpVal = 0;
+	for(var i = 0;i < 5;i++){
+		if(getIdChecked("chk_ch" + i)){
+			tmpVal += i.toPow(2);
+		}
+	}
+	return tmpVal;
+}
+function getPageItem(nowPage){
+	if(typeof(nowPage.toInt()) != "number"){
+		nowPage = 1;
+	}
+	//getTotalCount();
+	hp = new HandlePage(nowPage,pageItemNo,g_total);
+
+	hp.setPageRange(rangeItem);
+	var sTime = getTimeSec(	cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				0) - parent.g_time_zone_sec;
+	var eTime = getTimeSec(	cal2.getYear(),
+				cal2.getMonth(),
+				cal2.getDay(),
+				tc2.getHr(),
+				tc2.getMin(),
+				0) - parent.g_time_zone_sec;
+
+	var tmpData;
+	if (nowPage == hp.PAGE_RANGE_END) {
+	    //var itemCount = g_total - hp.BEGIN_INDEX;
+	    var itemCount = g_total;
+	    tmpData = parent.cgi.getLogItem(hp.BEGIN_INDEX - 1, itemCount, countType(), sTime, eTime);
+	} else {
+	    tmpData = parent.cgi.getLogItem(hp.BEGIN_INDEX - 1, pageItemNo, countType(), sTime, eTime);
+    }
+    
+    
+	showMsg(tmpData);
+	hx.setXml(tmpData);
+
+	setIdInnerHTML("TdLogData",hl.get("LOG") + ":" + hp.getCurrent() + "/" + hp.getTotal() + ", " + hl.get("TOTAL") + ":" + hp.DATA_COUNTS);
+	ShowLogList();
+}
+function setAattr(tmpA,page){
+	EFDEF_(tmpA).className("aUrl")
+		.title(page)
+		.onmouseover(
+			function(){
+				setIdClass(this,"aUrl_hover");
+			})
+		.onmouseout(
+			function(){
+				setIdClass(this,"aUrl");
+			})
+		.onclick(
+			function(){
+				getPageItem(this.title);
+			});
+}
+function ShowLogList(){
+	setIdInnerHTML("pageControl","");
+	var tmpLi;
+	var tmpA;
+	var tmpUl = EFDEF_id("pageControl");
+	if(hp.BEGIN > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.BEGIN);
+		setIdInnerHTML(tmpA,"&lt;&lt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&lt;&lt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	if(hp.PREV > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.PREV);
+		setIdInnerHTML(tmpA,"&lt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&lt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	
+	//active page
+	for(var i = hp.PAGE_RANGE_START;i <= hp.PAGE_RANGE_END;i++){
+		if(i == hp.CURRENT){
+			tmpLi = document.createElement("li");
+			setIdClass(tmpLi,"current");
+			setIdInnerHTML(tmpLi,hp.CURRENT);
+			tmpUl.appendChild(tmpLi);
+		}else{
+			tmpLi = document.createElement("li");
+			tmpA = document.createElement("a");
+			setAattr(tmpA,i);
+			setIdInnerHTML(tmpA,i);
+			tmpLi.appendChild(tmpA);
+			tmpUl.appendChild(tmpLi);
+		}
+	}
+	if(hp.NEXT > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.NEXT);
+		setIdInnerHTML(tmpA,"&gt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&gt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	if(hp.END > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.END);
+		setIdInnerHTML(tmpA,"&gt;&gt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&gt;&gt;");
+		tmpUl.appendChild(tmpLi);
+	}
+
+	//alert(hp.BEGIN + "-" + hp.PREVPREV + "-" + hp.PREV + "-" + hp.NEXT + "-" + hp.NEXTNEXT + "-" + hp.END);
+	
+	var ht = new HandleTable("tab_list");
+	ht.clear(1);
+
+	var tmpDate;
+	var tmpInfo;
+	var tmpIdx = hp.BEGIN_INDEX;
+	for(var i = 0;i < hx.getItemSize("result");i++){
+	    tmpDate = new Date((parent.checkDSTparShow(hx.getItemValue(i, "result").split(",")[0].toInt()) + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000);
+		tmpDate = tmpDate.format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt],true);
+		tmpInfo = hx.getItemValue(i,"result").split(",")[1] + "&nbsp;";
+		
+		ht.insertRow();
+			ht.insertCell().className("rec_list")
+					.innerHTML(tmpIdx);
+			ht.insertCell().className("rec_list")
+					.innerHTML(tmpDate);
+			ht.insertCell().className("rec_list")
+					.textIndent(5)
+					.textAlign("left")
+					.innerHTML(tmpInfo);
+		tmpIdx++;
+	}
+}
+function ClearLogConfirm() {
+    if (window.confirm(hl.get("CLEAR_LOG"))) {
+        ClearLog();
+    }
+}
+function ClearLog(){
+	var tmpData = parent.cgi.clearLog();
+
+	hx.setXml(tmpData);
+	if(hx.getNodeValue("result") == "1"){
+		alert("Clear data success!");
+	}else{
+		alert("Clear data failure!");
+	}
+}
+function closeOutput(){
+	setIdVisibility("div_sel",1);
+	setIdVisibility("Search_Thumbnail",0);
+}
+function setLanguage(){
+    EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_Log_Type"	,hl.get("LOG_TYPE"));
+	setIdInnerHTML("txt_id"		,hl.get("ID"));
+	setIdInnerHTML("txt_time"	,hl.get("TIME"));
+	setIdInnerHTML("txt_status"	,hl.get("STATUS"));
+	setIdInnerHTML("td_From_Date"	,hl.get("DATE"));
+	setIdInnerHTML("td_From_Time"	,hl.get("TIME"));
+	setIdInnerHTML("td_To_Date"	,hl.get("DATE"));
+	setIdInnerHTML("td_To_Time", hl.get("TIME"));
+
+	setIdInnerHTML("td_From", hl.get("FROM"));
+	setIdInnerHTML("td_To", hl.get("TO"));
+	
+	
+	
+	setIdInnerHTML("td_export_log_to_file",hl.get("EXPORT_LOG_TO_FILE"));
+	
+	setIdValue("btn_ViewLog"	,hl.get("VIEW_LOG"));
+	setIdValue("btn_ClearLog"	,hl.get("CLEAR_LOG"));
+	setIdValue("btn_export"		,hl.get("EXPORT"));
+	setIdValue("btn_close", hl.get("CLOSE"));
+	setIdInnerHTML("mask1_span", hl.get("PLEASE_WAIT"));
+	
+}
+function checkkURM() {
+    if (parent.LoginHx.getNodeValue("btnClearLogs") == 0) {
+        setIdDisplay("btn_ClearLog", "none");
+    }
+    if (parent.LoginHx.getNodeValue("btnSysLogViewExport") == 0) {
+        setIdDisplay("btn_ViewLog", "none");
+        setIdDisplay("btn_export", "none");
+        setIdInnerHTML("td_export_log_to_file","");//20130424 julia modify
+    }
+}
+function exportFunc() {
+    //reloadPage('../cgi-bin/Log.cgi?cmd=export_log');
+    setIdVisibility("mask1", 1);
+    parent.g_lock_menu = 1;
+    setTimeout('exportLogFinish()', 1000);
+}
+function exportLogFinish() {
+    var exportLogFlag = parent.applet.saveLogFile();
+    if (exportLogFlag == 1 || exportLogFlag == 0) {
+        setIdVisibility("mask1", 0);
+        parent.g_lock_menu = 0;
+    }
+}
+</script>
+</head>
+<body onload="init();" onkeydown="controller(event);">
+	<div id="div_sel" class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+            <tr>
+                <td id="td_From" style="width:100px;"></td>
+                <td style="width:200px;"></td>
+                <td id="td_To" style="width:100px;"></td>
+                <td style="width:120px;"></td>
+            </tr>
+			<tr>
+				<td id="td_From_Date" width="100"></td>
+				<td id="cal1" align="left">
+					<input type="text" id="SysDate1" disabled="disabled" size="12" style="width:100px;" readonly="readonly"/>
+				</td>
+
+                <td id="td_To_Date"></td>
+				<td id="cal2" align="left">
+					<input type="text" id="SysDate2" disabled="disabled" size="12" style="width:100px;" readonly="readonly"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_From_Time"></td>
+				<td>
+					<div id="tc1"></div>
+				</td>
+
+                <td id="td_To_Time"></td>
+				<td>
+					<div id="tc2"></div>
+				</td>
+			</tr>
+			<tr>
+				
+			</tr>
+			<tr>
+				
+			</tr>
+			<tr>
+				<td></td>
+			</tr>
+        </table>
+        <table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td colspan="4" width="530">
+					<fieldset class="fieldsetStyle">
+					<legend id="td_Log_Type" class="legStyle"></legend>
+						<table id="tbl_type" border="0" cellspacing="0" cellpadding="0"></table>
+					</fieldset>
+				</td>
+			</tr>
+            <tr>
+                <td style="height:30px;"></td>
+            </tr>
+			<tr>
+                <td colspan="2"></td>
+				<td>
+					<input type="button" id="btn_ViewLog" class="btnStyle" value="" style="width:120px;" onclick="getXML();" />
+				</td>
+			</tr>
+			<tr>
+                <td colspan="2"></td>
+				<td>
+					<input type="button" id="btn_ClearLog" class="btnStyle" value="" style="width:120px;" onclick="ClearLogConfirm();" />
+				</td>
+			</tr>
+			<tr>
+				<td id="td_export_log_to_file" colspan="2"></td>
+				<td>
+					<!--<input type="button" id="btn_export" class="btnStyle" value="" style="width:100px;" onclick="reloadPage('../cgi-bin/Log.cgi?cmd=export_log');"/>-->
+                    <input type="button" id="btn_export" class="btnStyle" value="" style="width:120px;" onclick="exportFunc();"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="Search_Thumbnail" class="searchLogFrm" style="top:100px">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr height="280">
+				<td width="70"></td>
+				<td valign="top" colspan="2">
+					<select id="sel_List" class="selcolor" size="15" style="width: 800px;display: none;"></select>
+					<table id="tab_list" border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td id="txt_id" class="rec_list" width="100"></td>
+							<td id="txt_time" class="rec_list" width="200"></td>
+							<td id="txt_status" class="rec_list" width="500"></td>
+						</tr>
+					</table>
+				</td>			
+			</tr>
+			<tr>
+				<td></td>
+				<td id="TdLogData" class="txtLeft" width="300"></td>
+				<td>
+					<input type="button" id="btn_close" class="btnStyle" value="" style="width:100px;" onclick="closeOutput();"/>
+				</td>
+			</tr>										
+			<tr>
+				<td></td>
+				<td colspan="2">
+					<div class="pageBlack">
+						<ul id="pageControl"></ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	
+	</div>
+    <div id="mask1" class="ScreenMask">
+        <span id="mask1_span" style="position:absolute; left:50%; top:50%;"></span>
+    </div>
+</body>
+</html>

@@ -1,0 +1,703 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+
+var HD_Cam_Flag;
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+	initCameraList();
+
+	sm = new ScreenMask("m","sm");
+	mc_apply = new MultipleCheckbox("d","mc_apply",hl.get("CAMERA"),120,200,hl);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		g_cam_ary.push(i + 1);
+	}
+    GetXML();
+    
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+    setIdInnerHTML("td_Cam", hl.get("CAMERA"));
+    setIdValue("btn_Apply_To", hl.get("APPLY_TO"));
+    funcNum = setHx.getNodeChildSize("CAMERASETTING");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("CAMERASETTING", Cnt)) {
+
+            case "Install":
+                setIdInnerHTML("td_Install", hl.get("INSTALL"));
+                setIdDisplay("td_Install", "table-cell");
+                setIdDisplay("chk_Install", "inline");
+                break;
+            case "Covert":
+                setIdInnerHTML("td_Covert", hl.get("COVERT"));
+                setIdDisplay("td_Covert", "table-cell");
+                setIdDisplay("chk_Covert", "inline");
+                break;
+            case "Title":
+                setIdInnerHTML("td_Title", hl.get("TITLE"));
+                setIdDisplay("td_Title", "table-cell");
+                setIdDisplay("txt_Title", "inline");
+                break;
+            case "RecordDualStream":
+                setIdInnerHTML("td_Sec_Dual_Stream", hl.get("REC_DUAL_STREAM")); //multi-lang
+                setIdDisplay("td_Sec_Dual_Stream", "table-cell");
+                setIdDisplay("sel_dual_stream", "inline");
+                var record = parent.SetHx.getNodeValue("CameraSetting", "RecordDualStream").split(",");
+                var hs = new HandleSelect("sel_dual_stream", 0);
+                for(i=0;i<record.length;i++)
+                {
+                    hs.addOpt(i,hl.get(record[i].toUpperCase()), i);
+                }
+                break;
+            case "RecoedMode":
+                setIdInnerHTML("td_Rec_Mode", hl.get("RECORD_MODE"));
+                setIdDisplay("td_Rec_Mode", "table-cell");
+                setIdDisplay("sel_Rec_Mode", "inline");
+                var mode = parent.SetHx.getNodeValue("CameraSetting", "RecordMode").split(",");
+                var tArray = parent.transLangArray(mode);
+                var hs = new HandleSelect("sel_Rec_Mode", 0);
+                for (i = 0; i < mode.length; i++) {
+                    hs.addOpt(i, hl.get(tArray[i]), mode[i]);
+                }
+                break;
+            case "MainstreamResolution":
+                setIdInnerHTML("td_Resolution", hl.get("RESOLUTION"));
+                setIdInnerHTML("td_main", hl.get("MAIN_STREAM"));
+                setIdDisplay("td_main", "table-cell");
+                setIdDisplay("td_Resolution", "table-cell");
+                setIdDisplay("sel_Resolution", "inline");
+
+                if (parent.g_model_name == "ECOR960-8F2" || parent.g_model_name == "ECOR960-4F2" || parent.g_model_name == "TUTIS+-4F3") { //******* for ECOR960-8F2, ECOR960-4F2, TUTIS+-4F3
+                    var np;
+                    if (parent.g_dvr_sys == 0) {
+                        np = "N";
+                    }
+                    else {
+                        np = "P";
+                    }
+                    var hx_OSD_Display = new HandleXml();
+                    hx_OSD_Display.setUrl("../cgi-bin/DisplayOSD.xml");
+                    var display_ration = hx_OSD_Display.getNodeValue("MainMonitor", "aspect_ratio");
+                    var Resolution_ary = parent.SetHx.getNodeValue("Global", "MainForce" + display_ration + "_" + np).split(",");
+                    parent.setSelectResolution(EFDEF_id("sel_Resolution"), Resolution_ary);
+                } else {
+                    parent.setSelectResolution(EFDEF_id("sel_Resolution"), parent.g_mainResolution_ary);
+                }
+
+                break;
+            case "MainstreamRecordQuality":
+                setIdInnerHTML("td_Rec_Quality", hl.get("RECORD_QUALITY"));
+                setIdDisplay("td_Rec_Quality", "table-cell");
+                setIdDisplay("sel_Rec_Quality", "inline");
+                var hs = new HandleSelect("sel_Rec_Quality", 0);
+                for (i = 0; i < parent.g_mainRecordQuality_ary.length; i++) {
+                    hs.addOpt(i, hl.get(parent.g_mainRecordQuality_ary[i].toUpperCase()), i);
+                }
+                break;
+            case "MainstreamNormalSpeed":
+                setIdInnerHTML("td_Normal_Speed", hl.get("NORMAL_SPEED"));
+                setIdDisplay("td_Normal_Speed", "table-cell");
+                setIdDisplay("sel_Normal_Speed", "inline");
+                //parent.setSelectFps(EFDEF_id("sel_Normal_Speed"), parent.g_mainNormalSpeed_ary);
+                var hs = new HandleSelect("sel_Normal_Speed", 0);
+                for (i = 0; i < parent.parent.g_mainNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainNormalSpeed_ary[i].split(" ")[0] + "FPS";    
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "MainstreamEventSpeed":
+                setIdInnerHTML("td_Event_Speed", hl.get("EVENT_SPEED"));
+                setIdDisplay("td_Event_Speed", "table-cell");
+                setIdDisplay("sel_Event_Speed", "inline");
+                //parent.setSelectFps(EFDEF_id("sel_Event_Speed"), parent.g_mainEventSpeed_ary);
+                var hs = new HandleSelect("sel_Event_Speed", 0);
+                for (i = 0; i < parent.parent.g_mainEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_mainEventSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "SubstreamResolution":
+                setIdInnerHTML("td_dual", hl.get("SUB_STREAM"));
+                setIdDisplay("div_dual", "table-cell");
+                setIdDisplay("td_dual", "table-cell");
+                setIdDisplay("sel_Sec_Resolution", "table-cell");
+
+                if (parent.g_model_name == "ECOR960-8F2" || parent.g_model_name == "ECOR960-4F2" || parent.g_model_name == "TUTIS+-4F3") { //******* for ECOR960-8F2, ECOR960-4F2, TUTIS+-4F3
+                    var np;
+                    if (parent.g_dvr_sys == 0) {
+                        np = "N";
+                    }
+                    else {
+                        np = "P";
+                    }
+                    var hx_OSD_Display = new HandleXml();
+                    hx_OSD_Display.setUrl("../cgi-bin/DisplayOSD.xml");
+                    var display_ration = hx_OSD_Display.getNodeValue("MainMonitor", "aspect_ratio");
+                    var Resolution_ary = parent.SetHx.getNodeValue("Global", "SubForce" + display_ration + "_" + np).split(",");
+                    parent.setSelectResolution(EFDEF_id("sel_Sec_Resolution"), Resolution_ary);
+                } else {
+                    parent.setSelectResolution(EFDEF_id("sel_Sec_Resolution"), parent.g_subResolution_ary);
+                }
+                
+                break;
+            case "SubstreamRecordQuality":
+                setIdDisplay("sel_Sec_Rec_Quality", "inline");
+                var hs = new HandleSelect("sel_Sec_Rec_Quality", 0);
+                for (i = 0; i < parent.g_subRecordQuality_ary.length; i++) {
+                    hs.addOpt(i, hl.get(parent.g_subRecordQuality_ary[i].toUpperCase()), i);
+                }
+                break;
+            case "SubstreamNormalSpeed":
+                setIdDisplay("sel_Sec_Normal_Speed", "inline");
+                //parent.setSelectFps(EFDEF_id("sel_Sec_Normal_Speed"), parent.g_subNormalSpeed_ary);
+                var hs = new HandleSelect("sel_Sec_Normal_Speed", 0);
+                for (i = 0; i < parent.parent.g_subNormalSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_subNormalSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "SubstreamEventSpeed":
+                setIdDisplay("sel_Sec_Event_Speed", "inline");
+                //parent.setSelectFps(EFDEF_id("sel_Sec_Event_Speed"), parent.g_subEventSpeed_ary);
+                var hs = new HandleSelect("sel_Sec_Event_Speed", 0);
+                for (i = 0; i < parent.parent.g_subEventSpeed_ary.length; i++) {
+                    var getLangStr = "S" + parent.parent.g_subEventSpeed_ary[i].split(" ")[0] + "FPS";
+                    hs.addOpt(i, hl.get(getLangStr), i);
+                }
+                break;
+            case "RecordAudio":
+                setIdInnerHTML("td_Rec_Audio", hl.get("RECORD_AUDIO"));
+                setIdDisplay("td_Rec_Audio", "table-cell");
+                setIdDisplay("chk_audio", "inline");
+                setIdDisplay("sel_Rec_Audio", "inline");
+                var hs = new HandleSelect("sel_Rec_Audio", 0);
+                for (i = 1; i <= parent.g_audio_num; i++) {
+                    hs.addOpt(i-1, i, i-1);
+                }
+                checkAudio();
+                break;
+            case "PTZID":
+                setIdInnerHTML("td_PTZ_ID", hl.get("PTZ_ID"));
+                setIdDisplay("td_PTZ_ID", "table-cell");
+                setIdDisplay("sel_ptz", "inline");
+                var hs = new HandleSelect("sel_ptz", 0);
+                var ptz = parent.SetHx.getNodeValue("CameraSetting", "PTZ").split(",");
+                for (i = 0; i < ptz.length; i++) {
+                    hs.addOpt(i, hl.get(ptz[i].toUpperCase()),i);
+                }
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+
+        }    
+    }
+}
+function initCameraList(){
+	var hs = new HandleSelect("sel_cam",0);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		hs.addOpt(i,i + 1,i);
+	}
+}
+
+function selectCamera() {
+    var fucnNum = 0;
+    var Cnt;
+    var str = "camera" + getIdSelectText("sel_cam");
+    funcNum = setHx.getNodeChildSize("CAMERASETTING");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("CAMERASETTING", Cnt)) {
+
+            case "Install":
+                setIdChecked("chk_Install", hx.getNodeValue(str, "install"));
+                break;
+            case "Covert":
+                setIdChecked("chk_Covert", hx.getNodeValue(str, "covert"));
+                break;
+            case "Title":
+                setIdValue("txt_Title", hx.getNodeValue(str, "title"));
+                break;
+            case "RecordDualStream":
+                setIdValue("sel_dual_stream", hx.getNodeValue(str, "recordDual"));
+                break;
+            case "RecoedMode":
+                setIdValue("sel_Rec_Mode", hx.getNodeValue(str, "recordMode"));
+                break;
+            case "MainstreamResolution":
+                setIdValue("sel_Resolution", hx.getNodeValue(str, "Main", "resolution"));
+                break;
+            case "MainstreamRecordQuality":
+                setIdValue("sel_Rec_Quality", hx.getNodeValue(str, "Main", "recordQuality"));
+                break;
+            case "MainstreamNormalSpeed":
+                setIdValue("sel_Normal_Speed", hx.getNodeValue(str, "Main", "normalSpeed")); 
+                break;
+            case "MainstreamEventSpeed":
+                setIdValue("sel_Event_Speed", hx.getNodeValue(str, "Main", "eventSpeed"));
+                break;
+            case "SubstreamResolution":
+                setIdValue("sel_Sec_Resolution", hx.getNodeValue(str, "Sub", "resolution"));
+                break;
+            case "SubstreamRecordQuality":
+                setIdValue("sel_Sec_Rec_Quality", hx.getNodeValue(str, "Sub", "recordQuality"));
+                break;
+            case "SubstreamNormalSpeed":
+                setIdValue("sel_Sec_Normal_Speed", hx.getNodeValue(str, "Sub", "normalSpeed"));
+                break;
+            case "SubstreamEventSpeed":
+                setIdValue("sel_Sec_Event_Speed", hx.getNodeValue(str, "Sub", "eventSpeed"));
+                break;
+            case "RecordAudio":
+                setIdChecked("chk_audio", hx.getNodeValue(str, "recordAudio"));
+                setIdValue("sel_Rec_Audio", hx.getNodeValue(str, "recordAudioInput"));
+                checkAudio();
+                break;
+            case "PTZID":
+                setIdValue("sel_ptz", hx.getNodeValue(str, "enablePtz"));
+                setIdValue("txt_PTZ_ID", hx.getNodeValue(str, "ptzID"));
+                chgPTZ();
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    //setIdValue("btn_save",hl.get("SAVE") + " CH" + getIdSelectText("sel_cam"));
+    setIdValue("btn_save", hl.get("SAVE"));
+	
+}
+function syncData(){
+	var fucnNum = 0;
+	var Cnt;
+	var str = "camera" + getIdSelectText("sel_cam");
+	funcNum = setHx.getNodeChildSize("CAMERASETTING");
+	var modifiedFlag = 0;
+	
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+	    switch (setHx.getNodeChildName("CAMERASETTING", Cnt)) {
+
+	        case "Install":
+	            if (hx.getNodeValue(str, "install") != getIdChecked("chk_Install")) {
+	                hx.setNodeValue(getIdChecked("chk_Install"), str, "install");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "Covert":
+	            if (hx.getNodeValue(str, "covert") != getIdChecked("chk_Covert")) {
+	                hx.setNodeValue(getIdChecked("chk_Covert"), str, "covert");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "Title":
+	            if (hx.getNodeValue(str, "title") != getIdValue("txt_Title")) {
+	                hx.setNodeValue(getIdValue("txt_Title"), str, "title");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "RecordDualStream":
+	            if (hx.getNodeValue(str, "recordDual") != getIdValue("sel_dual_stream")) {
+	                hx.setNodeValue(getIdValue("sel_dual_stream"), str, "recordDual");
+	                modifiedFlag = 1;
+	            }	
+	            break;
+	        case "RecoedMode":
+	            if (hx.getNodeValue(str, "recordMode") != getIdValue("sel_Rec_Mode")) {
+	                hx.setNodeValue(getIdValue("sel_Rec_Mode"), str, "recordMode");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "MainstreamResolution":
+	            if (hx.getNodeValue(str, "Main", "resolution") != getIdValue("sel_Resolution")) {
+	                hx.setNodeValue(getIdValue("sel_Resolution"), str, "Main", "resolution");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "MainstreamRecordQuality":
+	            if (hx.getNodeValue(str, "Main", "recordQuality") != getIdValue("sel_Rec_Quality")) {
+	                hx.setNodeValue(getIdValue("sel_Rec_Quality"), str, "Main", "recordQuality");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "MainstreamNormalSpeed":
+	            if (hx.getNodeValue(str, "Main", "normalSpeed") != getIdValue("sel_Normal_Speed")) {
+	                hx.setNodeValue(getIdValue("sel_Normal_Speed"), str, "Main", "normalSpeed");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "MainstreamEventSpeed":
+	            if (hx.getNodeValue(str, "Main", "eventSpeed") != getIdValue("sel_Event_Speed")) {
+	                hx.setNodeValue(getIdValue("sel_Event_Speed"), str, "Main", "eventSpeed");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "SubstreamResolution":
+	            if (hx.getNodeValue(str, "Sub", "resolution") != getIdValue("sel_Sec_Resolution")) {
+	                hx.setNodeValue(getIdValue("sel_Sec_Resolution"), str, "Sub", "resolution");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "SubstreamRecordQuality":
+	            if (hx.getNodeValue(str, "Sub", "recordQuality") != getIdValue("sel_Sec_Rec_Quality")) {
+	                hx.setNodeValue(getIdValue("sel_Sec_Rec_Quality"), str, "Sub", "recordQuality");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "SubstreamNormalSpeed":
+	            if (hx.getNodeValue(str, "Sub", "normalSpeed") != getIdValue("sel_Sec_Normal_Speed")) {
+	                hx.setNodeValue(getIdValue("sel_Sec_Normal_Speed"), str, "Sub", "normalSpeed");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "SubstreamEventSpeed":
+	            if (hx.getNodeValue(str, "Sub", "eventSpeed") != getIdValue("sel_Sec_Event_Speed")) {
+	                hx.setNodeValue(getIdValue("sel_Sec_Event_Speed"), str, "Sub", "eventSpeed");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "RecordAudio":
+	            if (hx.getNodeValue(str, "recordAudio") != getIdChecked("chk_audio")) {
+	                hx.setNodeValue(getIdChecked("chk_audio"), str, "recordAudio");
+	                modifiedFlag = 1;
+	            }
+	            if (getIdChecked("chk_audio")) {
+	                if (hx.getNodeValue(str, "recordAudioInput") != getIdValue("sel_Rec_Audio")) {
+	                    hx.setNodeValue(getIdValue("sel_Rec_Audio"), str, "recordAudioInput");
+	                    modifiedFlag = 1;
+	                }
+	            }
+	            break;
+	        case "PTZID":
+	            if (hx.getNodeValue(str, "enablePtz") != getIdValue("sel_ptz")) {
+	                hx.setNodeValue(getIdValue("sel_ptz"), str, "enablePtz");
+	                modifiedFlag = 1;
+	            }
+	            if (hx.getNodeValue(str, "ptzID") != getIdValue("txt_PTZ_ID")) {
+	                hx.setNodeValue(getIdValue("txt_PTZ_ID"), str, "ptzID");
+	                modifiedFlag = 1;
+	            }
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+	hx.setNodeValue(modifiedFlag, str, "modified");
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Camera.xml");
+	selectCamera();
+//	checkFps();
+}
+function SetXML(){
+	syncData();
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Camera.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function SetXMLApplyAll() {
+    var hx2 = new HandleXml();
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/Camera.xml", newxml);
+
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+    parent.showMsg(hx.getXml().xml, "xml");
+}
+function applyToAll(){
+	syncData();
+	var fromNode = "camera" + getIdSelectText("sel_cam");
+	var toNode = "";
+	var funcNum;
+	var Cnt;
+	for(var i = 0;i < mc_apply.aryChecked.length;i++){
+		if(mc_apply.aryChecked[i]){
+		    toNode = "camera" + (i + 1);
+		    funcNum = setHx.getNodeChildSize("CAMERASETTING");
+		    hx.setNodeValue(1, toNode, "modified");
+			for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+			    switch (setHx.getNodeChildName("CAMERASETTING", Cnt)) {
+
+			        case "Install":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "install"), toNode, "install");
+			            break;
+			        case "Covert":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "covert"), toNode, "covert");
+			            break;
+			        case "Title":
+			            //hx.setNodeValue(getIdValue("txt_Title"), toNode, "title");
+			            break;
+			        case "RecordDualStream":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "recordDual"), toNode, "recordDual");
+			            break;
+			        case "RecoedMode":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "recordMode"), toNode, "recordMode");
+			            break;
+			        case "MainstreamResolution":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Main", "resolution"), toNode, "Main", "resolution");
+			            break;
+			        case "MainstreamRecordQuality":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Main", "recordQuality"), toNode, "Main", "recordQuality");
+			            break;
+			        case "MainstreamNormalSpeed":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Main", "normalSpeed"), toNode, "Main", "normalSpeed");
+			            break;
+			        case "MainstreamEventSpeed":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Main", "eventSpeed"), toNode, "Main", "eventSpeed");
+			            break;
+			        case "SubstreamResolution":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Sub", "resolution"), toNode, "Sub", "resolution");
+			            break;
+			        case "SubstreamRecordQuality":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Sub", "recordQuality"), toNode, "Sub", "recordQuality");
+			            break;
+			        case "SubstreamNormalSpeed":
+			            hx.setNodeValue(hx.getNodeValue(fromNode, "Sub", "normalSpeed"), toNode, "Sub", "normalSpeed");
+			            break;
+			        case "SubstreamEventSpeed":
+			            hx.setNodeValue(hx.getNodeValue(fromNode,"Sub", "eventSpeed"), toNode, "Sub", "eventSpeed");
+			            break;
+			        case "RecordAudio":
+			            //hx.setNodeValue(hx.getNodeValue(fromNode, "recordAudio"), toNode, "recordAudio");
+			            //hx.setNodeValue(hx.getNodeValue(fromNode, "recordAudioInput"), toNode, "recordAudioInput");
+			            break;
+			        case "PTZID":
+			            //hx.setNodeValue(hx.getNodeValue(fromNode, "enablePtz"), toNode, "enablePtz");
+			            //hx.setNodeValue(hx.getNodeValue(fromNode, "ptzID"), toNode, "ptzID");
+			            break;
+			        case "#text":   //******* for chrome
+			            funcNum++;
+			            break;
+			    }
+			}
+						
+		}
+	}
+
+    //SetXML();
+	SetXMLApplyAll();
+	closeApplyEdit();
+}
+function closeApplyEdit(){
+	sm.close();
+	mc_apply.close();
+}
+function openApplyEdit(){
+	
+	mc_apply.setAry(g_cam_ary);
+	
+		mc_apply.setCols(4)
+			.setSelectedText(getIdValue("sel_cam").toInt() + 1)
+			.createList()
+			.setFuncOk(applyToAll)
+			.setFuncCancel(closeApplyEdit);
+	sm.open();
+	mc_apply.open();
+}
+function chgPTZ(){
+	if(getIdValue("sel_ptz") == "0"){
+		setIdDisplay("txt_PTZ_ID","none");
+		//setIdValue("txt_PTZ_ID",0);
+	}else{
+		setIdDisplay("txt_PTZ_ID","inline");
+		if(getIdValue("txt_PTZ_ID") == 0){
+			//setIdValue("txt_PTZ_ID",getIdValue("sel_cam").toInt() + 1);
+		}
+	}
+}
+function checkAudio() {
+    if (getIdChecked("chk_audio"))
+        setIdDisabled("sel_Rec_Audio", false);
+    else
+        setIdDisabled("sel_Rec_Audio", true);
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+    <div align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Cam" style="width:200px;"></td>
+				<td style="width:160px;">
+					<select id="sel_cam" style="width:100px;" onChange="selectCamera();"></select>
+				</td>
+                
+				<td></td>
+			</tr>
+            <tr>
+                <td id="td_Title" style="display:none"></td>
+				<td>
+					<input type="text" id="txt_Title" maxlength="16" style="width:220px;display:none;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Install" style="display:none"></td>
+				<td>
+					<input type="checkbox" id="chk_Install" style="display:none" onclick=""/>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Covert" style="display:none"></td>
+				<td>
+					<input type="checkbox" id="chk_Covert" style="display:none"/>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Rec_Mode" style="display:none"></td>
+				<td>
+					<select id="sel_Rec_Mode" style="width:150px; display:none;"></select>
+				</td>
+            </tr>
+            <tr>
+                <td id="td_Sec_Dual_Stream" style="display:none; width:200px;"></td>
+				<td>
+					<select id="sel_dual_stream"  style="width:100px; display:none;"></select>
+				</td>
+            </tr>
+        </table>
+
+        <div style="display:table-cell"> 
+            <table border="0" cellspacing="5" cellpadding="0">
+			    <tr>
+				    <td style="width: 200px"></td>
+				    <td id="td_main" class="txtCenter" style="display:none; width: 200px;"></td>
+				    <td></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Resolution" style="display:none;"></td>
+				    <td>
+					    <select id="sel_Resolution" style="width:100px; display:none;" onchange=""></select>
+				    </td>
+				    <td></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Rec_Quality" style="display:none"></td>
+				    <td>
+					    <select id="sel_Rec_Quality" style="width:auto; display:none;"></select>
+				    </td>
+				    <td></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Normal_Speed" style="display:none"></td>
+				    <td>
+					    <select id="sel_Normal_Speed" style="width:100px; display:none;" onchange=""></select>
+				    </td>
+				    <td id="td_fps_info" class="txtLeft" style="display:none"></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Event_Speed" style="display:none"></td>
+				    <td>
+					    <select id="sel_Event_Speed" style="width:100px; display:none; "></select>
+				    </td>
+				    <td></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Rec_Audio" style="display:none"></td>
+				    <td>
+					    <input type="checkbox" id="chk_audio" style="display:none" onclick="checkAudio();"/>&nbsp&nbsp&nbsp&nbsp
+                        <select id="sel_Rec_Audio" style="width:60px; display:none"/>
+				    </td>
+				    <td></td>
+			    </tr>
+			    <tr>
+				    <td id="td_PTZ_ID" style="display:none; width: 200px;"></td>
+				    <td>
+					    <select id="sel_ptz" style="width:auto; display: none;" onchange="chgPTZ();" ></select>&nbsp;
+					    <input type="text" id="txt_PTZ_ID" maxLength="3" value="" style="width:40px; display: none;" onblur="CheckCharKeyin(this,0,1,255);"/>
+				    </td>
+			    </tr>
+		    </table>
+        </div>
+        <div id="div_dual" style="display:none;">
+		    <table border="0" cellspacing="5" cellpadding="0">
+			    <tr>
+				    <td id="td_dual" class="txtLeft" style="width:200px; display:none;"></td>
+			    </tr>
+			    <tr>
+				    <td>
+					    <select id="sel_Sec_Resolution" style="width:100px; display:none;" onchange=""></select>
+				    </td>
+			    </tr>
+			    <tr>
+				    <td>
+					    <select id="sel_Sec_Rec_Quality" style="width:auto; display:none;"></select>
+				    </td>
+			    </tr>
+			    <tr>
+				    <td>
+					    <select id="sel_Sec_Normal_Speed" style="width:100px; display:none;" onchange=""></select>
+				    </td>
+			    </tr>
+			    <tr>
+				    <td>
+					    <select id="sel_Sec_Event_Speed" style="width:100px;  display:none;"></select>
+				    </td>
+			    </tr>
+		    </table>
+	    </div>
+
+    </div>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Apply_To" class="btnStyle" value="" style="width:120px;" onclick="openApplyEdit();">
+        <br />
+        <br />
+		<input type="button" id="btn_save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();">
+	</div>
+	<div id="sm"></div>
+	<div id="mc_apply"></div>
+</body>
+</html>

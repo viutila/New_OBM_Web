@@ -1,0 +1,28 @@
+body{
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+	font-weight: bolder;
+	font-face: Arial;
+	background: transparent;
+}
+.txtRight{
+	font-family: Arial;
+	text-align: right;
+	font-size: 20px;
+	color: #FFFFFF;
+}
+.btnStyle{
+	background-color: #808080;
+	color: #FFFFFF;
+}
+.PTZtxt{
+	font-family: Arial;
+	font-size: 16px;
+	text-align: center;
+	font-weight: bold;
+	color: #0A0B0B;
+}
+.ptzBgBar{
+	background: url(../../img/ptz_ctl.gif) repeat-y;
+}

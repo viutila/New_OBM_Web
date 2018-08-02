@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language type="Dutch">
+	<ACCESSING_NTP_SERVERS>Toegang tot NTP-servers.</ACCESSING_NTP_SERVERS>
+	<ACTION>Actie</ACTION>
+	<ACTIVE_CAMERA>Actieve camera</ACTIVE_CAMERA>
+	<ADD>Toevoegen</ADD>
+	<ADD_DIRECT_IP_ENTRY>Direct IP-gegeven toevoegen</ADD_DIRECT_IP_ENTRY>
+	<ADD_IP_CAMERA>IP-camera toevoegen</ADD_IP_CAMERA>
+	<ADD_TO_CHANNEL>Toevoegen aan kanaal</ADD_TO_CHANNEL>
+	<ADD_USER_ACCOUNT>Gebruikersaccount toevoegen</ADD_USER_ACCOUNT>
+	<ADD_USER_SUCCESS>Toevoegen gebruiker is gelukt</ADD_USER_SUCCESS>
+	<ADDRESS>Adres</ADDRESS>
+	<ADJUST>Aanpassen</ADJUST>
+	<ADMIN>Admin</ADMIN>
+	<ADMIN_PW_CHANGED>Admin PW gewijzigd</ADMIN_PW_CHANGED>
+	<ADVANCED_SETTING>Geavanceerde instelling</ADVANCED_SETTING>
+	<ALARM>Alarm</ALARM>
+	<ALARM_ACKNOWLEDGE>Alarm bevestigen</ALARM_ACKNOWLEDGE>
+	<ALARM_ACTION>Alarmactie</ALARM_ACTION>
+	<ALARM_AUDIO>Alarmaudio</ALARM_AUDIO>
+	<ALARM_EVENT>Alarm &amp; gebeurtenis</ALARM_EVENT>
+	<ALARM_EVENT_SETTING>Alarm-/gebeurtenisinstelling</ALARM_EVENT_SETTING>
+	<ALARM_OUTPUT>Alarmuitvoer</ALARM_OUTPUT>
+	<ALARM_SERVER>Alarmserver</ALARM_SERVER>
+	<ALARM1>Alarm 1</ALARM1>
+	<ALARM2>Alarm 2</ALARM2>
+	<ALARM3>Alarm 3</ALARM3>
+	<ALARM4>Alarm 4</ALARM4>
+	<ALL>Alles</ALL>
+	<ALL_AUDIO>Alle audio</ALL_AUDIO>
+	<ALLOW_REMOTE_REBOOT>Extern opstarten toestaan</ALLOW_REMOTE_REBOOT>
+	<AM>AM</AM>
+	<APPLY>Toepassen</APPLY>
+	<APPLY_TO>Toepassen op</APPLY_TO>
+	<APPLY_TO_ALL>Op alles toepassen</APPLY_TO_ALL>
+	<APPLY_TO_CAMERAS>Toepassen op camera's</APPLY_TO_CAMERAS>
+	<APPLY_TO_DAYS>Toepassen op dagen</APPLY_TO_DAYS>
+	<APR>Apr</APR>
+	<ARCHIVAL_FUNCTION>Archieffuncties</ARCHIVAL_FUNCTION>
+	<ARCHIVE>Archief</ARCHIVE>
+	<ARCHIVE_ABORT>Archief afgebroken</ARCHIVE_ABORT>
+	<ARCHIVE_CONTENT>Archiefinhoud</ARCHIVE_CONTENT>
+	<ARCHIVE_ERROR>Archieffout!</ARCHIVE_ERROR>
+	<ARCHIVE_INTERVAL>Archiefinterval</ARCHIVE_INTERVAL>
+	<ARCHIVE_NOW>Nu archiveren</ARCHIVE_NOW>
+	<ARCHIVE_TIME_FROM>Tijd archiveren van</ARCHIVE_TIME_FROM>
+	<ARE_YOU_SURE>Bent u zeker?</ARE_YOU_SURE>
+	<AUDIO>Audio</AUDIO>
+	<AUDIO_BROADCAST>Audio-uitzending</AUDIO_BROADCAST>
+	<AUG>Aug</AUG>
+	<AUTHENTICATION>Verificatie</AUTHENTICATION>
+	<AUTO>Auto</AUTO>
+	<AUTO_ARCHIVE>Automatisch archiveren</AUTO_ARCHIVE>
+	<AUTO_ASSIGN>Automatisch toewijzen </AUTO_ASSIGN>
+	<AUTO_DELETE>Automatisch verwijderen</AUTO_DELETE>
+	<AUTO_DETECT>Automatisch detecteren op kanaal 1(NTSC/PAL)</AUTO_DETECT>
+	<AUTO_DETECTION>Automatische detectie</AUTO_DETECTION>
+	<AUTO_ERASE_VIDEO>Video automatisch wissen</AUTO_ERASE_VIDEO>
+	<AUTO_LOCK>Automatisch vergrendelen</AUTO_LOCK>
+	<AUTO_LOG_OFF>Automatisch afmelden</AUTO_LOG_OFF>
+	<AUTO_SEARCH>Auto zoeken</AUTO_SEARCH>
+	<AUTO_TRACK_START_POINT>Startpunt automatisch volgen</AUTO_TRACK_START_POINT>
+	<AUTO_USER_LOG_OFF>Automatisch gebruiker afmelden</AUTO_USER_LOG_OFF>
+	<AUTOPAN>Automatisch pannen</AUTOPAN>
+	<BACK>Terug</BACK>
+	<BACKWARD>Achteruit</BACKWARD>
+	<BANDWIDTH_LIMIT>Bandbreedtelimiet</BANDWIDTH_LIMIT>
+	<BASED_ON_CURRENT_SETTING>gebaseerd op huidige instelling.</BASED_ON_CURRENT_SETTING>
+	<BASIC>Standaard</BASIC>
+	<BASIC_SETTING>Basisinstelling</BASIC_SETTING>
+	<BAUD_RATE>Baudrate</BAUD_RATE>
+	<BEEPER>Pieper</BEEPER>
+	<BEST>Best</BEST>
+	<BEST_QUALITY>Beste kwaliteit</BEST_QUALITY>
+	<BLANK>Blank</BLANK>
+	<BOTTOM>Onder</BOTTOM>
+	<BRAND>Merk</BRAND>
+	<BRIGHTNESS>Helderheid</BRIGHTNESS>
+	<BUZZER>Zoemer</BUZZER>
+	<CALL_MONITOR>Oproepmonitor</CALL_MONITOR>
+	<CAMERA>Camera</CAMERA>
+	<CAMERA_ACCESS>Cameratoegang</CAMERA_ACCESS>
+	<CAMERA_CHANNEL>Camerakanaal</CAMERA_CHANNEL>
+	<CAMERA_LIST>Cameralijst</CAMERA_LIST>
+	<CAMERA_NAME>Cameranaam</CAMERA_NAME>
+	<CAMERA_PARAMETER>Cameraparameter</CAMERA_PARAMETER>
+	<CAMERA_SETTING>Camerainstelling</CAMERA_SETTING>
+	<CAMERA_TITLE>Cameratitel</CAMERA_TITLE>
+	<CAMERA1>Camera 1</CAMERA1>
+	<CAMERA10>Camera 10</CAMERA10>
+	<CAMERA11>Camera 11</CAMERA11>
+	<CAMERA12>Camera 12</CAMERA12>
+	<CAMERA13>Camera 13</CAMERA13>
+	<CAMERA14>Camera 14</CAMERA14>
+	<CAMERA15>Camera 15</CAMERA15>
+	<CAMERA16>Camera 16</CAMERA16>
+	<CAMERA2>Camera 2</CAMERA2>
+	<CAMERA3>Camera 3</CAMERA3>
+	<CAMERA4>Camera 4</CAMERA4>
+	<CAMERA5>Camera 5</CAMERA5>
+	<CAMERA6>Camera 6</CAMERA6>
+	<CAMERA7>Camera 7</CAMERA7>
+	<CAMERA8>Camera 8</CAMERA8>
+	<CAMERA9>Camera 9</CAMERA9>
+	<CAMERAS>Camera's</CAMERAS>
+	<CANCEL>Annuleren</CANCEL>
+	<CANT_ADD_USER>Onvoldoende ruimte voor gebruikers.</CANT_ADD_USER>
+	<CANT_DEL_ADMIN>U kunt de aanmeldingsgebruiker niet verwijderen.</CANT_DEL_ADMIN>
+	<CANT_FIND_DATA>Geen gegevens</CANT_FIND_DATA>
+	<CH>Kan.</CH>
+	<CHANGE_CHANNEL>Kanaal wijzigen</CHANGE_CHANNEL>
+	<CHANGE_NORMAL_USER_RIGHTS>Normale gebruikersrechten wijzigen</CHANGE_NORMAL_USER_RIGHTS>
+	<CHANGE_OWN_PASSWORD>Eigen wachtwoord wijzigen</CHANGE_OWN_PASSWORD>
+	<CHANGE_RIGHTS>Rechten wijzigen</CHANGE_RIGHTS>
+	<CHANGE_VIEWS>Weergaven wijzigen</CHANGE_VIEWS>
+	<CHANNEL>Kanaal</CHANNEL>
+	<CHANNEL_LIST>Kanalenlijst</CHANNEL_LIST>
+	<CHANNEL_NUMBER>Kanaalnummer</CHANNEL_NUMBER>
+	<CHECK_DATA>Gegevens controleren.</CHECK_DATA>
+	<CHECKING>Controleren</CHECKING>
+	<CHINESE>Chinees</CHINESE>
+	<CIF>CIF</CIF>
+	<CLEAN>Schoonmaken</CLEAN>
+	<CLEAR>Wissen</CLEAR>
+	<CLEAR_ALL>Alles wissen</CLEAR_ALL>
+	<CLEAR_LOG>Logboek wissen</CLEAR_LOG>
+	<CLOSE>Sluiten</CLOSE>
+	<COLOR>Kleur</COLOR>
+	<COM_PORT>COM-poort</COM_PORT>
+	<COMMAND_PORT>Opdrachtpoort (HTTP)</COMMAND_PORT>
+	<CONFIG_EXPORT_COMPLETE>Het exporteren van de configuratie is voltooid.</CONFIG_EXPORT_COMPLETE>
+	<CONFIG_IMPORT_COMPLETE>Het importeren van de configuratie is voltooid.</CONFIG_IMPORT_COMPLETE>
+	<CONFIGURATION>Configuratie</CONFIGURATION>
+	<CONFIGURATIONS>Configuraties</CONFIGURATIONS>
+	<CONFIGURE>Configureren</CONFIGURE>
+	<CONFIRM>Bevestigen</CONFIRM>
+	<CONFIRM_PASSWORD>Wachtwoord bevestigen.</CONFIRM_PASSWORD>
+	<CONNECT>Verbinden</CONNECT>
+	<CONNECTED_CHANNEL>Aangesloten kanaal</CONNECTED_CHANNEL>
+	<CONTINUOUS>Continu</CONTINUOUS>
+	<CONTRAST>Contrast</CONTRAST>
+	<CONTROL>Bedienen</CONTROL>
+	<CONTROL_ID>Besturings-ID</CONTROL_ID>
+	<COPY>Kopiëren</COPY>
+	<COPY_AT_DVR>Kopiëren op DVR</COPY_AT_DVR>
+	<COPY_DATA_TYPE>Gegevenstype kopiëren</COPY_DATA_TYPE>
+	<COPY_NOW>Nu kopiëren</COPY_NOW>
+	<COPY_TO>Kopiëren naar</COPY_TO>
+	<COPY_TYPE>Kopieertype</COPY_TYPE>
+	<COPY_USER_ACCOUNT>Gebruikersaccount kopiëren</COPY_USER_ACCOUNT>
+	<CORRUPTED_REPLY>Beschadigd antwoord</CORRUPTED_REPLY>
+	<COVERT>Verborgen</COVERT>
+	<CURRENT_LOCK>Huidige vergrendeling (%)</CURRENT_LOCK>
+	<CURRENT_VERSION>Huidige firmwareversie</CURRENT_VERSION>
+	<DAILY>Dagelijks</DAILY>
+	<DATA_BIT>Gegevensbit</DATA_BIT>
+	<DATA_SIZE>Gegevensgrootte</DATA_SIZE>
+	<DATA_TYPE>Gegevenstype</DATA_TYPE>
+	<DATE>Datum</DATE>
+	<DATE_FORMAT>Datumnotatie</DATE_FORMAT>
+	<DATE_SETTING>Datum-/tijdinstelling</DATE_SETTING>
+	<DATE_TIME>Datum/tijd</DATE_TIME>
+	<DATE_TIME_SEARCH>Datum/tijd zoeken</DATE_TIME_SEARCH>
+	<DATE_TYPE>Datumtype</DATE_TYPE>
+	<DAY>Dag</DAY>
+	<DAY_COPY>Dagkopie</DAY_COPY>
+	<DAYLIGHT_SAVING>Zomert.</DAYLIGHT_SAVING>
+	<DAYLIGHT_SAVING_COMPLETE>Zomertijd</DAYLIGHT_SAVING_COMPLETE>
+	<DAYLIGHT_SAVING_END>Einde zomertijd</DAYLIGHT_SAVING_END>
+	<DAYLIGHT_SAVING_START>Begin zomertijd</DAYLIGHT_SAVING_START>
+	<DAYS>Dag(en)</DAYS>
+	<DAYS_AGO>Dag(en) geleden</DAYS_AGO>
+	<DAYS_OF_DATA_CAN_BE_STORED>dag(en) van gegevens kan (kunnen) worden opgeslagen</DAYS_OF_DATA_CAN_BE_STORED>
+	<DAYTIME_END>Einde dag</DAYTIME_END>
+	<DAYTIME_START>Begin dag</DAYTIME_START>
+	<DDNS_SERVER>DDNS-server</DDNS_SERVER>
+	<DDNS_SERVICE>DDNS-service</DDNS_SERVICE>
+	<DEC>Dec</DEC>
+	<DEFAULT>Standaard</DEFAULT>
+	<DELAY>Vertraging</DELAY>
+	<DELETE>Verwijderen</DELETE>
+	<DELETE_ALL>Alles verwijderen</DELETE_ALL>
+	<DESTINATION>Bestemming</DESTINATION>
+	<DESTINATION_PORT>Bestemmingspoort</DESTINATION_PORT>
+	<DETAILS>Details</DETAILS>
+	<DEUTSCH>Deutsch</DEUTSCH>
+	<DEVICE_TITLE>Apparaattitel</DEVICE_TITLE>
+	<DEVICE_TYPE>Apparaattype</DEVICE_TYPE>
+	<DIRECT_IP>Direct IP</DIRECT_IP>
+	<DISABLE>Uitschakelen</DISABLE>
+	<DISABLED>Uitgeschakeld</DISABLED>
+	<DISCOVERY>Detectie</DISCOVERY>
+	<DISK>Schijf</DISK>
+	<DISK_ERROR>Schijffout</DISK_ERROR>
+	<DISK_FAIL>Schijf defect</DISK_FAIL>
+	<DISK_FAILURE>Schijffout</DISK_FAILURE>
+	<DISK_FULL>Schijf vol</DISK_FULL>
+	<DISK_FULL_WARNING>Waarschuwing schijf vol</DISK_FULL_WARNING>
+	<DISK_INFO>Schijfinfo</DISK_INFO>
+	<DISK_OFF>Schuif uit</DISK_OFF>
+	<DISK_SETTING>Schijfinstelling</DISK_SETTING>
+	<DISK_SIZE>Schijfgrootte</DISK_SIZE>
+	<DISK_SIZE_TOTAL>Schijfgrootte (totaal)</DISK_SIZE_TOTAL>
+	<DISK_SIZE_USAGE>Schijfgrootte (gebruik)</DISK_SIZE_USAGE>
+	<DISK_TEMP>Schijftemperatuur</DISK_TEMP>
+	<DISPLAY>Weergave</DISPLAY>
+	<DISPLAY_DURATION>Weergaveduur</DISPLAY_DURATION>
+	<DISPLAY_SETTING>Weergaveinstelling</DISPLAY_SETTING>
+	<DNS_SERVER1>DNS-server 1</DNS_SERVER1>
+	<DNS_SERVER2>DNS-server 2</DNS_SERVER2>
+	<DONE>Gereed</DONE>
+	<DOWNLOAD_PLAYER>Speler downloaden</DOWNLOAD_PLAYER>
+	<DST_OFF>DST uit</DST_OFF>
+	<DST_ON>DST aan</DST_ON>
+	<DUTCH>Nederlands</DUTCH>
+	<DVR_ID>DVR-ID</DVR_ID>
+	<DVR_NAME>DVR-naam</DVR_NAME>
+	<DVR_R_RW_IS_NOT_SUPPORTED>DVD-R/RW wordt niet ondersteund.</DVR_R_RW_IS_NOT_SUPPORTED>
+	<DWELL_TIME>Rust (sec)</DWELL_TIME>
+	<DWELL_TIME_L>Russtijd L</DWELL_TIME_L>
+	<DWELL_TIME_R>Russtijd R</DWELL_TIME_R>
+	<EDIT>Bewerken</EDIT>
+	<EDIT_MOTION_GRID>Bewegingsraster bewerken</EDIT_MOTION_GRID>
+	<EDIT_PASSWORD>Wachtwoord bewerken</EDIT_PASSWORD>
+	<EDIT_TIMEZONE>Tijdzone bewerken</EDIT_TIMEZONE>
+	<EDIT_USER_ACCOUNT>Gebruikersaccount bewerken</EDIT_USER_ACCOUNT>
+	<EDITING>Bewerken</EDITING>
+	<EJECT>Uitwerpen</EJECT>
+	<EMAIL>E-mail</EMAIL>
+	<EMAIL_NOTIFY>E-mail melden</EMAIL_NOTIFY>
+	<EMAIL_SUBJECT>E-mailonderwerp</EMAIL_SUBJECT>
+	<EMAIL_TEST>E-mailtest</EMAIL_TEST>
+	<EMPTY>Leeg</EMPTY>
+	<ENABLE>Inschakelen</ENABLE>
+	<END>Einde</END>
+	<END_DATE>Einddatum</END_DATE>
+	<END_DATE_TIME>Einddatum/-tijd</END_DATE_TIME>
+	<END_TIME>Eindtijd</END_TIME>
+	<END_TIME_HHMM>Eindtijd (uu:mm)</END_TIME_HHMM>
+	<ENGLISH>Engels</ENGLISH>
+	<ENSLESS_MODE>Eindeloze modus</ENSLESS_MODE>
+	<ENTER_THE_EMAIL_ADDRESS>Voer het e-mailadres in.</ENTER_THE_EMAIL_ADDRESS>
+	<ENTER_THE_NEW_PASSWORD>Voer het nieuwe wachtwoord in.</ENTER_THE_NEW_PASSWORD>
+	<ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>Voer het IP-adres van de privé-tijdserver in.</ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>
+	<ENTER_THE_SMTP_SERVER_IP_ADDRESS>Voer het IP-adres van de SMTP-server in.</ENTER_THE_SMTP_SERVER_IP_ADDRESS>
+	<ENTER_THE_USER_NAME>Voer hier de gebruikersnaam in.</ENTER_THE_USER_NAME>
+	<ESTIMATE>Schatten</ESTIMATE>
+	<ESTIMATE_EVENT>Gebeurtenissen schatten</ESTIMATE_EVENT>
+	<ESTIMATION_RESULT>Schattingsresultaat:</ESTIMATION_RESULT>
+	<EVEN>Even</EVEN>
+	<EVENT>Gebeurtenis</EVENT>
+	<EVENT_ACTION>Gebeurtenisactie</EVENT_ACTION>
+	<EVENT_FORMAT_RATE>Gebeurtenisformaatpercentage</EVENT_FORMAT_RATE>
+	<EVENT_LIST>Gebeurtenissenlijst</EVENT_LIST>
+	<EVENT_ONLY>Alleen gebeurtenis</EVENT_ONLY>
+	<EVENT_POPUP>Pop-up gebeurtenis</EVENT_POPUP>
+	<EVENT_SEARCH>Gebeurtenis zoeken</EVENT_SEARCH>
+	<EVENT_SETTING>Gebeurtenisinstelling</EVENT_SETTING>
+	<EVENT_SPEED>Snelheid gebeurtenis</EVENT_SPEED>
+	<EVENT_STATUS>Status gebeurtenis</EVENT_STATUS>
+	<EVENT_TIME_REQUIRED>De gebeurtenistijd is vereist.</EVENT_TIME_REQUIRED>
+	<EVENT_TYPE>Gebeurtenistype</EVENT_TYPE>
+	<EVENTS>Gebeurtenissen</EVENTS>
+	<EVERFOCUS>Everfocus</EVERFOCUS>
+	<EVERFOCUS_DDNS>EverfocusDDNS</EVERFOCUS_DDNS>
+	<EXCEPTION_DAYS>Uitzonderingsdagen</EXCEPTION_DAYS>
+	<EXIT>Afsluiten</EXIT>
+	<EXIT_PTZ>PTZ afsluiten</EXIT_PTZ>
+	<EXIT_ZOOM>Zoom afsluiten</EXIT_ZOOM>
+	<EXPORT>Exporteren</EXPORT>
+	<EXPORT_CONFIGURATION>Configuratie exporteren</EXPORT_CONFIGURATION>
+	<EXPORT_FAILED>Exporteren mislukt</EXPORT_FAILED>
+	<EXPORT_FINISHED>Export voltooid</EXPORT_FINISHED>
+	<EXPORT_IS_IN_PROGRESS>Export bezig.</EXPORT_IS_IN_PROGRESS>
+	<EXPORT_LOG_COMPLETED>Exporteren van logboek is voltooid.</EXPORT_LOG_COMPLETED>
+	<EXPORT_LOG_FAILED>Exporteren van logboek is mislukt.</EXPORT_LOG_FAILED>
+	<EXPORT_LOG_TO_FILE>Logboek exporteren naar bestand</EXPORT_LOG_TO_FILE>
+	<EXPORT_LOG_TO_USB>Logboek exporteren naar USB</EXPORT_LOG_TO_USB>
+	<EXPORT_SERVICE_LOG>Servicelogboek exporteren</EXPORT_SERVICE_LOG>
+	<EXPRESS>Snel</EXPRESS>
+	<EXPRESS_SETUP>Snelle instelling</EXPRESS_SETUP>
+	<EXTENDED_RECORD>Uitgebreide record</EXTENDED_RECORD>
+	<FACTORY_DEFAULT_SETTING_COMPLETE>Standaard fabrieksinstelling voltooid.</FACTORY_DEFAULT_SETTING_COMPLETE>
+	<FACTORY_DEFAULTS>Standaard fabrieksinstellingen</FACTORY_DEFAULTS>
+	<FAIL>MISLUKT</FAIL>
+	<FAIL_INIT_NETWORK>Kan netwerk niet initialiseren</FAIL_INIT_NETWORK>
+	<FAILED_TO_EXPORT_CONFIG_INFO>Het exporteren van de configuratiegegevens is mislukt.</FAILED_TO_EXPORT_CONFIG_INFO>
+	<FAILED_TO_FORMAT_HARD_DISK_DRIVE>Het formatteren van de harde schijf is mislukt.</FAILED_TO_FORMAT_HARD_DISK_DRIVE>
+	<FAILED_TO_IMPORT_CONFIG_INFO>Het importeren van de configuratiegegevens is mislukt.</FAILED_TO_IMPORT_CONFIG_INFO>
+	<FAN_FAILURE>Ventilatorfout</FAN_FAILURE>
+	<FAN_STATUS>Ventilatorstatus</FAN_STATUS>
+	<FANS>Ventilators</FANS>
+	<FAST_FORWARD>Snel vooruitspoelen</FAST_FORWARD>
+	<FAST_REWIND>Snel terugspoelen</FAST_REWIND>
+	<FEB>Feb</FEB>
+	<FILE>Bestand</FILE>
+	<FILE_NAME>Bestandsnaam</FILE_NAME>
+	<FIRMWARE>Firmware</FIRMWARE>
+	<FIRMWARE_UPGRADE>Firmware-upgrade</FIRMWARE_UPGRADE>
+	<FIRMWARE_UPGRADE_ERROR>Fout firmware-upgrade</FIRMWARE_UPGRADE_ERROR>
+	<FOCUS>Scherpstelling</FOCUS>
+	<FORGET_REPLY>Antwoord vergeten</FORGET_REPLY>
+	<FORMAT>Formatteren</FORMAT>
+	<FORMAT_DISK>Schijf formatteren</FORMAT_DISK>
+	<FORWARD>Vooruit</FORWARD>
+	<FRAME_RATE>Framesnelheid</FRAME_RATE>
+	<FREE_SPACE>Vrije ruimte:</FREE_SPACE>
+	<FRENCH>Frans</FRENCH>
+	<FRI>Vr</FRI>
+	<FRIDAY>Vrijdag</FRIDAY>
+	<FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>Firmware-upgrade/configuratie-upload</FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>
+	<FROM>Van</FROM>
+	<FROM_DATE>Van: Datum</FROM_DATE>
+	<FTP_SERVER>FTP-server</FTP_SERVER>
+	<FTP_UPLOAD>FTP-upload</FTP_UPLOAD>
+	<FTP_UPLOAD_FILE_TYPE>Bestandstype FTP-upload</FTP_UPLOAD_FILE_TYPE>
+	<FULL_SCREEN>Volledig scherm</FULL_SCREEN>
+	<GATEWAY>Gateway</GATEWAY>
+	<GO>Start</GO>
+	<GRID_SETTING>Rasterinstelling</GRID_SETTING>
+	<H12>12H</H12>
+	<H24>24H</H24>
+	<HALLWAY_MODE>Gangmodus</HALLWAY_MODE>
+	<HD_MONITOR>HD-monitor</HD_MONITOR>
+	<HDD_STATUS>HDD-status</HDD_STATUS>
+	<HDD_TEMP>HDD-temp</HDD_TEMP>
+	<HDD_USAGE>HDD-gebruik</HDD_USAGE>
+	<HEALTH_STATUS>Gezondheidsstatus</HEALTH_STATUS>
+	<HIGH>Hoog</HIGH>
+	<HIGHEST>Hoogst</HIGHEST>
+	<HOL>Vak</HOL>
+	<HOLIDAY>Vakantiedagen</HOLIDAY>
+	<HOLIDAYS>Vakantiedagen</HOLIDAYS>
+	<HOST_NAME>Hostnaam</HOST_NAME>
+	<HOUR_AGO>uur geleden</HOUR_AGO>
+	<HOUR_S>U(u)r(en)</HOUR_S>
+	<HOURLY>Elk uur</HOURLY>
+	<HOURS_AGO>Uur geleden</HOURS_AGO>
+    <HOURS_PER_DAY>Uur per dag</HOURS_PER_DAY>
+	<HTTP_PORT>HTTP-poort</HTTP_PORT>
+	<ID>ID</ID>
+	<ID485>485 ID</ID485>
+	<IMAGE>Afbeelding</IMAGE>
+	<IMPORT_CONFIGURATION>Configuratie importeren</IMPORT_CONFIGURATION>
+	<IN_USE>In gebruik</IN_USE>
+	<INFO>Informatie</INFO>
+	<INFORMATION>Informatie</INFORMATION>
+	<INPUT_BEEPER>Invoerpieper</INPUT_BEEPER>
+	<INPUT_MOTION>Invoer/beweging</INPUT_MOTION>
+	<INPUT_RECORDING>Invoeropname</INPUT_RECORDING>
+	<INPUT_TYPE>Invoertype</INPUT_TYPE>
+	<INSTALL>Installeren</INSTALL>
+	<INSUFFICIENT_FREE_SPACE>Onvoldoende vrije ruimte.</INSUFFICIENT_FREE_SPACE>
+	<INVALID_ARG>Ongeldig argument</INVALID_ARG>
+	<INVALID_EXPORT_TIME_RANGE>Ongeldig bereik exporttijd.</INVALID_EXPORT_TIME_RANGE>
+	<INVALID_IP_NUMBER>Ongeldig IP-nummer</INVALID_IP_NUMBER>
+	<INVALID_MAC>Ongeldige MAC</INVALID_MAC>
+	<INVALID_NAME>Ongeldige naam</INVALID_NAME>
+	<INVALID_NUMBER>Ongeldig nummer</INVALID_NUMBER>
+	<INVALID_PORT>Ongeldige poort</INVALID_PORT>
+	<IO_CONTROL>I/O-besturing</IO_CONTROL>
+	<IP>IP</IP>
+	<IP_ADDRESS>IP-adres</IP_ADDRESS>
+	<IP_CAMERA>IP-camera</IP_CAMERA>
+	<IP_PTZ>IP PTZ</IP_PTZ>
+	<IR_REMOTE_CONTROLLER>IR-afstandsbediening</IR_REMOTE_CONTROLLER>
+	<IR_REMOTE_ID>IR-afstandsbedienings-ID</IR_REMOTE_ID>
+	<IRIS>iris</IRIS>
+	<JAN>Jan</JAN>
+	<JAPANESE>Japans</JAPANESE>
+	<JUL>Jul</JUL>
+	<JUN>Jun</JUN>
+	<LAN>LAN</LAN>
+	<LANGUAGE>Taal</LANGUAGE>
+	<LANPORT>LAN-poort</LANPORT>
+	<LAST>Laatste</LAST>
+	<LAYOUT>Schema</LAYOUT>
+	<LAYOUT_SWITCH>Lay-outschakelaar</LAYOUT_SWITCH>
+	<LEVEL>Niveau</LEVEL>
+	<LIST>Lijst</LIST>
+	<LIST_OF_HOLIDAYS>Lijst van vakantiedagen</LIST_OF_HOLIDAYS>
+	<LIVE>Live</LIVE>
+	<LIVE_AUDIO>Live audio</LIVE_AUDIO>
+	<LOAD>Laden</LOAD>
+	<LOAD_FACTORY_DEFAULT>Standaardwaarden</LOAD_FACTORY_DEFAULT>
+	<LOAD_FROM_FILE>Laden van bestand</LOAD_FROM_FILE>
+	<LOAD_FROM_USB>Laden van USB</LOAD_FROM_USB>
+	<LOCAL_ACCESS>Lokale toegang</LOCAL_ACCESS>
+	<LOCK>Vergrendelen</LOCK>
+	<LOCK_FORMAT>Vergrendelen/formatteren</LOCK_FORMAT>
+	<LOG>Logboek</LOG>
+	<LOG_EXPORT_ERROR>Exportfout logboek</LOG_EXPORT_ERROR>
+	<LOG_LIST>Logboeklijst</LOG_LIST>
+	<LOG_TYPE>Logboektype</LOG_TYPE>
+	<LOGIN>Aanmelden</LOGIN>
+	<LOGIN_PROTECT>Bescherming aanmelding</LOGIN_PROTECT>
+	<LOGIN_SUCCESS>Aanmelding gelukt.</LOGIN_SUCCESS>
+	<LOGOUT>Afmelden</LOGOUT>
+	<LOW>Laag</LOW>
+	<LOWER_LEFT>Onder links</LOWER_LEFT>
+	<LOWER_RIGHT>Onder rechts</LOWER_RIGHT>
+	<LOWEST>Laagst</LOWEST>
+	<MAIL>E-mail</MAIL>
+	<MAIN_MONITOR>Hoofdmonitor</MAIN_MONITOR>
+	<MAIN_MONITOR_OUTPUT>Hoofdmonitoruitgang</MAIN_MONITOR_OUTPUT>
+	<MAIN_RESOLUTION>Hoofdresolutie</MAIN_RESOLUTION>
+	<MAIN_STREAM>Hoofdstroom</MAIN_STREAM>
+	<MANAGER>Manager</MANAGER>
+	<MANAGER_USER_LEVEL>Gebruiker op eigen niveau beheren</MANAGER_USER_LEVEL>
+	<MANUAL>Handmatig</MANUAL>
+	<MAR>Mrt</MAR>
+	<MASK_CHANNEL>Kanaal verbergen</MASK_CHANNEL>
+	<MATRIX_SETTING>Matrixreeks</MATRIX_SETTING>
+	<MAX_LOCK>Maximum vergrendeling (%)</MAX_LOCK>
+	<MAY>Mei</MAY>
+	<MB>MB</MB>
+	<MEDIA_NOT_FOUND>Media niet gevonden</MEDIA_NOT_FOUND>
+	<MENU>Menu</MENU>
+	<MESSAGE>Bericht</MESSAGE>
+	<META>Meta</META>
+	<MIN_10>10 Min</MIN_10>
+	<MIN_20>20 min.</MIN_20>
+	<MIN_30>30 min.</MIN_30>
+	<MIN_60>60 min.</MIN_60>
+	<MIN_90>90 min.</MIN_90>
+	<MIN_AREA>Min. gebied</MIN_AREA>
+	<MINS>Min.</MINS>
+	<MISC>Diversen</MISC>
+	<MISCELLANEOUS>Diversen</MISCELLANEOUS>
+	<MOBILEFOCUS_OR_OTHER_SMART_PHONES>MobileFocus of andere smartphones.</MOBILEFOCUS_OR_OTHER_SMART_PHONES>
+	<MODE_NAME>Naam stand</MODE_NAME>
+	<MODEL>Model</MODEL>
+	<MODIFY>Wijzigen</MODIFY>
+	<MODIFY_IP_CAMERA>IP-camera wijzigen</MODIFY_IP_CAMERA>
+	<MODULE>Module</MODULE>
+	<MON>Ma</MON>
+	<MONDAY>Maandag</MONDAY>
+	<MONITOR_FORMAT>Monitorformaat</MONITOR_FORMAT>
+	<MONITOR_OSD>Monitor-OSD</MONITOR_OSD>
+	<MONTH_DATE>Maand/datum</MONTH_DATE>
+	<MONTH_WEEKDAY>Maand/weekdag</MONTH_WEEKDAY>
+	<MONTHLY>Maandelijks</MONTHLY>
+	<MORE_EMAIL_SETTINGS>Meer e-mailinstellingen</MORE_EMAIL_SETTINGS>
+	<MOTION>Beweging</MOTION>
+	<MOTION_BEEPER>Bewegingspieper</MOTION_BEEPER>
+	<MOTION_DELAY>Bewegingsvertraging</MOTION_DELAY>
+	<MOTION_DETECT>Bewegingsdetectie</MOTION_DETECT>
+	<MOTION_OR_INPUT>Beweging of invoer</MOTION_OR_INPUT>
+	<MOTION_RECORDING>Bewegingsopname</MOTION_RECORDING>
+	<MOTION_SETTING>Bewegingsinstelling</MOTION_SETTING>
+	<MOVE>Verplaatsen</MOVE>
+	<MSG_AUTO_ASSIGN>Enkele IP-adressen zijn toegevoegd aan de kanalenlijst. Klik op Ja om de vorige kanaalinstellingen te overschrijven of op Nee om deze instelling te annuleren.</MSG_AUTO_ASSIGN>
+	<MSG_DEL_DATA>Alle geselecteerde ontgrendelde items zijn verwijderd</MSG_DEL_DATA>
+	<MSG_DEL_IPCAM>Weet u zeker dat u IP-camera's wilt verwijderen?</MSG_DEL_IPCAM>
+	<MSG_DISCONNECT>DVR tijdelijk niet bereikbaar. Probeer later opnieuw een verbinding te maken</MSG_DISCONNECT>
+	<MSG_ESTIMATE_ERROR>DVR kan het resultaat niet schatten op basis van de huidige instelling</MSG_ESTIMATE_ERROR>
+	<MSG_FORMAT>alle gegevens worden verwijderd. Weet u zeker dat u wilt doorgaan?</MSG_FORMAT>
+	<MSG_H264>Alleen voor MobileFocus of mobiele telefoonweergave niet vereist.</MSG_H264>
+	<MSG_IPCAM_CONFIG>Controleer of de IP-adresconfiguratie correct is.</MSG_IPCAM_CONFIG>
+	<MSG_IPCAM_EXISTED>Deze IP-camera bestaat al.</MSG_IPCAM_EXISTED>
+	<MSG_LOCK>Alle vergrendelde gegevens worden ontgrendeld. Weet u zeker dat u wilt doorgaan?</MSG_LOCK>
+	<MSG_LOCK_DATA>Alle geselecteerde items zijn vergrendeld</MSG_LOCK_DATA>
+	<MSG_MJPEG>MobileFocus (niet-iPhone-editie) of andere smartphones. </MSG_MJPEG>
+	<MSG_NOTICE>Opmerking: Het resultaat is uitsluitend bedoeld als referentie.</MSG_NOTICE>
+	<MSG_OVERWRITE_CURRENT>Het kanaal is geselecteerd. Als u op Ja klikt, wordt de vorige kanaalinstelling overschreven. Weet u zeker dat u deze wilt toepassen?</MSG_OVERWRITE_CURRENT>
+	<MSG_OVERWRITE_SETTING>Huidige instellingen overschrijven?</MSG_OVERWRITE_SETTING>
+	<MSG_REFRENCE_ONLY>Het resultaat is uitsluitend bedoeld als referentie</MSG_REFRENCE_ONLY>
+	<MSG_RESTART>Netwerkverbinding verbreken. Status opnieuw instellen</MSG_RESTART>
+	<MSG_SEARCH_IPCAM>U hebt nog geen camera's geconfigureerd. Wilt u de camera's op het lokale netwerk (LAN) zoeken?</MSG_SEARCH_IPCAM>
+	<MSG_SESSION_FAIL>Ophalen sessie-ID is mislukt</MSG_SESSION_FAIL>
+	<MSG_UNLOCK>Alle ontgrendelde gegevens worden verwijderd. Weet u zeker dat u wilt doorgaan?</MSG_UNLOCK>
+	<MSG_UNLOCK_DATA>Alle geselecteerde items zijn ontgrendeld</MSG_UNLOCK_DATA>
+	<MSG_UPGRADE_FAIL>Upgrade mislukt. Probeer het opnieuw.</MSG_UPGRADE_FAIL>
+	<MSG_UPLOAD_FAIL>Uploaden mislukt. Probeer het opnieuw.</MSG_UPLOAD_FAIL>
+	<MT_SEQ>M/T SEQ</MT_SEQ>
+	<N_A>Nvt</N_A>
+	<N_C>N.C.</N_C>
+	<N_O>N.O.</N_O>
+	<NAME>Naam</NAME>
+	<NAME_EMPTY>Naam leeg</NAME_EMPTY>
+	<NAME_EXISTS>Naam bestaat</NAME_EXISTS>
+	<ND2>2e</ND2>
+	<NETWORK>Netwerk</NETWORK>
+	<NETWORK_ALARM>Netwerkalarm</NETWORK_ALARM>
+	<NETWORK_ID>Netwerk-ID</NETWORK_ID>
+	<NETWORK_LIVE_STREAMING>Live streaming netwerk</NETWORK_LIVE_STREAMING>
+	<NETWORK_LOSS>Netwerkverlies</NETWORK_LOSS>
+	<NETWORK_SETTING>Netwerkinstelling</NETWORK_SETTING>
+	<NETWORK_TEST>Netwerktest</NETWORK_TEST>
+	<NETWORK_TYPE>Netwerktype</NETWORK_TYPE>
+	<NEXT>Volgende</NEXT>
+	<NEXT_PAGE>Volgende pagina</NEXT_PAGE>
+	<NO>Nee</NO>
+	<NO_AUTHORITY>Geen bevoegdheid</NO_AUTHORITY>
+	<NO_CHANGE>Geen wijziging</NO_CHANGE>
+	<NO_COMPETENCE>Geen competentie</NO_COMPETENCE>
+	<NO_DATA>Geen gegevens</NO_DATA>
+	<NO_INPUT_ASSIGNED>Geen ingang toegewezen</NO_INPUT_ASSIGNED>
+	<NO_RECORD>Geen gegeven</NO_RECORD>
+	<NO_RECORDING>Geen opname</NO_RECORDING>
+	<NO_SIGNAL>Geen signaal</NO_SIGNAL>
+	<NONE>Geen</NONE>
+	<NORMAL>Normaal</NORMAL>
+	<NORMAL_EVENT>Normaal+gebeurtenis</NORMAL_EVENT>
+	<NORMAL_FORMAT_RATE>Normaal formaatpercentage</NORMAL_FORMAT_RATE>
+	<NORMAL_PARTITION>Normale partitie</NORMAL_PARTITION>
+	<NORMAL_SPEED>Normale snelheid</NORMAL_SPEED>
+	<NORMAL_USER>Normale gebruiker</NORMAL_USER>
+	<NOT_AVAILABLE>Niet beschikbaar</NOT_AVAILABLE>
+	<NOT_CERTIFIED>Niet gecertificeerd</NOT_CERTIFIED>
+	<NOT_INSTALL>Niet installeren</NOT_INSTALL>
+	<NOTICE>Opmerking</NOTICE>
+	<NOTIFICATION>Melding</NOTIFICATION>
+	<NOTIFICATION_SETTING>Notificatie-instelling</NOTIFICATION_SETTING>
+	<NOV>Nov</NOV>
+	<NTP_FAILED>NTP mislukt</NTP_FAILED>
+	<NTP_SERVER>NTP-server</NTP_SERVER>
+	<NTP_SERVER_ACCESSED_SUCCESSFULLY>NTP-server met succes geopend.</NTP_SERVER_ACCESSED_SUCCESSFULLY>
+	<NTP_TEST>NTP-test</NTP_TEST>
+	<NTP_UPDATE>NTP-updateinterval</NTP_UPDATE>
+	<NUMBER>Nr.</NUMBER>
+	<OBJECT_SIZE_SETTING>Instelling objectgrootte</OBJECT_SIZE_SETTING>
+	<OCT>Okt</OCT>
+	<ODD>Oneven</ODD>
+	<OFF>Uit</OFF>
+	<OK>OK</OK>
+	<ON>Aan</ON>
+	<ON_INPUT>Bij invoer</ON_INPUT>
+	<ON_MOTION>Bij beweging</ON_MOTION>
+	<ONE_TIME>Eenmalig</ONE_TIME>
+	<ONVIF>ONVIF</ONVIF>
+	<ONVIF_DISCOVERY>ONVIF-opsporing</ONVIF_DISCOVERY>
+	<OPERATION>Bediening</OPERATION>
+	<OPERATOR>Operator</OPERATOR>
+	<OSD_DISPLAY_MODE>OSD-weergavemodus</OSD_DISPLAY_MODE>
+	<OTH>Ov.</OTH>
+	<OTHER>Overige</OTHER>
+	<OTHERS>Overige</OTHERS>
+	<OUTPUT>Uitgang</OUTPUT>
+	<OUTPUT_DEVICE>Uitvoerapparaat</OUTPUT_DEVICE>
+	<OUTPUT_TYPE>Uitvoertype</OUTPUT_TYPE>
+	<OVERWRITE>Overschrijven</OVERWRITE>
+	<PAGE>Pagina</PAGE>
+	<PAN_TILT_LIMIT>Limiet pannen/kantelen</PAN_TILT_LIMIT>
+	<PARITY>Pariteit</PARITY>
+	<PART_OF_THE_FIELD_IS_NOT_FILLED>Deel van veld is niet gevuld</PART_OF_THE_FIELD_IS_NOT_FILLED>
+	<PASS>Pass</PASS>
+	<PASSWORD>Wachtwoord</PASSWORD>
+	<PASSWORD_CONFIRMED_ERROR>Fout Wachtwoordbevestiging</PASSWORD_CONFIRMED_ERROR>
+	<PASSWORD_ERROR>Wachtwoordfout</PASSWORD_ERROR>
+	<PATTERN>Patroon</PATTERN>
+	<PATTERN_NO>Patroonnr.</PATTERN_NO>
+	<PATTERN_TOUR>Patroonomtrek</PATTERN_TOUR>
+	<PELCO_D>Pelco_D</PELCO_D>
+	<PELCO_P>Pelco_P</PELCO_P>
+	<PERMANENT>Permanent</PERMANENT>
+	<PING>Ping</PING>
+	<PING_SUCCESSFUL>Ping gelukt</PING_SUCCESSFUL>
+	<PLAY>Afspelen</PLAY>
+	<PLAY_FROM>Afspelen vanaf</PLAY_FROM>
+	<PLAY_REVERSE>Achteruit afspelen</PLAY_REVERSE>
+	<PLAYBACK>Afspelen</PLAYBACK>
+	<PLAYBACK_AUDIO>Audio weergeven</PLAYBACK_AUDIO>
+	<PLAYBACK_DATE_TIME>Datum/tijd weergeven</PLAYBACK_DATE_TIME>
+	<PLAYBACK_DAYLIGHT_SAVING>Zomertijd weergeven</PLAYBACK_DAYLIGHT_SAVING>
+	<PLAYBACK_FROM>Weergeven vanaf</PLAYBACK_FROM>
+	<PLAYBACK_SEARCH>Afspelen/zoeken</PLAYBACK_SEARCH>
+	<PLAYBACK_STATUS>Weergavestatus</PLAYBACK_STATUS>
+	<PLAYER>Speler</PLAYER>
+	<PLEASE_CONFIRM_PASSWORD_AGAIN>Bevestig het wachtwoord opnieuw</PLEASE_CONFIRM_PASSWORD_AGAIN>
+	<PLEASE_ENTER_THE_CHANNEL_NAME>Voer de kanaalnaam in.</PLEASE_ENTER_THE_CHANNEL_NAME>
+	<PLEASE_ENTER_THE_CURRENT_PASSWORD>Voer het huidige wachtwoord in.</PLEASE_ENTER_THE_CURRENT_PASSWORD>
+	<PLEASE_ENTER_THE_IP_ADDRESS>Geef het IP-adres op. Bijvoorbeeld, 123.255.255.123.</PLEASE_ENTER_THE_IP_ADDRESS>
+	<PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>Voer de naam in van de uitzonderingsdag.</PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>
+	<PLEASE_ENTER_THE_PASSWORD>Voer het wachtwoord in.</PLEASE_ENTER_THE_PASSWORD>
+	<PLEASE_SELECT_CHANNEL>Selecteer een kanaal</PLEASE_SELECT_CHANNEL>
+	<PLEASE_SELECT_CHANNEL_AND_EVENT>Selecteer een kanaal en gebeurtenis</PLEASE_SELECT_CHANNEL_AND_EVENT>
+	<PLEASE_SELECT_CHANNELS_TO_SEARCH>Selecteer te zoeken kanalen.</PLEASE_SELECT_CHANNELS_TO_SEARCH>
+	<PLEASE_SELECT_EVENT>Selecteer een gebeurtenis</PLEASE_SELECT_EVENT>
+	<PLEASE_WAIT>Een ogenblik geduld.</PLEASE_WAIT>
+	<PLZ_CHOOSE_CAMERA>Kies een camera.</PLZ_CHOOSE_CAMERA>
+	<PLZ_CHOOSE_DATE>Kies een datum.</PLZ_CHOOSE_DATE>
+	<PLZ_CHOOSE_EVENT>Kies een gebeurtenis.</PLZ_CHOOSE_EVENT>
+	<PLZ_CHOOSE_FILE>Kies een bestand.</PLZ_CHOOSE_FILE>
+	<PLZ_CHOOSE_USER>Kies één gebruiker.</PLZ_CHOOSE_USER>
+	<PM>PM</PM>
+	<PORT>Poort</PORT>
+	<PORTUGUESE>Portugees</PORTUGUESE>
+	<POS_LIST>POS-lijst</POS_LIST>
+	<POS_SEARCH>POS zoeken</POS_SEARCH>
+	<POS_STRING>POS-tekenreeks</POS_STRING>
+	<POST_EVENT>Na gebeurtenis</POST_EVENT>
+	<POST_EVENT_TIME>Tijd na gebeurtenis</POST_EVENT_TIME>
+	<POWER_LOSS>Stroomverlies</POWER_LOSS>
+	<POWER_ON>Inschakelen</POWER_ON>
+	<PRE_ALARM_RECORD>Pre-alarmopname</PRE_ALARM_RECORD>
+	<PRE_ALARM_RECORDING>Pre-alarm opnemen</PRE_ALARM_RECORDING>
+	<PRE_EVENT>Vóór gebeurtenis</PRE_EVENT>
+	<PRE_PAGE>Vóór pagina</PRE_PAGE>
+	<PRESET>Voorinstelling</PRESET>
+	<PRESET_SETTINGS>Voorinstellingen</PRESET_SETTINGS>
+	<PREVIEW>Voorbeeld</PREVIEW>
+	<PREVIOUS>Vorige</PREVIOUS>
+	<PRIMARY_DNS>Primaire DNS</PRIMARY_DNS>
+	<PRIVATE_SERVER>Privéserver</PRIVATE_SERVER>
+	<PRIVATE_TIME_SERVER>Privé tijdserver</PRIVATE_TIME_SERVER>
+	<PROTOCOL>Protocol</PROTOCOL>
+	<PROTOCOL_ERROR>Protocolfout</PROTOCOL_ERROR>
+	<PTZ>PTZ</PTZ>
+	<PTZ_CONTROL>PTZ-besturing</PTZ_CONTROL>
+	<PTZ_CONTROL_PAD>PTZ-bedieningsblok</PTZ_CONTROL_PAD>
+	<PTZ_ID>PTZ-ID</PTZ_ID>
+	<PTZ_PRESET>PTZ-voorinstelling</PTZ_PRESET>
+	<PTZ_PROTOCOL>PTZ-protocol</PTZ_PROTOCOL>
+	<PTZ_TEST>PTZ-test</PTZ_TEST>
+	<PUBLIC_SERVER>Publieke server</PUBLIC_SERVER>
+	<QUALITY>Kwaliteit</QUALITY>
+	<QUICK_ARCHIVE>Snel archief</QUICK_ARCHIVE>
+	<QUICK_ARCHIVE_INTERVAL>Interval snel archief</QUICK_ARCHIVE_INTERVAL>
+	<QUICK_PLAYBACK>Snelle weergave</QUICK_PLAYBACK>
+	<RAID>RAID</RAID>
+	<RAID_STATE>RAID-status</RAID_STATE>
+	<RAID_TYPE>RAID-type</RAID_TYPE>
+	<RAID0>RAID 0</RAID0>
+	<RAID1>RAID 1</RAID1>
+	<RAID1_0>RAID 1+0</RAID1_0>
+	<RATIO>Verhouding</RATIO>
+	<RD3>3e</RD3>
+	<RE_DISCOVERY>Heropsporing</RE_DISCOVERY>
+	<READ_DATA>Gegevens lezen</READ_DATA>
+	<REBOOT>Opnieuw opstarten</REBOOT>
+	<REBOOT_NOW>Nu opnieuw starten</REBOOT_NOW>
+	<REC>Opname</REC>
+	<REC_DUAL_STREAM>Dubbele stroom opnemen</REC_DUAL_STREAM>
+	<RECEIVER_EMAIL1>E-mail 1 ontvanger </RECEIVER_EMAIL1>
+	<RECEIVER_EMAIL2>E-mail 2 ontvanger</RECEIVER_EMAIL2>
+	<RECEIVER_EMAIL3>E-mail 3 ontvanger</RECEIVER_EMAIL3>
+	<RECODE_MODE>Modus opnieuw coderen</RECODE_MODE>
+	<RECONNECT>Opnieuw verbinden</RECONNECT>
+	<RECORD>Opnemen</RECORD>
+	<RECORD_AUDIO>Audio opnemen</RECORD_AUDIO>
+	<RECORD_DAYS>Opnamedagen</RECORD_DAYS>
+	<RECORD_DUAL_STREAM>Dubbel stroom opnemen</RECORD_DUAL_STREAM>
+	<RECORD_ID>Record-id</RECORD_ID>
+	<RECORD_MODE>Opnamemodus</RECORD_MODE>
+	<RECORD_OVERWRITE>Opname overschrijven</RECORD_OVERWRITE>
+	<RECORD_PLAY>Opname afspelen</RECORD_PLAY>
+	<RECORD_QUALITY>Opnamekwaliteit</RECORD_QUALITY>
+	<RECORD_SETTING>Opname-instelling</RECORD_SETTING>
+	<RECORD_STATUS_RELAY_OUTPUT>Relais-uitvoer opnamestatus</RECORD_STATUS_RELAY_OUTPUT>
+	<RECORD_TIME_END>Opnametijd (einde)</RECORD_TIME_END>
+	<RECORD_TIME_START>Opnametijd (begin)</RECORD_TIME_START>
+	<RECORD_TYPE>Opnametype</RECORD_TYPE>
+	<RECORD_WITH>Opnemen met</RECORD_WITH>
+	<RECORDING_DAYS>Opnamedagen</RECORDING_DAYS>
+	<RECORDING_WILL_BEDISABLED_FOR_CAMERA1>Opnemen wordt uitgeschakeld voor camera 1</RECORDING_WILL_BEDISABLED_FOR_CAMERA1>
+	<RECURRENT_TYPE>Terugkerend type</RECURRENT_TYPE>
+	<REFRESH>Vernieuwen</REFRESH>
+	<REGISTER_UPDATE>Registreren/Bijwerken</REGISTER_UPDATE>
+	<RELAY_OUTPUT>Relay-uitgang</RELAY_OUTPUT>
+	<REMOTE>Afstandsbediening</REMOTE>
+	<REMOTE_MOBILE>Extern/mobiel</REMOTE_MOBILE>
+	<REMOTE_REBOOT>Extern opnieuw opstarten</REMOTE_REBOOT>
+	<REMOTER_ACCESS>Externe toegang</REMOTER_ACCESS>
+	<REMOVE>Verwijderen</REMOVE>
+	<REQUIRED_SPACE>Vereiste ruimte:</REQUIRED_SPACE>
+	<RESOLUTION>Resolutie</RESOLUTION>
+	<RESULT_INTERVAL>Interval resultaat</RESULT_INTERVAL>
+	<RTSP_PORT>RTSP-poort</RTSP_PORT>
+	<RTSP_SERVER>RTSP-server</RTSP_SERVER>
+	<RUSSIAN>Russisch</RUSSIAN>
+	<S100MBPS>100 Mbps</S100MBPS>
+	<S10FPS>10 fps</S10FPS>
+	<S10MBPS>10 Mbps</S10MBPS>
+	<S12FPS>12 fps</S12FPS>
+	<S15FPS>15 fps</S15FPS>
+	<S1MBPS>1 Mbps</S1MBPS>
+	<S25FPS>25 fps</S25FPS>
+	<S2CIF>2CIF</S2CIF>
+	<S2FPS>2 fps</S2FPS>
+	<S2MBPS>2 Mbps</S2MBPS>
+	<S30FPS>30 fps</S30FPS>
+	<S3FPS>3 fps</S3FPS>
+	<S4CIF>4CIF</S4CIF>
+	<S5FPS>5 fps</S5FPS>
+	<S5MBPS>5 Mbps</S5MBPS>
+	<S5MIN>5 minuten</S5MIN>
+	<S60FPS>60 fps</S60FPS>
+	<S6FPS>6 fps</S6FPS>
+	<S7FPS>7 fps</S7FPS>
+	<S8FPS>8 fps</S8FPS>
+	<SAT>Za</SAT>
+	<SATURDAY>Zaterdag</SATURDAY>
+	<SAVE>Opslaan</SAVE>
+	<SAVE_AND_BACK>Opslaan en terugkeren</SAVE_AND_BACK>
+	<SAVE_SUCCESS>Opslaan gelukt</SAVE_SUCCESS>
+	<SAVE_TO_FILE>Opslaan naar bestand</SAVE_TO_FILE>
+	<SAVE_TO_USB>Opslaan naar USB</SAVE_TO_USB>
+	<SCHEDULE>Planning</SCHEDULE>
+	<SCHEDULE_RECORD>Opname plannen</SCHEDULE_RECORD>
+	<SCHEDULE_SETTING>Planningsinstelling</SCHEDULE_SETTING>
+	<SCREEN_MODE>Schermmodus</SCREEN_MODE>
+	<SEARCH>Zoeken</SEARCH>
+	<SEARCH_CAMERA>Camera zoeken</SEARCH_CAMERA>
+	<SEARCH_DATE>Datum zoeken</SEARCH_DATE>
+	<SEARCH_DIRECTION>Zoekrichting</SEARCH_DIRECTION>
+	<SEARCH_TEXT>Tekst zoeken</SEARCH_TEXT>
+	<SEARCH_TIME>Tijd zoeken</SEARCH_TIME>
+	<SEC>sec</SEC>
+	<SECONDARY_DNS>Secundaire DNS</SECONDARY_DNS>
+	<SECONDS_AGO>second(en) geleden</SECONDS_AGO>
+	<SECS>sec</SECS>
+	<SEL_ALL>Alles selecteren</SEL_ALL>
+	<SELECT>Selecteren</SELECT>
+	<SELECT_AUTO_ARCHIVE>Logica automatisch archief selecteren</SELECT_AUTO_ARCHIVE>
+	<SELECT_PLAY_DATA>Afspeelgegevens selecteren.</SELECT_PLAY_DATA>
+	<SELECT_STARTING_CHANNEL>Startkanaal selecteren</SELECT_STARTING_CHANNEL>
+	<SEND_MAIL>E-mail verzenden</SEND_MAIL>
+	<SENDER_MAIL>E-mail afzender</SENDER_MAIL>
+	<SENSITIVITY>Gevoeligheid</SENSITIVITY>
+	<SENSITIVITY_HIGHEST_LOWEST>Gevoeligheid [10]:hoogste, [1]:laagste</SENSITIVITY_HIGHEST_LOWEST>
+	<SENTENCE1>Geef een schatting van het bewegings- en alarmpercentage:</SENTENCE1>
+	<SENTENCE2>dag(en) gegevens kunnen worden opgeslagen op basis van de huidige instelling</SENTENCE2>
+	<SENTENCE3>Opmerking: Het resultaat is uitsluitend bedoeld als referentie.</SENTENCE3>
+	<SEP>Sep</SEP>
+	<SEQUENCE>Reeks</SEQUENCE>
+	<SEQUENCE_DWELL_TIME>Rusttijd reeks</SEQUENCE_DWELL_TIME>
+	<SERVER_IP1>Server-IP1</SERVER_IP1>
+	<SERVER_IP2>Server-IP2</SERVER_IP2>
+	<SERVER_IP3>Server-IP3</SERVER_IP3>
+	<SET>Instellen</SET>
+	<SET_ALL>Alles inst.</SET_ALL>
+	<SET_LEFT_POS>Linkerpos.inst.</SET_LEFT_POS>
+	<SET_RIGHT_POS>Rechterpos.inst.</SET_RIGHT_POS>
+	<SET_TO>Instellen op (uu:mm)</SET_TO>
+	<SETTING>Instelling</SETTING>
+	<SHOW_TEXT_DATA>Tekstgegevens weergeven</SHOW_TEXT_DATA>
+	<SIMPLIFIED_CHINESE>Vereenvoudigd Chinees</SIMPLIFIED_CHINESE>
+	<SIZE_ESTIMATION_COMPLETED>Grootteschatting voltooid.</SIZE_ESTIMATION_COMPLETED>
+	<SMART>Slim</SMART>
+	<SMART_LIST>Slimme lijst</SMART_LIST>
+	<SMART_SEARCH>Intelligent zoeken</SMART_SEARCH>
+	<SMTP_PORT>SMTP-poort</SMTP_PORT>
+	<SMTP_PORT_NO_SSL>SMTP-poortnr./SSL</SMTP_PORT_NO_SSL>
+	<SMTP_SERVER>SMTP-server</SMTP_SERVER>
+	<SN>S/N</SN>
+	<SNAPSHOT_SEARCH>Snapshot zoeken</SNAPSHOT_SEARCH>
+	<SOURCE_IP>Bron-IP</SOURCE_IP>
+	<SOURCE_IP_ADDRESS>IP-adres bron</SOURCE_IP_ADDRESS>
+	<SPANISH>Spaans</SPANISH>
+	<SPEED>Snelheid</SPEED>
+	<ST1>1e</ST1>
+	<STANDARD>Standaard</STANDARD>
+	<STANDARD_ARCHIVE>Standaard archief</STANDARD_ARCHIVE>
+	<STANDARD_COPY>Standaard kopie</STANDARD_COPY>
+	<START>Start</START>
+	<START_DATE>Startdatum</START_DATE>
+	<START_DATE_END_DATE>Startdatum/einddatum</START_DATE_END_DATE>
+	<START_DATE_TIME>Startdatum/-tijd</START_DATE_TIME>
+	<START_PLAYBACK>Afspelen starten</START_PLAYBACK>
+	<START_TIME>Starttijd</START_TIME>
+	<START_TIME_HHMM>Starttijd (uu:mm)</START_TIME_HHMM>
+	<STATIC_IP>Statisch IP</STATIC_IP>
+	<STATUS>Status</STATUS>
+	<STEP>Stap</STEP>
+	<STOP>Stop</STOP>
+	<STOP_BIT>Stopbit</STOP_BIT>
+	<STOP_RECORDING>Opname stoppen</STOP_RECORDING>
+	<SUB_REC>Subopn.</SUB_REC>
+	<SUB_RESOLUTION>Subresolutie</SUB_RESOLUTION>
+	<SUB_STREAM>Substream</SUB_STREAM>
+	<SUBJECT>Onderwerp:</SUBJECT>
+	<SUBNET_MASK>Subnetmasker</SUBNET_MASK>
+	<SUCCESS>Gelukt</SUCCESS>
+	<SUN>Zo</SUN>
+	<SUNDAY>Zondag</SUNDAY>
+	<SUPERIOR>Superieur</SUPERIOR>
+	<SW_UPDATE_IS_IN_PROGRESS>S/W-update bezig.</SW_UPDATE_IS_IN_PROGRESS>
+	<SYSTEM>Systeem</SYSTEM>
+	<SYSTEM_BEEPER>Systeempieper</SYSTEM_BEEPER>
+	<SYSTEM_DISK_TEMP>systeem/schijftemp.</SYSTEM_DISK_TEMP>
+	<SYSTEM_EVENT>Systeemgebeurtenis</SYSTEM_EVENT>
+	<SYSTEM_INFO>Systeeminfo</SYSTEM_INFO>
+	<SYSTEM_INFORMATION>Systeeminformatie</SYSTEM_INFORMATION>
+	<SYSTEM_LOG>Systeemlogboek</SYSTEM_LOG>
+	<SYSTEM_LOG_LIST>Systeemlogboeklijst</SYSTEM_LOG_LIST>
+	<SYSTEM_LOG_VIEW>Systeemlogboek weergeven/exporteren</SYSTEM_LOG_VIEW>
+	<SYSTEM_SETTING>Systeeminstelling</SYSTEM_SETTING>
+	<SYSTEM_VIDEO_MODE>Systeemvideomodus</SYSTEM_VIDEO_MODE>
+	<SYSTEM_WILL_BE_RESTARTED>Systeem wordt opnieuw opgestart</SYSTEM_WILL_BE_RESTARTED>
+	<T10DAY>10 dagen</T10DAY>
+	<T10MIN>10 minuten</T10MIN>
+	<T12HOUR>12 uur</T12HOUR>
+	<T14DAY>14 dagen</T14DAY>
+	<T15MIN>15 minuten</T15MIN>
+	<T1DAY>1 dag</T1DAY>
+	<S1FPS>1 fps</S1FPS>
+	<T1HOUR>1 uur</T1HOUR>
+	<T1MIN>1 minuut</T1MIN>
+	<T1MONTH>1 maand</T1MONTH>
+	<T1WEEK>1 week</T1WEEK>
+	<T20DAY>20 dagen</T20DAY>
+	<T20MIN>20 minuten</T20MIN>
+	<T2DAY>2 dagen</T2DAY>
+	<T2HOUR>2 uur</T2HOUR>
+	<T30DAY>30 dagen</T30DAY>
+	<T30MIN>30 minuten</T30MIN>
+	<T3DAY>3 dagen</T3DAY>
+	<T40DAY>40 dagen</T40DAY>
+	<T4HOUR>4 uur</T4HOUR>
+	<T50DAY>50 dagen</T50DAY>
+	<T5DAY>5 dagen</T5DAY>
+	<T60DAY>60 dagen</T60DAY>
+	<T60MIN>60 minuten</T60MIN>
+	<T7DAY>7 dagen</T7DAY>
+	<T90DAYS>90 dagen</T90DAYS>
+	<TARGET_DEVICE>Doelapparaat</TARGET_DEVICE>
+	<TCP_WR_FAILED>TCP R/W mislukt</TCP_WR_FAILED>
+	<TEMP_WARNING_LIMIT>Temp. Waarschuwingslimiet</TEMP_WARNING_LIMIT>
+	<TEMPERATURE_WARNING>Temperatuurwaarschuwing</TEMPERATURE_WARNING>
+	<TEST_SERVER_ADDRESS>Testserveradres</TEST_SERVER_ADDRESS>
+	<TEXT_DATA>Tekstgegevens</TEXT_DATA>
+	<TEXT_INSERT>Tekst invoegen</TEXT_INSERT>
+	<TEXT_POSITION>Tekstpositie</TEXT_POSITION>
+	<TH4>4e</TH4>
+	<THE_EXCEPTION_DAYS_LIST_IS_FULL>De lijst met uitzonderingsdagen is vol.</THE_EXCEPTION_DAYS_LIST_IS_FULL>
+	<THE_SERVER_ADDRESS_IS_NULL>Het serveradres is leeg.</THE_SERVER_ADDRESS_IS_NULL>
+	<THERE_IS_NO_DATA_SELECTED>Er zijn geen gegevens geselecteerd.</THERE_IS_NO_DATA_SELECTED>
+	<THERE_IS_NO_RECORDED_DATA>Er zijn geen opgenomen gegevens.</THERE_IS_NO_RECORDED_DATA>
+	<THU>Do</THU>
+	<THURSDAY>Donderdag</THURSDAY>
+	<TIME>Tijd</TIME>
+	<TIME_FORMAT>Tijdnotatie</TIME_FORMAT>
+	<TIME_MASK>Tijd verbergen</TIME_MASK>
+	<TIME_SEARCH>Tijd zoeken</TIME_SEARCH>
+	<TIME_SERVER>Tijdserver</TIME_SERVER>
+	<TIME_STAMP>Tijdstempel</TIME_STAMP>
+	<TIME_ZONE>Tijdzone</TIME_ZONE>
+	<TIMEOUT>Time-out</TIMEOUT>
+	<TIMEOUT_DURATION>Duur time-out</TIMEOUT_DURATION>
+	<TITLE>Titel</TITLE>
+	<TO>Aan</TO>
+	<TO_DATE>Aan: Datum</TO_DATE>
+	<TODAY_DELETE>De oude gegevens vandaag verwijderen?</TODAY_DELETE>
+	<TOP>Boven</TOP>
+	<TOTAL>Totaal</TOTAL>
+	<TOUR>Tour</TOUR>
+	<TRACKING>Volgen</TRACKING>
+	<TRACKING_DURATION>Duur tracering</TRACKING_DURATION>
+	<TRACKING_MASK>Tracering verbergen</TRACKING_MASK>
+	<TRADITIONAL_CHINESE>Traditioneel Chinees</TRADITIONAL_CHINESE>
+	<TRANS_TIMEOUT>Overdr.+Time-out</TRANS_TIMEOUT>
+	<TRANSPARENT>Doorzichtig</TRANSPARENT>
+	<TRIGGER_ALARM>Alarm activeren</TRIGGER_ALARM>
+	<TUE>Di</TUE>
+	<TUESDAY>Dinsdag</TUESDAY>
+	<TV_STANDARD>Televisiestandaard</TV_STANDARD>
+	<TYPE>Type</TYPE>
+	<UNKNOW>Onbekend</UNKNOW>
+	<UNKNOW_HOST>Onbekende host</UNKNOW_HOST>
+	<UNKNOWN_ERR>Onbekende fout</UNKNOWN_ERR>
+	<UNLOCK>Ontgrendelen</UNLOCK>
+	<UNLOCK_ALL>Alles ontgrendelen</UNLOCK_ALL>
+	<UPDATE>Bijwerken</UPDATE>
+	<UPDATE_FIRMWARE>Firmware bijwerken</UPDATE_FIRMWARE>
+	<UPDATE_SUCCEED>Update gelukt</UPDATE_SUCCEED>
+	<UPDATE_SUCCESSED>Update is gelukt.</UPDATE_SUCCESSED>
+	<UPDATING>Bezig met update</UPDATING>
+	<UPGRADE_L>Bijwerken</UPGRADE_L>
+	<UPGRADE_U>BIJWERKEN</UPGRADE_U>
+	<UPPER_LEFT>Boven links</UPPER_LEFT>
+	<UPPER_RIGHT>Boven rechts</UPPER_RIGHT>
+	<USAGE>Gebruik</USAGE>
+	<USB>USB</USB>
+	<USB_NOT_FOUND>USB niet gevonden</USB_NOT_FOUND>
+	<USED_TO>Gebruik voor</USED_TO>
+	<USER>Gebruiker</USER>
+	<USER_ALREADY_EXISTS>Gebruiker bestaat al</USER_ALREADY_EXISTS>
+	<USER_EXIST>Deze gebruiker bestaat al. Probeer een andere naam.</USER_EXIST>
+	<USER_GROUP>Gebruikersgroep</USER_GROUP>
+	<USER_LOGIN>Aanmelding gebruiker</USER_LOGIN>
+	<USER_MANAGEMENT>Gebruikersbeheer</USER_MANAGEMENT>
+	<USER_NUMBER_IS_FULL>Gebruikersnummer is vol</USER_NUMBER_IS_FULL>
+	<USER_RIGHT>Gebruikersrechten</USER_RIGHT>
+	<USER_SETTING>Gebruikersinstelling</USER_SETTING>
+	<USERNAME>Gebruikersnaam</USERNAME>
+	<VERSION>Versie</VERSION>
+	<VIDEO>Video</VIDEO>
+	<VIDEO_ADJUST>Video aanpassen</VIDEO_ADJUST>
+	<VIDEO_ADJUSTMENT>Video-aanpassing</VIDEO_ADJUSTMENT>
+	<VIDEO_DETECTED>Video gedetecteerd</VIDEO_DETECTED>
+	<VIDEO_ENCODER>Video-encoder</VIDEO_ENCODER>
+	<VIDEO_FORMAT>Video-indeling</VIDEO_FORMAT>
+	<VIDEO_LOSS>Videoverlies</VIDEO_LOSS>
+	<VIDEO_LOSS_BEEPER>Pieper videoverlies</VIDEO_LOSS_BEEPER>
+	<VIDEO_ONLY>Alleen video</VIDEO_ONLY>
+	<VIDEO_PORT>Video-poort (RTSP)</VIDEO_PORT>
+	<VIDEO_SIGNALS>Videosignalen</VIDEO_SIGNALS>
+	<VIEW_LOG>Logboek weergeven</VIEW_LOG>
+	<VIEW_SETTING>Beeldinstelling</VIEW_SETTING>
+	<WARNING>Waarschuwing</WARNING>
+	<WARNING_SENTENCE1>Er zijn meerdere firmwarecodeafbeeldingen gevonden op USB-appara(a)t(en). Om er een te installeren, verwijder of hernoemt u de andere.</WARNING_SENTENCE1>
+	<WARNING_SENTENCE10>Selecteer een gebruikersnaam en voer een wachtwoord in.</WARNING_SENTENCE10>
+	<WARNING_SENTENCE11>DVR opnieuw instellen naar standaard fabrieksinstellingen?</WARNING_SENTENCE11>
+	<WARNING_SENTENCE12>Kan geen geldig configuratiebestand vinden.</WARNING_SENTENCE12>
+	<WARNING_SENTENCE13>S/W-update voltooid. Systeem wordt opnieuw opgestart.</WARNING_SENTENCE13>
+	<WARNING_SENTENCE14>Selecteer elk bestemmingskanaal dat een kopie van de opnameplanning moet ontvangen;</WARNING_SENTENCE14>
+	<WARNING_SENTENCE15>Selecteer de wekelijkse periode waarnaar de gemarkeerde planning moet worden gekopieerd.</WARNING_SENTENCE15>
+	<WARNING_SENTENCE16>Test-e-mails verzenden. Een ogenblik geduld...</WARNING_SENTENCE16>
+	<WARNING_SENTENCE17>De firmware die u op de DVR wilt laden, heeft een oudere versie. Wilt u deze firmware installeren?</WARNING_SENTENCE17>
+	<WARNING_SENTENCE18>U kunt aanmeldingsgebruiker niet verwijderen!</WARNING_SENTENCE18>
+	<WARNING_SENTENCE19>Alle gegevens worden opnieuw ingesteld. Bent u zeker?</WARNING_SENTENCE19>
+	<WARNING_SENTENCE2>U kunt de tijd niet wijzigen wanneer NTP is ingeschakeld</WARNING_SENTENCE2>
+	<WARNING_SENTENCE20>Alle geplande gegevens worden opnieuw ingesteld. Bent u zeker?</WARNING_SENTENCE20>
+	<WARNING_SENTENCE21>Wilt u de configuratie exporteren?</WARNING_SENTENCE21>
+	<WARNING_SENTENCE22>Wilt u het logboek naar USB exporteren?</WARNING_SENTENCE22>
+	<WARNING_SENTENCE23>Het exporteren is mislukt. Exportmedia niet beschikbaar.</WARNING_SENTENCE23>
+	<WARNING_SENTENCE24>Kan geen geldig updatebestand vinden.</WARNING_SENTENCE24>
+	<WARNING_SENTENCE25>Kan geen geldige USB-geheugenstick vinden.</WARNING_SENTENCE25>
+	<WARNING_SENTENCE26>Wanneer u een hogere resolutie hebt geselecteerd die hoger is dan de monitor kan ondersteunen, kan het scherm zwart worden na het opnieuw opstarten van de DVR. Wilt u doorgaan?</WARNING_SENTENCE26>
+	<WARNING_SENTENCE27>Wilt u de configuratie importeren?</WARNING_SENTENCE27>
+	<WARNING_SENTENCE28>Hiermee wordt de harde schijf geformatteerd. Alle bestaande gegevens worden verwijderd. Wilt u doorgaan?</WARNING_SENTENCE28>
+	<WARNING_SENTENCE29>Aanmelden mislukt. Controleer of het gebruikerswachtwoord juist is.</WARNING_SENTENCE29>
+	<WARNING_SENTENCE3>Nieuwe harde schijf gevonden. Nieuwe harde schijf formatteren?</WARNING_SENTENCE3>
+	<WARNING_SENTENCE30>Media niet geschikt voor formatteren. Probeer het opnieuw met een ander mediatype.</WARNING_SENTENCE30>
+	<WARNING_SENTENCE31>Apparaat niet gevonden voor het exporteren.</WARNING_SENTENCE31>
+	<WARNING_SENTENCE32>DVR-updatebestand bevat fouten.</WARNING_SENTENCE32>
+	<WARNING_SENTENCE33>De gebruikers wordt verwijderd. Doorgaan?</WARNING_SENTENCE33>
+	<WARNING_SENTENCE34>Het videoformaat van de camera is niet hetzelfde als het videoformaat dat is ingesteld in DVR. Sluit de camera aan op kanaal 1 en de voedingseenheid voor automatische detectie.</WARNING_SENTENCE34>
+	<WARNING_SENTENCE4>Geen kanaal geselecteerd. Selecteer een te exporteren kanaal.</WARNING_SENTENCE4>
+	<WARNING_SENTENCE5>Geen gegevens gevonden voor het exporteren.</WARNING_SENTENCE5>
+	<WARNING_SENTENCE6>Geen e-mailadres ingevoerd. Er is minstens één e-mailadres vereist.</WARNING_SENTENCE6>
+	<WARNING_SENTENCE7>Controleer de internetverbinding of de instellingen voor de netwerkconfiguratie.</WARNING_SENTENCE7>
+	<WARNING_SENTENCE8>Controleer gebruikersnaam of wachtwoord</WARNING_SENTENCE8>
+	<WARNING_SENTENCE9>Voer het TCP/IP-poortnummer in. Geldige TCP/IP-poortnummer zijn 1 tot 65535.</WARNING_SENTENCE9>
+	<WEB_VERSION>Webversie</WEB_VERSION>
+	<WED>Wo</WED>
+	<WEDNESDAY>Woensdag</WEDNESDAY>
+	<WEEKDAY_DAYTIME>Weekdag dag</WEEKDAY_DAYTIME>
+	<WEEKDAY_NIGHTTIME>Weekdag nacht</WEEKDAY_NIGHTTIME>
+	<WEEKEND>Weekend</WEEKEND>
+	<WEEKEND_END>Einde weekend</WEEKEND_END>
+	<WEEKEND_START>Begin weekend</WEEKEND_START>
+	<WEEKLY>Wekelijks</WEEKLY>
+	<X>X</X>
+	<YES>Ja</YES>
+	<ZOOM>In-/uitzoomen</ZOOM>
+	<ZOOM_CONTROL_ON_TRACKING>Zoombesturing op tracering</ZOOM_CONTROL_ON_TRACKING>
+	<ZOOM_IN>Inzoomen</ZOOM_IN>
+	<ZOOM_OUT>Uitzoomen</ZOOM_OUT>
+    <WARNING_SENTENCE35>""</WARNING_SENTENCE35>
+    <WARNING_SENTENCE36>Schakel het gebruikersaccountbeheer uit als u geen toegang krijgt tot de live-pagina op afstand.</WARNING_SENTENCE36>
+    <WARNING_SENTENCE37>Download de nieuwste versie van JAVA-software om de live-pagina op afstand weer te geven. Klik op Ja om de Java-software te downloaden.</WARNING_SENTENCE37>
+    <WARNING_SENTENCE38>Selecteer de H.264-codec als u de FTP-functie moet gebruiken voor het uploaden van het MP4-videoformaat.</WARNING_SENTENCE38>
+    <SHOW_DATA_STORE>Gegevens kunnen ??? dag(en) ??? uur worden opgeslagen.</SHOW_DATA_STORE>
+    <PAUSE>Pauze</PAUSE>
+    <DISCONNECT>Accu</DISCONNECT>
+    <WELCOME>Welkom</WELCOME>
+    <DWELL_TIME_CPL>Verblijftijd</DWELL_TIME_CPL>
+    <VALUE>Waarde</VALUE>
+    <MODE>Modus</MODE>
+    <TOUR_NO>Tournr.</TOUR_NO>
+    <STREAM_TYPE>Soort stream</STREAM_TYPE>
+    <SOUND>Geluid</SOUND>
+    <SNAPSHOT>Snapshot</SNAPSHOT>
+    <INDEX>index</INDEX>
+    <MINIMUM>Minimum</MINIMUM>
+    <WARNING_SENTENCE39>Geen USB-dongle gevonden. Steek de USB-dongle terug en klik op Ja om door te gaan met de NVR (wacht ongeveer 30 seconden) of klik op Nee om de NVR te sluiten.</WARNING_SENTENCE39>
+    <WARNING_SENTENCE40>Download de nieuwste versie van JAVA-software om de externe pagina weer te geven. Klik op Ja om Java-software te downloaden.</WARNING_SENTENCE40>
+    <WARNING_SENTENCE41>Schakel Gebruikersaccountbeheer uit als u geen toegang hebt tot de externe pagina.</WARNING_SENTENCE41>
+    <WARNING_SENTENCE42>Kan geen sessie-ID krijgen.</WARNING_SENTENCE42>
+    <WARNING_SENTENCE43>Als u een hogere resolutie hebt geselecteerd die hoger is dan de monitor kan ondersteunen, kan het scherm zwart worden na het opnieuw opstarten van de DVR. Wilt u doorgaan?</WARNING_SENTENCE43>
+    <WARNING_SENTENCE44>Wilt u op afstand opnieuw opstarten?</WARNING_SENTENCE44>
+    <WARNING_SENTENCE45>Opnieuw opgestart.</WARNING_SENTENCE45>
+    <WARNING_SENTENCE46>Opnieuw opstarten mislukt.</WARNING_SENTENCE46>
+    <WARNING_SENTENCE47>Opnieuw opstarten op afstand is niet toegestaan.</WARNING_SENTENCE47>
+    <WARNING_SENTENCE48>Het kanaal is geselecteerd. Als u op Ja klikt, wordt de vorige kanaalinstelling overschreven. Weet u zeker dat u deze wilt toepassen?</WARNING_SENTENCE48>
+    <WARNING_SENTENCE49>Controleer of de IP-adresconfiguratie correct is.</WARNING_SENTENCE49>
+    <WARNING_SENTENCE50>U hebt nog geen camera's geconfigureerd. Wilt u de camera's op het lokale netwerk (LAN) zoeken?</WARNING_SENTENCE50>
+    <WARNING_SENTENCE51>Huidige instellingen overschrijven?</WARNING_SENTENCE51>
+    <WARNING_SENTENCE52>Als het object van het scherm verdwijnt,</WARNING_SENTENCE52>
+    <WARNING_SENTENCE53>Na ??? sec.</WARNING_SENTENCE53>
+    <WARNING_SENTENCE54>En terug naar het beginpunt</WARNING_SENTENCE54>
+    <WARNING_SENTENCE55>Huidige zoomverhouding behouden</WARNING_SENTENCE55>
+    <WARNING_SENTENCE56>Zoomfunctie in meerdere stappen</WARNING_SENTENCE56>
+    <WARNING_SENTENCE57>Blijven volgen</WARNING_SENTENCE57>
+    <WARNING_SENTENCE58>Uitzoomen en nieuw object zoeken</WARNING_SENTENCE58>
+    <WARNING_SENTENCE59>Volgen stoppen en uitzoomen</WARNING_SENTENCE59>
+    <WARNING_SENTENCE60>Hervatten vanaf handmatig stoppen ??? sec.</WARNING_SENTENCE60>
+    <COMPLETE>Voltooid</COMPLETE>
+    <UP>Omhoog</UP>
+    <LEFT>Links</LEFT>
+    <RIGHT>Rechts</RIGHT>
+    <DOWN>Omlaag</DOWN>
+    <NORMAL_FRAME_RATE>Normale beeldsnelheid</NORMAL_FRAME_RATE>
+    <EVENT_FRAME_RATE>Beeldsnelheid gebeurtenis</EVENT_FRAME_RATE>
+    <BIT_RATE>Bitsnelheid</BIT_RATE>
+    <CAMERA_STATUS>Camerastatus</CAMERA_STATUS>
+    <POE_POWER>PoE-vermogen</POE_POWER>
+    <RECORDING>Opname</RECORDING>
+    <SHARPNESS>Scherpte</SHARPNESS>
+    <WARNING_SENTENCE61>Deze IP-camera bestaat al op kanaal</WARNING_SENTENCE61>
+    <WARNING_SENTENCE62>Sleep de camera's van de Cameralijst naar de Kanalenlijst.</WARNING_SENTENCE62>
+    <WARNING_SENTENCE63>Bestaande gegevens in de Kanalenlijst worden vervangen. Klik op OK om te bevestigen.</WARNING_SENTENCE63>
+    <WARNING_SENTENCE64>Camera handmatig toevoegen</WARNING_SENTENCE64>
+    <TV_FORMAT>Tv-formaat</TV_FORMAT>
+    <SHUTDOWN>Uitschakelen</SHUTDOWN>
+    <EKB200SETTING>EKB200-instelling</EKB200SETTING>
+    <SET_PRESET>Voorinstelling instellen</SET_PRESET>
+    <GOTO_PRESET>Ga naar voorinstelling</GOTO_PRESET>
+    <GOTO_HOME>Ga naar start</GOTO_HOME>
+    <CLEAR_PRESET>Voorinstelling wissen</CLEAR_PRESET>
+    <RUN_AUTOPAN>Automatisch pannen uitvoeren</RUN_AUTOPAN>
+    <STOP_AUTOPAN>Automatisch pannen stoppen</STOP_AUTOPAN>
+    <TOUR_RUN>Tour uitvoeren</TOUR_RUN>
+    <TOUR_STOP>Tour stoppen</TOUR_STOP>
+    <PATTERN_RUN>Patroon uitvoeren</PATTERN_RUN>
+    <PATTERN_STOP>Patroon stoppen</PATTERN_STOP>
+    <SET_AUTO_TRACKING>Automatisch volgen instellen</SET_AUTO_TRACKING>
+    <SELECT_TRACKING_OBJECT>Volgobject selecteren</SELECT_TRACKING_OBJECT>
+    <TOGGLE_FULLSCREEN>Volledig scherm in/uitschakelen</TOGGLE_FULLSCREEN>
+    <IRIS_PLUS>IRIS +</IRIS_PLUS>
+    <IRIS_MINUS>IRIS -</IRIS_MINUS>
+    <FOCUS_NEAR>Dichtbij scherpstellen</FOCUS_NEAR>
+    <FOCUS_FAR>Veraf scherpstellen</FOCUS_FAR>
+    <KEY_NO>Toetsnr.</KEY_NO>
+    <DEVICE>Apparaat</DEVICE>
+    <MAPPING_CAMERA>Camera toewijzen</MAPPING_CAMERA>
+    <YOU_CAN_SAFELY_TURN_OFF_POWER>U kunt de voeding veilig uitschakelen</YOU_CAN_SAFELY_TURN_OFF_POWER>
+    <DEVICE_STATUS>Apparaatstatus</DEVICE_STATUS>
+    <CHECK>Controleren</CHECK>
+    <RECORDING_FORMAT>Opnameformaat</RECORDING_FORMAT>
+    <PORT_TYPE>Poorttype</PORT_TYPE>
+</language>

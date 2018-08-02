@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/subMenu.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var setHx = new HandleXml();
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	setLanguage();
+	
+	EFDEF_("^td_").className("menutxt_n")
+			.onmouseover(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_o";
+					}
+				})
+			.onmouseout(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_n";
+					}
+				})
+			.onclick(
+				function(){
+					subMenuSelect(this.id.split("_")[1].toInt());
+				});
+	setIdClass("td_0", "menutxt_a");
+	set_URM_Display();
+}
+function set_URM_Display() {
+    if (parent.LoginHx.getNodeValue("pageDateTime") == 0) {
+        setIdDisplay("td_0", "none");
+        setIdClass("td_1", "menutxt_a");
+    }
+    if (parent.LoginHx.getNodeValue("level") != "Admin") {
+        setIdDisplay("td_2", "none");
+    }
+    if (parent.LoginHx.getNodeValue("pageUserManage") == 0) {
+        setIdDisplay("td_3", "none");
+    }
+}
+function set_URM_Display1() {
+    if (parent.LoginHx.getNodeValue("pageDateTime") == 0) {
+        setIdDisplay("td_0", "none");
+    }
+    if (parent.LoginHx.getNodeValue("level") != "Admin") {
+        setIdDisplay("td_2", "none");
+    }
+    if (parent.LoginHx.getNodeValue("pageUserManage") == 0) {
+        setIdDisplay("td_3", "none");
+    }
+}
+function subMenuSelect(idx){
+	if(parent.g_lock_menu == 0){
+		EFDEF_("^td_").className("menutxt_n");
+		setIdClass("td_" + idx,"menutxt_a");
+	
+		switch(idx){
+			case 0:
+			    parent.ifrm_View.location.replace("./dateTime.html");
+				break;
+			case 1:
+			    parent.ifrm_View.location.replace("./daylightSaving.html");
+				break;
+            case 2:
+                parent.ifrm_View.location.replace("./userGroup.html");
+                break;
+			case 3:
+			    parent.ifrm_View.location.replace("./user.html");
+				break;
+			case 4:
+			    parent.ifrm_View.location.replace("./IOcontrol.html");
+				break;
+			case 5:
+			    parent.ifrm_View.location.replace("./EKB200.html");
+			    break;
+			case 6:
+			    parent.ifrm_View.location.replace("./Misc.html");
+			    break;
+		}
+	}
+}
+function setLanguage() {
+    if (setHx.getNode("DATETIME")) {
+        setIdDisplay("td_0", "block");
+        setIdInnerHTML("td_0", hl.get("DATE_TIME"));
+    }
+
+    if (setHx.getNode("DAYLIGHTSAV")) {
+        setIdDisplay("td_1", "block");
+        setIdInnerHTML("td_1", hl.get("DAYLIGHT_SAVING_COMPLETE"));
+    }
+
+    if (setHx.getNode("USERGROUP")) {
+        setIdDisplay("td_2", "block");
+        setIdInnerHTML("td_2", hl.get("USER_GROUP"));
+    }
+
+    if (setHx.getNode("USERMANAGEMENT")) {
+        setIdDisplay("td_3", "block");
+        cutLongStr("td_3", hl.get("USER_MANAGEMENT"));
+    }
+
+    if (setHx.getNode("IOCONTRL")) {
+        setIdDisplay("td_4", "block");
+        cutLongStr("td_4", hl.get("IO_CONTROL"));
+    }
+    if (setHx.getNode("EKB200")) {
+        setIdDisplay("td_5", "block");
+        setIdInnerHTML("td_5", hl.get("EKB200SETTING"));
+    }
+    if (setHx.getNode("MISC")) {
+        setIdDisplay("td_6", "block");
+        setIdInnerHTML("td_6", hl.get("MISCELLANEOUS"));
+    }
+    set_URM_Display1();
+}
+</script>
+</head>
+<body onload="init();">
+    <div style="margin-top: 45px"></div>
+	<div id="td_0" style="display:none"></div>
+	<div id="td_1" style="display:none"></div>
+	<div id="td_2" style="display:none"></div>
+	<div id="td_3" style="display:none"></div>
+	<div id="td_4" style="display:none"></div>
+    <div id="td_5" style="display:none"></div>
+    <div id="td_6" style="display:none"></div>
+</body>
+</html>

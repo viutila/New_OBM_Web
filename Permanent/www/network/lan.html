@@ -1,0 +1,709 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var LanIdx; // Lan Index
+var changePassFlag = 0;
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	setLanguage();
+	selProduct();
+	GetXML();
+	initFunc();
+	initLanPort();
+	selectLanPort();
+}
+
+function initLanPort() {
+
+    var hs = new HandleSelect("sel_Lan_Port", 0);
+    if (parent.g_model_name == "ENVR8304D-08") {//20130605 julia add
+        var type = parent.SetHx.getNodeValue("NetworkSetting", "PortType").split(",");
+        for (var cnt = 0; cnt < type.length;cnt++ ){
+            hs.addOpt(cnt, type[cnt], cnt+1);
+        }
+    } else if (parent.g_model_name == "EPHD08+") {//20131015 john add
+        hs.addOpt(0, "LAN", 0)
+	      .addOpt(1, "WLAN(WAN)", 1);
+    }else {
+        for (var cnt = 0; cnt < parent.g_nic_num; cnt++) {
+            hs.addOpt(cnt, cnt + 1, cnt);
+        }
+    }
+}
+
+function initFunc() {
+    var funcNum = 0;
+    var i, j, q;
+    var str = "LAN";
+    
+    EFDEF_("^td_").className("txtLeft");
+    setIdValue("btn_Save", hl.get("SAVE"));
+
+    funcNum = setHx.getNodeChildSize("LAN");
+    for (i = 0; i < funcNum; i++) {
+
+        switch (setHx.getNodeChildName("LAN", i)) {
+            case "LanPort":
+                setIdDisplay("td_Lan_Port", "table-cell");
+                setIdDisplay("sel_Lan_Port", "table-cell");
+                if (parent.g_model_name_int == 2) { //20130605 julia add
+                    setIdInnerHTML("td_Lan_Port", hl.get("PORT_TYPE")); //multi-lang
+                } else {
+                    setIdInnerHTML("td_Lan_Port", hl.get("LANPORT"));
+                }
+                break;
+            case "Install":
+                setIdDisplay("td_Install", "table-cell");
+                setIdInnerHTML("td_Install", hl.get("INSTALL"));
+                setIdDisplay("chk_Install", "table-cell");
+                break;
+            case "NetworkType":
+                setIdInnerHTML("td_Network_Type", hl.get("NETWORK_TYPE"));
+                setIdDisplay("td_Network_Type", "table-cell");
+                setIdDisplay("sel_Network_Type", "table-cell");
+
+
+                var type = parent.SetHx.getNodeValue("NetworkSetting", "LANNetworkType1").split(",");
+                var hs = new HandleSelect("sel_Network_Type", 0);
+                for (var cnt = 0; cnt < type.length; cnt++) {
+                    if (type[cnt] == "Static IP") {
+                        hs.addOpt(cnt, hl.get("STATIC_IP"), "static");
+                    } else if (type[cnt] == "DHCP") {
+                        hs.addOpt(cnt, type[cnt], "dhcp");
+                    } else if (type[cnt] == "PPPoE") {
+                        hs.addOpt(cnt, type[cnt], "pppoe");
+                    }
+                }
+
+                var funcNumInner1 = setHx.getNodeChildSize("NetworkType");
+                for (j = 0; j < funcNumInner1; j++) {
+                    switch (setHx.getNodeChildName("NetworkType", j)) {
+                        case "DHCP":
+                            var funcNumInner2 = setHx.getNodeChildSize("DHCP");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("DHCP", q)) {
+                                    case "IP":
+                                        setIdInnerHTML("td_DHCP_IP", hl.get("IP"));
+                                        setIdDisplay("td_DHCP_IP", "table-cell");
+                                        setIdDisplay("DHCP_IP_val", "table-cell");
+                                        break;
+                                    case "SubnetMask":
+                                        setIdInnerHTML("td_DHCP_Mask", hl.get("SUBNET_MASK"));
+                                        setIdDisplay("td_DHCP_Mask", "table-cell");
+                                        setIdDisplay("DHCP_Mask_val", "table-cell");
+                                        break;
+                                    case "Gateway":
+                                        setIdInnerHTML("td_DHCP_Gateway", hl.get("GATEWAY"));
+                                        setIdDisplay("td_DHCP_Gateway", "table-cell");
+                                        setIdDisplay("DHCP_Gateway_val", "table-cell");
+                                        break;
+                                    case "DDNS1":
+                                        setIdInnerHTML("td_DHCP_DNS1", hl.get("DNS_SERVER1"));
+                                        setIdDisplay("td_DHCP_DNS1", "table-cell");
+                                        setIdDisplay("DHCP_DNS1_val", "table-cell");
+                                        break;
+                                    case "DDNS2":
+                                        setIdInnerHTML("td_DHCP_DNS2", hl.get("DNS_SERVER2"));
+                                        setIdDisplay("td_DHCP_DNS2", "table-cell");
+                                        setIdDisplay("DHCP_DNS2_val", "table-cell");
+                                        break;
+                                    case "#text":   //******* for chrome
+                                        funcNumInner2++;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "StaticIP":
+                            var funcNumInner2 = setHx.getNodeChildSize("StaticIP");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("StaticIP", q)) {
+                                    case "IP":
+                                        setIdInnerHTML("td_Static_IP", hl.get("IP"));
+                                        setIdDisplay("td_Static_IP", "table-cell");
+                                        setIdDisplay("td_Static_IP_Insert", "table-cell");
+                                        break;
+                                    case "SubnetMask":
+                                        setIdInnerHTML("td_Static_Mask", hl.get("SUBNET_MASK"));
+                                        setIdDisplay("td_Static_Mask", "table-cell");
+                                        setIdDisplay("td_Static_Mask_Insert", "table-cell");
+                                        break;
+                                    case "Gateway":
+                                        setIdInnerHTML("td_Static_Gateway", hl.get("GATEWAY"));
+                                        setIdDisplay("td_Static_Gateway", "table-cell");
+                                        setIdDisplay("td_Static_Gateway_Insert", "table-cell");
+                                        break;
+                                    case "DDNS1":
+                                        setIdInnerHTML("td_Static_DNS1", hl.get("DNS_SERVER1"));
+                                        setIdDisplay("td_Static_DNS1", "table-cell");
+                                        setIdDisplay("td_Static_DNS1_Insert", "table-cell");
+                                        break;
+                                    case "DDNS2":
+                                        setIdInnerHTML("td_Static_DNS2", hl.get("DNS_SERVER2"));
+                                        setIdDisplay("td_Static_DNS2", "table-cell");
+                                        setIdDisplay("td_Static_DNS2_Insert", "table-cell");
+                                        break;
+                                    case "#text":   //******* for chrome
+                                        funcNumInner2++;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "PPPoE":
+                            var funcNumInner2 = setHx.getNodeChildSize("PPPoE");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("PPPoE", q)) {
+                                    case "IP":
+                                        setIdInnerHTML("td_PPPOE_IP", hl.get("IP"));
+                                        setIdDisplay("td_PPPOE_IP", "table-cell");
+                                        setIdDisplay("PPPOE_IP_val", "table-cell");
+                                        break;
+                                    case "SubnetMask":
+                                        setIdInnerHTML("td_PPPOE_Mask", hl.get("SUBNET_MASK"));
+                                        setIdInnerHTML("PPPOE_Mask_val", hl.get("SUBNET_MASK"));
+                                        setIdDisplay("td_PPPOE_Mask", "table-cell");
+                                        setIdDisplay("PPPOE_Mask_val", "table-cell");
+                                        break;
+                                    case "Gateway":
+                                        setIdInnerHTML("td_PPPOE_Gateway", hl.get("GATEWAY"));
+                                        setIdInnerHTML("PPPOE_Gateway_val", hl.get("GATEWAY"));
+                                        setIdDisplay("td_PPPOE_Gateway", "table-cell");
+                                        setIdDisplay("PPPOE_Gateway_val", "table-cell");
+                                        break;
+                                    case "DDNS1":
+                                        setIdInnerHTML("td_PPPOE_DNS1", hl.get("DNS_SERVER1"));
+                                        setIdInnerHTML("PPPOE_DNS1_val", hl.get("DNS_SERVER2"));
+                                        setIdDisplay("td_PPPOE_DNS1", "table-cell");
+                                        setIdDisplay("PPPOE_DNS1_val", "table-cell");
+                                        break;
+                                    case "DDNS2":
+                                        setIdInnerHTML("td_PPPOE_DNS2", hl.get("DNS_SERVER2"));
+                                        setIdInnerHTML("PPPOE_DNS2_val", hl.get("DNS_SERVER2"));
+                                        setIdDisplay("td_PPPOE_DNS2", "table-cell");
+                                        setIdDisplay("PPPOE_DNS2_val", "table-cell");
+                                        break;
+                                    case "UserName":
+                                        setIdInnerHTML("td_Username", hl.get("USERNAME"));
+                                        setIdDisplay("txt_Username", "table-cell");
+                                        setIdDisplay("td_Username", "table-cell");
+                                        break;
+                                    case "Password":
+                                        setIdInnerHTML("td_Password", hl.get("PASSWORD"));
+                                        setIdInnerHTML("td_Confirm", hl.get("CONFIRM"));
+                                        setIdDisplay("td_Password", "table-cell");
+                                        setIdValue("txt_Password", "123456789012345678901234567890");
+                                        setIdDisplay("txt_Password", "table-cell");
+
+                                        EFDEF_("txt_Password").readOnly(1)
+		                                .onclick(function () {
+		                                    if (getIdReadOnly(this)) {
+		                                        if (window.confirm("Edit Password?")) {
+		                                            hx.setNodeValue(1, "LAN", "USE_PWD");
+		                                            setIdValue(this, "");
+		                                            setIdReadOnly(this, 0);
+		                                            setIdVisibility("tr_Confirm", 1);
+		                                            this.focus();
+		                                            this.select();
+		                                            changePassFlag = 1;
+		                                            setTimeout("EFDEF_id('txt_Password').focus()", 500);
+		                                        } else {
+		                                            setIdReadOnly(this, 1);
+		                                            this.blur();
+		                                            return false;
+		                                        }
+		                                    }
+		                                })
+                                        .onfocus(getIdOnclick("txt_Password"));
+                                        break;
+                                    case "#text":   //******* for chrome
+                                        funcNumInner2++;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "#text":   //******* for chrome
+                            funcNumInner1++;
+                            break;
+                    }
+                }
+                break;
+            case "HTTPPort":
+                setIdInnerHTML("td_HTTP_Port", hl.get("HTTP_PORT"));
+                setIdDisplay("td_HTTP_Port", "table-cell");
+                setIdDisplay("txt_HTTPPort", "table-cell");
+                break;
+            case "Bandwidth":
+                setIdInnerHTML("td_BandwidthLimit", hl.get("BANDWIDTH_LIMIT"));
+                setIdDisplay("td_BandwidthLimit", "table-cell");
+                setIdDisplay("sel_BandwidthLimit", "table-cell");
+
+                var items = parent.SetHx.getNodeValue("NetworkSetting", "LANBandWidth").split(",");
+                var hs = new HandleSelect("sel_BandwidthLimit", 0);
+                for (var cnt = 0; cnt < items.length; cnt++) {
+                    if (items[cnt] != "Disable") {
+                        hs.addOpt(cnt, items[cnt], items[cnt].toLowerCase() + "bit");
+                    }
+                    else {
+                        hs.addOpt(cnt, hl.get(items[cnt].toUpperCase()), items[cnt]);
+                    }
+                }
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+
+function selectLanPort() {
+    var funcNum = 0;
+    var i, j, q;
+    if (parent.g_model_name_int == 2)//20130605 julia add
+    {
+        LanIdx = getIdValue("sel_Lan_Port").toInt();
+        if (LanIdx == 1)
+            setIdDisabled("sel_Network_Type", true);
+        else
+            setIdDisabled("sel_Network_Type", false);
+
+    } else {
+        //LanIdx = getIdSelectText("sel_Lan_Port");
+        LanIdx = getIdValue("sel_Lan_Port").toInt() + 1;
+    }
+    var select = EFDEF_id("sel_Network_Type");
+    for (i = 0; i < select.options.length; i++) {
+        select.options[i] = null;
+    }
+
+    var type = parent.SetHx.getNodeValue("NetworkSetting", "LANNetworkType" + LanIdx).split(",");
+    var hs = new HandleSelect("sel_Network_Type", 0);
+    for (i = 0; i < type.length; i++) {
+        if (type[i] == "Static IP") {
+            hs.addOpt(i, hl.get("STATIC_IP"), "static");
+        } else if (type[i] == "DHCP") {
+            hs.addOpt(i, type[i], "dhcp");
+        } else if (type[i] == "PPPoE") {
+            hs.addOpt(i, type[i], "pppoe");
+        }
+    }
+    
+    var str = "networkInterface" + LanIdx;
+    funcNum = setHx.getNodeChildSize("LAN");
+    for (i = 0; i < funcNum; i++) {
+
+        switch (setHx.getNodeChildName("LAN", i)) {
+            case "Install":
+                setIdChecked("chk_Install", hx.getNodeValue(str, "enable"));
+                break;
+            case "NetworkType":
+                setIdValue("sel_Network_Type", hx.getNodeValue(str, "type"));
+                break;
+        }
+    }
+    selectType();
+}
+
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkLAN.xml");
+}
+
+function selectType() {
+    GetXML();
+    var str = "networkInterface" + LanIdx;
+    var Typeindex = getIdValue("sel_Network_Type");
+    if (parent.g_model_name_int == 2 && (getIdValue("sel_Lan_Port").toInt() == 1))//20130605 julia add
+    {
+        setIdDisplay("tbl_StaticIP", "none");
+        setIdDisplay("tbl_DHCP", "table-cell");
+        setIdDisplay("tbl_PPPOE", "none");
+        setIdDisabled("txt_HTTPPort", true);
+        setIdDisabled("sel_BandwidthLimit", true);
+        setIdDisabled("btn_Save", true);
+
+        setIdInnerHTML("DHCP_IP_val", hx.getNodeValue(str, "ipAddress"));
+        setIdInnerHTML("DHCP_Mask_val", hx.getNodeValue(str, "subnetMask"));
+        setIdInnerHTML("DHCP_Gateway_val", hx.getNodeValue(str, "DefaultGateway"));
+        setIdInnerHTML("DHCP_DNS1_val", hx.getNodeValue(str, "PrimaryDNS"));
+        setIdInnerHTML("DHCP_DNS2_val", hx.getNodeValue(str, "SecondaryDNS"));
+
+
+    } else {
+        setIdDisabled("txt_HTTPPort", false);
+        setIdDisabled("sel_BandwidthLimit", false);
+        setIdDisabled("btn_Save", false);
+        if (Typeindex == "static") {	//Static IP
+            setIdDisplay("tbl_StaticIP", "table-cell");
+            setIdDisplay("tbl_DHCP", "none");
+            setIdDisplay("tbl_PPPOE", "none");
+
+            setIdValue("txt_IP_0", hx.getNodeValue(str, "ipAddress").split(".")[0]);
+            setIdValue("txt_IP_1", hx.getNodeValue(str, "ipAddress").split(".")[1]);
+            setIdValue("txt_IP_2", hx.getNodeValue(str, "ipAddress").split(".")[2]);
+            setIdValue("txt_IP_3", hx.getNodeValue(str, "ipAddress").split(".")[3]);
+            setIdValue("txt_Mask_0", hx.getNodeValue(str, "subnetMask").split(".")[0]);
+            setIdValue("txt_Mask_1", hx.getNodeValue(str, "subnetMask").split(".")[1]);
+            setIdValue("txt_Mask_2", hx.getNodeValue(str, "subnetMask").split(".")[2]);
+            setIdValue("txt_Mask_3", hx.getNodeValue(str, "subnetMask").split(".")[3]);
+            setIdValue("txt_Gate_0", hx.getNodeValue(str, "DefaultGateway").split(".")[0]);
+            setIdValue("txt_Gate_1", hx.getNodeValue(str, "DefaultGateway").split(".")[1]);
+            setIdValue("txt_Gate_2", hx.getNodeValue(str, "DefaultGateway").split(".")[2]);
+            setIdValue("txt_Gate_3", hx.getNodeValue(str, "DefaultGateway").split(".")[3]);
+            setIdValue("txt_DNS1_0", hx.getNodeValue(str, "PrimaryDNS").split(".")[0]);
+            setIdValue("txt_DNS1_1", hx.getNodeValue(str, "PrimaryDNS").split(".")[1]);
+            setIdValue("txt_DNS1_2", hx.getNodeValue(str, "PrimaryDNS").split(".")[2]);
+            setIdValue("txt_DNS1_3", hx.getNodeValue(str, "PrimaryDNS").split(".")[3]);
+            setIdValue("txt_DNS2_0", hx.getNodeValue(str, "SecondaryDNS").split(".")[0]);
+            setIdValue("txt_DNS2_1", hx.getNodeValue(str, "SecondaryDNS").split(".")[1]);
+            setIdValue("txt_DNS2_2", hx.getNodeValue(str, "SecondaryDNS").split(".")[2]);
+            setIdValue("txt_DNS2_3", hx.getNodeValue(str, "SecondaryDNS").split(".")[3]);
+        }
+        if (Typeindex == "dhcp") {	//DHCP
+            setIdDisplay("tbl_StaticIP", "none");
+            setIdDisplay("tbl_DHCP", "table-cell");
+            setIdDisplay("tbl_PPPOE", "none");
+
+            setIdInnerHTML("DHCP_IP_val", hx.getNodeValue(str, "DynamicIPAddress"));
+            setIdInnerHTML("PPPOE_IP_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_Mask_val", hx.getNodeValue(str, "DynamicSubnetMask"));
+            setIdInnerHTML("PPPOE_Mask_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_Gateway_val", hx.getNodeValue(str, "DynamicGateway"));
+            setIdInnerHTML("PPPOE_Gateway_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_DNS1_val", hx.getNodeValue(str, "DynamicPrimaryDNS"));
+            setIdInnerHTML("PPPOE_DNS1_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_DNS2_val", hx.getNodeValue(str, "DynamicSecondaryDNS"));
+            setIdInnerHTML("PPPOE_DNS2_val", "0.0.0.0");
+        }
+        if (Typeindex == "pppoe") {	//PPPoE
+            setIdDisplay("tbl_StaticIP", "none");
+            setIdDisplay("tbl_DHCP", "none");
+            setIdDisplay("tbl_PPPOE", "table-cell");
+            setIdInnerHTML("PPPOE_IP_val", hx.getNodeValue(str, "DynamicIPAddress"));
+            setIdInnerHTML("PPPOE_Mask_val", hx.getNodeValue(str, "DynamicSubnetMask"));
+            setIdInnerHTML("PPPOE_Gateway_val", hx.getNodeValue(str, "DynamicGateway"));
+            setIdInnerHTML("PPPOE_DNS1_val", hx.getNodeValue(str, "DynamicPrimaryDNS"));
+            setIdInnerHTML("PPPOE_DNS2_val", hx.getNodeValue(str, "DynamicSecondaryDNS"));
+
+            setIdInnerHTML("DHCP_IP_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_Mask_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_Gateway_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_DNS1_val", "0.0.0.0");
+            setIdInnerHTML("DHCP_DNS2_val", "0.0.0.0");
+        }
+    }
+    setIdValue("txt_Username", hx.getNodeValue(str, "username"));
+    setIdValue("txt_HTTPPort", hx.getNodeValue("LAN", "httpPortNo"));
+    setIdValue("sel_BandwidthLimit", hx.getNodeValue(str, "bandwidthLimit"));
+    setIdChecked("chk_enable_3gpp", hx.getNodeValue(str, "enable_3gpp"));
+}
+
+function SetXML() {
+    var str = "networkInterface" + LanIdx;
+    var Typeindex = getIdValue("sel_Network_Type");
+    var funcNum = 0;
+    var i, j, q;
+    hx.setNodeValue(getIdValue("sel_Network_Type"), str, "type");
+    funcNum = setHx.getNodeChildSize("LAN");
+    for (i = 0; i < funcNum; i++) {
+        switch (setHx.getNodeChildName("LAN", i)) {
+            case "Install":
+                hx.setNodeValue(getIdChecked("chk_Install"), str, "enable");
+                break;
+            case "NetworkType":
+                var funcNumInner1 = setHx.getNodeChildSize("NetworkType");
+                for (j = 0; j < funcNumInner1; j++) {
+                    switch (setHx.getNodeChildName("NetworkType", j)) {
+                        case "DHCP":
+                            var funcNumInner2 = setHx.getNodeChildSize("DHCP");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("DHCP", q)) {
+                                    case "IP":
+                                        break;
+                                    case "SubnetMask":
+                                        break;
+                                    case "Gateway":
+                                        break;
+                                    case "DDNS1":
+                                        break;
+                                    case "DDNS2":
+                                        break;
+                                }
+                            }
+                            break;
+                        case "StaticIP":
+                            if (parent.g_model_name_int == 2 && (getIdValue("sel_Lan_Port").toInt() == 1))//20130605 julia add
+                                break;
+                            var funcNumInner2 = setHx.getNodeChildSize("StaticIP");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("StaticIP", q)) {
+                                    case "IP":
+                                        hx.setNodeValue(getIdValue("txt_IP_0") + "." + getIdValue("txt_IP_1") + "." + getIdValue("txt_IP_2") + "." + getIdValue("txt_IP_3"), str, "ipAddress");
+                                        break;
+                                    case "SubnetMask":
+                                        hx.setNodeValue(getIdValue("txt_Mask_0") + "." + getIdValue("txt_Mask_1") + "." + getIdValue("txt_Mask_2") + "." + getIdValue("txt_Mask_3"), str, "subnetMask");
+                                        break;
+                                    case "Gateway":
+                                        hx.setNodeValue(getIdValue("txt_Gate_0") + "." + getIdValue("txt_Gate_1") + "." + getIdValue("txt_Gate_2") + "." + getIdValue("txt_Gate_3"), str, "DefaultGateway");
+                                        break;
+                                    case "DDNS1":
+                                        hx.setNodeValue(getIdValue("txt_DNS1_0") + "." + getIdValue("txt_DNS1_1") + "." + getIdValue("txt_DNS1_2") + "." + getIdValue("txt_DNS1_3"), str, "PrimaryDNS");
+                                        break;
+                                    case "DDNS2":
+                                        hx.setNodeValue(getIdValue("txt_DNS2_0") + "." + getIdValue("txt_DNS2_1") + "." + getIdValue("txt_DNS2_2") + "." + getIdValue("txt_DNS2_3"), str, "SecondaryDNS");
+                                        break;
+                                    case "#text":   //******* for chrome
+                                        funcNumInner2++;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "PPPoE":
+                            if (parent.g_model_name_int == 2 && (getIdValue("sel_Lan_Port").toInt() == 1))//20130605 julia add
+                                break;
+                            var funcNumInner2 = setHx.getNodeChildSize("PPPoE");
+                            for (q = 0; q < funcNumInner2; q++) {
+                                switch (setHx.getNodeChildName("PPPoE", q)) {
+                                    case "IP":
+                                        break;
+                                    case "SubnetMask":
+                                        break;
+                                    case "Gateway":
+                                        break;
+                                    case "DDNS1":
+                                        break;
+                                    case "DDNS2":
+                                        break;
+                                    case "UserName":
+                                        hx.setNodeValue(getIdValue("txt_Username"), str, "username");
+                                        break;
+                                    case "Password":
+                                        if (changePassFlag == 1) {
+                                            if (getIdValue("txt_Password") == getIdValue("txt_Confirm") && getIdValue("txt_Password").trim() != "") {
+                                                hx.setNodeValue(getIdValue("txt_Password"), str, "password");
+                                                changePassFlag = 0;
+                                            }
+                                            else {
+                                                changePassFlag = 0;
+                                                alert(hl.get("PASSWORD_ERROR"));
+                                            }
+                                        }
+                                        else {}
+                                        break;
+                                    case "#text":   //******* for chrome
+                                        funcNumInner2++;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "#text":   //******* for chrome
+                            funcNumInner1++;
+                            break;
+                    }
+                }
+                break;
+            case "HTTPPort":
+                hx.setNodeValue(getIdValue("txt_HTTPPort"), "LAN", "httpPortNo");
+                break;
+            case "Bandwidth":
+                hx.setNodeValue(getIdValue("sel_BandwidthLimit"), str, "bandwidthLimit");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/NetworkLAN.xml", newxml);
+
+    var hx2 = new HandleXml();
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+}
+
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+	setIdValue("btn_Save", hl.get("SAVE"));
+	
+}
+function selProduct(){
+    setIdVisibility(td_enable_3gpp,0);
+    setIdVisibility(chk_enable_3gpp,0);
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+        <table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Lan_Port" style="width:200px; display:none;" ></td>
+				<td style="width:120px; text-align:left;">
+					<select id="sel_Lan_Port" style="width:120px; display:none;" onchange="selectLanPort();"></select>
+				</td>
+                <td id="td_Install" style="display:none"></td>
+                <td><input type="checkbox" id="chk_Install" style="display:none" onclick=""/></td>
+			</tr>
+		</table>
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Network_Type" width="200px"></td>
+				<td width="200px" style="text-align:left;">
+					<select id="sel_Network_Type" style="width:auto;" onchange="selectType();"></select>
+				</td>
+			</tr>
+		</table>
+		<table id="tbl_StaticIP" style="display:none;" border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Static_IP" width="200px" style="display:none;"></td>
+				<td id="td_Static_IP_Insert" width="250px" style="display:none;">
+					<input type="text" id="txt_IP_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_IP_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_IP_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_IP_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Static_Mask" style="display:none;"></td>
+				<td id="td_Static_Mask_Insert" style="display:none;">
+					<input type="text" maxlength="3" id="txt_Mask_0" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" maxlength="3" id="txt_Mask_1" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" maxlength="3" id="txt_Mask_2" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" maxlength="3" id="txt_Mask_3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Static_Gateway" style="display:none;"></td>
+				<td id="td_Static_Gateway_Insert" style="display:none;">
+					<input type="text" id="txt_Gate_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_Gate_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_Gate_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_Gate_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Static_DNS1" style="display:none;"></td>
+				<td id="td_Static_DNS1_Insert" width="200" style="display:none;">
+					<input type="text" id="txt_DNS1_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS1_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS1_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS1_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Static_DNS2" style="display:none;"></td>
+				<td id="td_Static_DNS2_Insert" style="display:none;">
+					<input type="text" id="txt_DNS2_0" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS2_1" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS2_2" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>&nbsp;
+					<input type="text" id="txt_DNS2_3" maxlength="3" style="width:40px;" onblur="CheckCharKeyin(this,0,0,255);"/>
+				</td>
+			</tr>
+			<tr><td></td></tr>
+			<tr><td></td></tr>
+		</table>
+		<table id="tbl_DHCP" style="display:none;" border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_DHCP_IP" width="200px" style="display:none;"></td>
+				<td id="DHCP_IP_val" width="200" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_DHCP_Mask" style="display:none;"></td>
+				<td id="DHCP_Mask_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_DHCP_Gateway" style="display:none;"></td>
+				<td id="DHCP_Gateway_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_DHCP_DNS1" style="display:none;"></td>
+				<td id="DHCP_DNS1_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_DHCP_DNS2" style="display:none;"></td>
+				<td id="DHCP_DNS2_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr><td></td></tr>
+			<tr><td></td></tr>
+		</table>
+		<table id="tbl_PPPOE" style="display:none;" border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_PPPOE_IP" width="200px" style="display:none;"></td>
+				<td id="PPPOE_IP_val" class="txtLeft" width="200" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_PPPOE_Mask" style="display:none;"></td>
+				<td id="PPPOE_Mask_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_PPPOE_Gateway" style="display:none;"></td>
+				<td id="PPPOE_Gateway_val" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_PPPOE_DNS1" style="display:none;"></td>
+				<td id="PPPOE_DNS1_val" width="200" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_PPPOE_DNS2" style="display:none;"></td>
+				<td id="PPPOE_DNS2_val" width="200" class="txtLeft" style="display:none;"></td>
+			</tr>
+			<tr>
+				<td id="td_Username" style="display:none;"></td>
+				<td><input type="text" id="txt_Username" maxlength="64" style="width:300px; display:none;" onblur="CheckTitlePPPOE(this);"/></td>
+			</tr>
+			<tr>
+				<td id="td_Password" style="display:none;"></td>
+				<td><input type="password" id="txt_Password" maxlength="32" style="width:300px; display:none;" onblur="CheckTitle(this);"/></td>
+			</tr>
+			<tr id="tr_Confirm" style="visibility: hidden;">
+				<td id="td_Confirm"></td>
+				<td>
+					<input type="password" id="txt_Confirm" maxlength="32" style="width:300px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+		</table>		
+		<table border="0" cellspacing="5" cellpadding="0">			
+			<tr>
+				<td id="td_HTTP_Port" width="270" style="display:none;"></td>
+				<td width="200"><input type="text" id="txt_HTTPPort" maxlength="5" style="width:100px; display:none;" onblur="CheckCharKeyin(this,0,0,65535);"/></td>
+			</tr>
+			<tr>
+				<td id="td_BandwidthLimit" style="display:none;"></td>
+				<td>
+					<select id="sel_BandwidthLimit" style="width:100px; display:none;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_enable_3gpp" colSpan="2" style="display:none;"></td>
+				<td>
+					<input type="checkbox" id="chk_enable_3gpp" style="display:none;"/>
+				</td>
+			</tr>
+		</table>
+    </div>
+	
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

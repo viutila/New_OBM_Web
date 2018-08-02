@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+	GetXML();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+
+    setIdValue("btn_Save", hl.get("SAVE"));
+    funcNum = setHx.getNodeChildSize("RECORDER");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (setHx.getNodeChildName("RECORDER", Cnt)) {
+            case "Overwrite":
+                setIdInnerHTML("td_Rec_Overwrite", hl.get("RECORD_OVERWRITE"));
+                setIdDisplay("tr_Rec_Overwrite", "table-row");
+                break;
+            case "ScheduleRecord":
+                setIdInnerHTML("td_Schedule_Rec", hl.get("SCHEDULE_RECORD"));
+                setIdDisplay("tr_Schedule_Rec", "table-row");
+                break;
+            case "TimeStamp":
+                setIdInnerHTML("td_Timestamp", hl.get("TIME_STAMP"));
+                setIdDisplay("tr_Timestamp", "table-row");
+                var hs = new HandleSelect("sel_Timestamp", 0);
+                var stamp = parent.SetHx.getNodeValue("RecordSetting", "TimeStamp").split(",");
+                for (i = 0; i < stamp.length; i++) {
+                    hs.addOpt(i, hl.get(stamp[i].toUpperCase()), stamp[i]);
+                }
+                break;
+            case "RelayOutput":
+                setIdInnerHTML("td_REC_STATUS_RELAY_OUTPUT", hl.get("RECORD_STATUS_RELAY_OUTPUT"));
+                setIdDisplay("tr_REC_STATUS_RELAY_OUTPUT", "table-row");
+                var hs = new HandleSelect("sel_REC_STATUS_RELAY_OUTPUT", 0);
+                var output = parent.SetHx.getNodeValue("RecordSetting", "RecordRecordStausRelayOutput").split(",");
+                for (i = 0; i < output.length; i++) {
+                    if (i == 0) {
+                        hs.addOpt(i, hl.get(output[i].toUpperCase()), i);
+                    } else {
+                        hs.addOpt(i, output[i], i);
+                    }
+                }
+                break;
+            case "AutoErase":
+                setIdInnerHTML("td_Auto_Erase_Video", hl.get("AUTO_ERASE_VIDEO"));
+                setIdDisplay("tr_Auto_Erase_Video", "table-row");
+                var hs = new HandleSelect("sel_Auto_Erase_Video", 0);
+                var day = parent.SetHx.getNodeValue("RecordSetting", "RecordAutoEraseVideo").split(",");
+                for (i = 0; i < day.length; i++) {
+                    if (i != 0)
+                        hs.addOpt(i, day[i], day[i]);
+                    else
+                        hs.addOpt(i, hl.get(day[i].toUpperCase()) , 0);
+                }
+                break;
+            case "RecordAudio":
+                setIdInnerHTML("td_Rec_Audio", hl.get("REC_AUDIO"));
+                setIdDisplay("tr_Rec_Audio", "table-row");
+                break;
+            case "PreAlarmRecord":
+                setIdInnerHTML("td_Prealarm_Recording", hl.get("MIN_PREALARM_REC_DUR"));
+                setIdDisplay("tr_Prealarm_Recording", "table-cell");
+                break;
+            case "Estimation":
+                setIdDisplay("tb_Estimation", "table");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+  EFDEF_("^td_").className("txtLeft");
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Record.xml");
+
+    if (setHx.getNode("RECORDER", "Overwrite"))
+	    setIdChecked("chk_RecordOverwrite", hx.getNodeValue("Record", "recordOverwrite"));
+
+    if (setHx.getNode("RECORDER", "ScheduleRecord"))
+	    setIdChecked("chk_ScheduleRec", hx.getNodeValue("Record", "scheduleRecord"));
+
+    if (setHx.getNode("RECORDER", "TimeStamp"))
+	    setIdValue("sel_Timestamp", hx.getNodeValue("Record", "timeStamp"));
+
+    if (setHx.getNode("RECORDER", "RelayOutput"))
+	    setIdValue("sel_REC_STATUS_RELAY_OUTPUT", hx.getNodeValue("Record", "recordStatusRelayOutput"));
+
+    if (setHx.getNode("RECORDER", "AutoErase"))
+	    setIdValue("sel_Auto_Erase_Video", hx.getNodeValue("Record", "autoEraseVideo"));
+
+    if (setHx.getNode("RECORDER", "Estimation")) {
+	    var day = Math.floor(hx.getNodeValue("Record", "remainRecordtime").toInt() / 24);
+        var hour = hx.getNodeValue("Record", "remainRecordtime").toInt() % 24;
+        setIdInnerHTML("td_estimation_result", hl.get("ESTIMATION_RESULT"));
+        setIdInnerHTML("td_sentence3", hl.get("SENTENCE3"));
+        var sc1 = hl.get("DAYS_OF_DATA_CAN_BE_STORED") + " " + day;
+        setIdInnerHTML("td_Estimation_Sentence", sc1);
+        setIdInnerHTML("td_Esc1", hl.get("BASED_ON_CURRENT_SETTING"));
+	}
+}
+
+function SetXML(){
+	var hx2 = new HandleXml();
+	if (setHx.getNode("RECORDER", "Overwrite"))
+	    hx.setNodeValue(getIdChecked("chk_RecordOverwrite"), "Record", "recordOverwrite");
+
+	if (setHx.getNode("RECORDER", "ScheduleRecord"))
+	    hx.setNodeValue(getIdChecked("chk_ScheduleRec"),"Record", "scheduleRecord");
+
+	if (setHx.getNode("RECORDER", "TimeStamp"))
+	    hx.setNodeValue(getIdValue("sel_Timestamp"), "Record", "timeStamp");
+
+	if (setHx.getNode("RECORDER", "RelayOutput"))
+	    hx.setNodeValue(getIdValue("sel_REC_STATUS_RELAY_OUTPUT"), "Record", "recordStatusRelayOutput");
+
+	if (setHx.getNode("RECORDER", "AutoErase"))
+	    hx.setNodeValue(getIdValue("sel_Auto_Erase_Video"), "Record", "autoEraseVideo");
+
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/Record.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr id="tr_Rec_Audio">
+				<td id="td_Rec_Audio" style="display: none;"></td>
+				<td align="left">
+					<input type="checkbox" id="chk_RecordAudio" style="display: none;"/>
+				</td>
+			</tr>
+			<tr id="tr_Rec_Overwrite" style="display: none;">
+				<td id="td_Rec_Overwrite"></td>
+				<td align="left">
+					<input type="checkbox" id="chk_RecordOverwrite"/>
+				</td>
+			</tr>
+			<tr id="tr_Schedule_Rec" style="display: none;">
+				<td id="td_Schedule_Rec"></td>
+				<td align="left">
+					<input type="checkbox" id="chk_ScheduleRec"/>
+				</td>
+			</tr>
+			<tr><td></td></tr>
+			<tr id="tr_Timestamp" style="display: none;">
+				<td id="td_Timestamp"></td>
+				<td align="left">
+					<select id="sel_Timestamp" style="width:120px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_REC_STATUS_RELAY_OUTPUT" style="display: none;">
+				<td id="td_REC_STATUS_RELAY_OUTPUT"></td>
+				<td align="left">
+					<select id="sel_REC_STATUS_RELAY_OUTPUT" style="width:120px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Auto_Erase_Video" style="display: none;">
+				<td id="td_Auto_Erase_Video"></td>
+				<td align="left">
+					<select id="sel_Auto_Erase_Video" style="width:120px;"></select>
+				</td>
+			</tr>
+			<tr style="display: none;" id="tr_Prealarm_Recording">
+				<td id="td_Prealarm_Recording"></td>
+				<td align="left">
+					<select id="sel_PrealarmRecTime" style="width:120px;"></select>
+				</td>
+			</tr>
+			<tr id="tr_Stop_Record">
+				<td id="td_Stop_Record" style="display: none;"></td>
+				<td align="left">
+					<input type="checkbox" id="check_Stop" name="check_Stop" style="display: none;"/>
+				</td>
+			</tr>
+            
+            <tr><td colspan="2">
+                <table id="tb_Estimation" style="display:none">
+                <tr>
+				    <td id="td_estimation_result" class="txtLeft" colspan="4"></td>
+			    </tr>
+			    <tr>
+				    <td id="td_Estimation_Sentence" class="txtLeft" colspan="4"></td>
+			    </tr>
+                <tr>
+				    <td id="td_Esc1" class="txtLeft" colspan="4"></td>
+			    </tr>
+			    <tr>
+				    <td id="td_sentence3" class="txtLeft" colspan="4"></td>
+			    </tr>
+		        </table>
+            </td></tr>						
+		</table>
+    </div>
+    <div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();" />
+	</div>
+</body>
+</html>

@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language type="Deutsch">
+	<ACCESSING_NTP_SERVERS>Zugriff auf NTP-Server.</ACCESSING_NTP_SERVERS>
+	<ACTION>Aktion</ACTION>
+	<ACTIVE_CAMERA>Aktive Kamera</ACTIVE_CAMERA>
+	<ADD>Hinzufügen</ADD>
+	<ADD_DIRECT_IP_ENTRY>Direct IP-Eintrag hinzufügen</ADD_DIRECT_IP_ENTRY>
+	<ADD_IP_CAMERA>IP-Kamera hinzufügen</ADD_IP_CAMERA>
+	<ADD_TO_CHANNEL>Zu Kanal hinzufügen</ADD_TO_CHANNEL>
+	<ADD_USER_ACCOUNT>Benutzerkonto hinzufügen</ADD_USER_ACCOUNT>
+	<ADD_USER_SUCCESS>Benutzer erfolgreich hinzugefügt</ADD_USER_SUCCESS>
+	<ADDRESS>Adresse</ADDRESS>
+	<ADJUST>Anpassen</ADJUST>
+	<ADMIN>Admin</ADMIN>
+	<ADMIN_PW_CHANGED>Admin-KW geändert</ADMIN_PW_CHANGED>
+	<ADVANCED_SETTING>Erweiterte Einstellung</ADVANCED_SETTING>
+	<ALARM>Alarm</ALARM>
+	<ALARM_ACKNOWLEDGE>Alarmbestätigung</ALARM_ACKNOWLEDGE>
+	<ALARM_ACTION>Alarmaktion</ALARM_ACTION>
+	<ALARM_AUDIO>Alarmaudio</ALARM_AUDIO>
+	<ALARM_EVENT>Alarm &amp; Ereignis</ALARM_EVENT>
+	<ALARM_EVENT_SETTING>Alarm-/Ereigniseinstellung</ALARM_EVENT_SETTING>
+	<ALARM_OUTPUT>Alarmausgang</ALARM_OUTPUT>
+	<ALARM_SERVER>Alarmserver</ALARM_SERVER>
+	<ALARM1>Alarm 1</ALARM1>
+	<ALARM2>Alarm 2</ALARM2>
+	<ALARM3>Alarm 3</ALARM3>
+	<ALARM4>Alarm 4</ALARM4>
+	<ALL>Alles</ALL>
+	<ALL_AUDIO>Audio gesamt</ALL_AUDIO>
+	<ALLOW_REMOTE_REBOOT>Externen Neustart erlauben</ALLOW_REMOTE_REBOOT>
+	<AM>AM</AM>
+	<APPLY>Übernehmen</APPLY>
+	<APPLY_TO>Anwenden auf</APPLY_TO>
+	<APPLY_TO_ALL>Auf alles anwenden</APPLY_TO_ALL>
+	<APPLY_TO_CAMERAS>Auf Kameras anwenden</APPLY_TO_CAMERAS>
+	<APPLY_TO_DAYS>Auf Tage anwenden</APPLY_TO_DAYS>
+	<APR>Apr</APR>
+	<ARCHIVAL_FUNCTION>Archivalische Funktionen</ARCHIVAL_FUNCTION>
+	<ARCHIVE>Archiv</ARCHIVE>
+	<ARCHIVE_ABORT>Archivierung abgebrochen</ARCHIVE_ABORT>
+	<ARCHIVE_CONTENT>Archivinhalt</ARCHIVE_CONTENT>
+	<ARCHIVE_ERROR>Archivierungsfehler!</ARCHIVE_ERROR>
+	<ARCHIVE_INTERVAL>Archivintervall</ARCHIVE_INTERVAL>
+	<ARCHIVE_NOW>Jetzt archivieren</ARCHIVE_NOW>
+	<ARCHIVE_TIME_FROM>Archivierungszeit von</ARCHIVE_TIME_FROM>
+	<ARE_YOU_SURE>Sicher?</ARE_YOU_SURE>
+	<AUDIO>Audio</AUDIO>
+	<AUDIO_BROADCAST>Audio-Broadcast</AUDIO_BROADCAST>
+	<AUG>Aug</AUG>
+	<AUTHENTICATION>Authentifizierung</AUTHENTICATION>
+	<AUTO>Auto</AUTO>
+	<AUTO_ARCHIVE>Auto-Archivierung</AUTO_ARCHIVE>
+	<AUTO_ASSIGN>Auto-Zuweisung </AUTO_ASSIGN>
+	<AUTO_DELETE>Auto-Löschung</AUTO_DELETE>
+	<AUTO_DETECT>Auto-Löschung an Kanal 1 (NTSC/PAL)</AUTO_DETECT>
+	<AUTO_DETECTION>Auto-Erkennung</AUTO_DETECTION>
+	<AUTO_ERASE_VIDEO>Video automatisch löschen</AUTO_ERASE_VIDEO>
+	<AUTO_LOCK>Auto-Sperre</AUTO_LOCK>
+	<AUTO_LOG_OFF>Auto-Abmeldung</AUTO_LOG_OFF>
+	<AUTO_SEARCH>Auto-Suche</AUTO_SEARCH>
+	<AUTO_TRACK_START_POINT>Startpunkt der Auto-Verfolgung</AUTO_TRACK_START_POINT>
+	<AUTO_USER_LOG_OFF>Auto-Benutzerabmeldung</AUTO_USER_LOG_OFF>
+	<AUTOPAN>Auto-Schwenken</AUTOPAN>
+	<BACK>Zurück</BACK>
+	<BACKWARD>Rücklauf</BACKWARD>
+	<BANDWIDTH_LIMIT>Bandbreitenbeschränkung</BANDWIDTH_LIMIT>
+	<BASED_ON_CURRENT_SETTING>basierend auf aktueller Einstellung.</BASED_ON_CURRENT_SETTING>
+	<BASIC>Basis</BASIC>
+	<BASIC_SETTING>Basiseinstellung</BASIC_SETTING>
+	<BAUD_RATE>Baudrate</BAUD_RATE>
+	<BEEPER>Signalton</BEEPER>
+	<BEST>Am besten</BEST>
+	<BEST_QUALITY>Beste Qualität</BEST_QUALITY>
+	<BLANK>Leer</BLANK>
+	<BOTTOM>Unten</BOTTOM>
+	<BRAND>Marke</BRAND>
+	<BRIGHTNESS>Helligkeit</BRIGHTNESS>
+	<BUZZER>Summer</BUZZER>
+	<CALL_MONITOR>Monitor rufen</CALL_MONITOR>
+	<CAMERA>Kamera</CAMERA>
+	<CAMERA_ACCESS>Kamerazugang</CAMERA_ACCESS>
+	<CAMERA_CHANNEL>Kamerakanal</CAMERA_CHANNEL>
+	<CAMERA_LIST>Kameraliste</CAMERA_LIST>
+	<CAMERA_NAME>Kameraname</CAMERA_NAME>
+	<CAMERA_PARAMETER>Kameraparameter</CAMERA_PARAMETER>
+	<CAMERA_SETTING>Kameraseinstellung</CAMERA_SETTING>
+	<CAMERA_TITLE>Kameratitel</CAMERA_TITLE>
+	<CAMERA1>Kamera 1</CAMERA1>
+	<CAMERA10>Kamera 10</CAMERA10>
+	<CAMERA11>Kamera 11</CAMERA11>
+	<CAMERA12>Kamera 12</CAMERA12>
+	<CAMERA13>Kamera 13</CAMERA13>
+	<CAMERA14>Kamera 14</CAMERA14>
+	<CAMERA15>Kamera 15</CAMERA15>
+	<CAMERA16>Kamera 16</CAMERA16>
+	<CAMERA2>Kamera 2</CAMERA2>
+	<CAMERA3>Kamera 3</CAMERA3>
+	<CAMERA4>Kamera 4</CAMERA4>
+	<CAMERA5>Kamera 5</CAMERA5>
+	<CAMERA6>Kamera 6</CAMERA6>
+	<CAMERA7>Kamera 7</CAMERA7>
+	<CAMERA8>Kamera 8</CAMERA8>
+	<CAMERA9>Kamera 9</CAMERA9>
+	<CAMERAS>Kameras</CAMERAS>
+	<CANCEL>Abbrechen</CANCEL>
+	<CANT_ADD_USER>Kein Speicher mehr für Benutzer!</CANT_ADD_USER>
+	<CANT_DEL_ADMIN>Anmeldebenutzer kann nicht gelöscht werden!</CANT_DEL_ADMIN>
+	<CANT_FIND_DATA>Keine Daten</CANT_FIND_DATA>
+	<CH>Kanal</CH>
+	<CHANGE_CHANNEL>Kanal ändern</CHANGE_CHANNEL>
+	<CHANGE_NORMAL_USER_RIGHTS>Zu normalen Benutzerrechten wechseln</CHANGE_NORMAL_USER_RIGHTS>
+	<CHANGE_OWN_PASSWORD>Eigenes Kennwort ändern</CHANGE_OWN_PASSWORD>
+	<CHANGE_RIGHTS>Rechte ändern</CHANGE_RIGHTS>
+	<CHANGE_VIEWS>Ansichten ändern</CHANGE_VIEWS>
+	<CHANNEL>Kanal</CHANNEL>
+	<CHANNEL_LIST>Kanalliste</CHANNEL_LIST>
+	<CHANNEL_NUMBER>Kanalnummer</CHANNEL_NUMBER>
+	<CHECK_DATA>Daten prüfen.</CHECK_DATA>
+	<CHECKING>Prüfung</CHECKING>
+	<CHINESE>Chinesisch</CHINESE>
+	<CIF>CIF</CIF>
+	<CLEAN>Säubern</CLEAN>
+	<CLEAR>Leeren</CLEAR>
+	<CLEAR_ALL>Alles leeren</CLEAR_ALL>
+	<CLEAR_LOG>Protokoll leeren</CLEAR_LOG>
+	<CLOSE>Schließen</CLOSE>
+	<COLOR>Farbe</COLOR>
+	<COM_PORT>COM-Port</COM_PORT>
+	<COMMAND_PORT>Befehlsport (HTTP)</COMMAND_PORT>
+	<CONFIG_EXPORT_COMPLETE>Export der Konfiguration abgeschlossen.</CONFIG_EXPORT_COMPLETE>
+	<CONFIG_IMPORT_COMPLETE>Import der Konfiguration abgeschlossen.</CONFIG_IMPORT_COMPLETE>
+	<CONFIGURATION>Konfiguration</CONFIGURATION>
+	<CONFIGURATIONS>Konfigurationen</CONFIGURATIONS>
+	<CONFIGURE>Konfigurieren</CONFIGURE>
+	<CONFIRM>Bestätigen</CONFIRM>
+	<CONFIRM_PASSWORD>Kennwort bestätigen.</CONFIRM_PASSWORD>
+	<CONNECT>Verbinden</CONNECT>
+	<CONNECTED_CHANNEL>Verbundener Kanal</CONNECTED_CHANNEL>
+	<CONTINUOUS>Kontinuierlich</CONTINUOUS>
+	<CONTRAST>Kontrast</CONTRAST>
+	<CONTROL>Steuerung</CONTROL>
+	<CONTROL_ID>Steuerungs-ID</CONTROL_ID>
+	<COPY>Kopieren</COPY>
+	<COPY_AT_DVR>Auf DVR kopieren</COPY_AT_DVR>
+	<COPY_DATA_TYPE>Datentyp kopieren</COPY_DATA_TYPE>
+	<COPY_NOW>Jetzt kopieren</COPY_NOW>
+	<COPY_TO>Kopieren nach</COPY_TO>
+	<COPY_TYPE>Typ kopieren</COPY_TYPE>
+	<COPY_USER_ACCOUNT>Benutzerkonto kopieren</COPY_USER_ACCOUNT>
+	<CORRUPTED_REPLY>Beschädigte Antwort</CORRUPTED_REPLY>
+	<COVERT>Versteckt</COVERT>
+	<CURRENT_LOCK>Aktuelle Sperre (%)</CURRENT_LOCK>
+	<CURRENT_VERSION>Aktuelle Firmware-Version</CURRENT_VERSION>
+	<DAILY>Täglich</DAILY>
+	<DATA_BIT>Datenbit</DATA_BIT>
+	<DATA_SIZE>Datengröße</DATA_SIZE>
+	<DATA_TYPE>Datentyp</DATA_TYPE>
+	<DATE>Datum</DATE>
+	<DATE_FORMAT>Datumsformat</DATE_FORMAT>
+	<DATE_SETTING>Datums-/Zeiteinstellung</DATE_SETTING>
+	<DATE_TIME>Datum/Zeit</DATE_TIME>
+	<DATE_TIME_SEARCH>Datums-/Zeitsuche</DATE_TIME_SEARCH>
+	<DATE_TYPE>Datumstyp</DATE_TYPE>
+	<DAY>Tag</DAY>
+	<DAY_COPY>Tageskopie</DAY_COPY>
+	<DAYLIGHT_SAVING>Sommerzeit</DAYLIGHT_SAVING>
+	<DAYLIGHT_SAVING_COMPLETE>Sommerzeit</DAYLIGHT_SAVING_COMPLETE>
+	<DAYLIGHT_SAVING_END>Sommerzeitende</DAYLIGHT_SAVING_END>
+	<DAYLIGHT_SAVING_START>Sommerzeitbeginn</DAYLIGHT_SAVING_START>
+	<DAYS>Tag(e)</DAYS>
+	<DAYS_AGO>Tag(e) her</DAYS_AGO>
+	<DAYS_OF_DATA_CAN_BE_STORED>Tag(e) mit Daten kann/können gespeichert werden</DAYS_OF_DATA_CAN_BE_STORED>
+	<DAYTIME_END>Tageszeitende</DAYTIME_END>
+	<DAYTIME_START>Tageszeitbeginn</DAYTIME_START>
+	<DDNS_SERVER>DDNS-Server</DDNS_SERVER>
+	<DDNS_SERVICE>DDNS-Service</DDNS_SERVICE>
+	<DEC>Dez</DEC>
+	<DEFAULT>Standard</DEFAULT>
+	<DELAY>Verzögerung</DELAY>
+	<DELETE>Löschen</DELETE>
+	<DELETE_ALL>Alles löschen</DELETE_ALL>
+	<DESTINATION>Ziel</DESTINATION>
+	<DESTINATION_PORT>Zielport</DESTINATION_PORT>
+	<DETAILS>Details</DETAILS>
+	<DEUTSCH>Deutsch</DEUTSCH>
+	<DEVICE_TITLE>Gerätetitel</DEVICE_TITLE>
+	<DEVICE_TYPE>Gerätetyp</DEVICE_TYPE>
+	<DIRECT_IP>Direct IP</DIRECT_IP>
+	<DISABLE>Deaktivieren</DISABLE>
+	<DISABLED>Deaktiviert</DISABLED>
+	<DISCOVERY>Entdeckung</DISCOVERY>
+	<DISK>Datenträger</DISK>
+	<DISK_ERROR>Datenträgerfehler</DISK_ERROR>
+	<DISK_FAIL>Datenträgerausfall</DISK_FAIL>
+	<DISK_FAILURE>Datenträgerausfall</DISK_FAILURE>
+	<DISK_FULL>Datenträger voll</DISK_FULL>
+	<DISK_FULL_WARNING>Warnung über vollen Datenträger</DISK_FULL_WARNING>
+	<DISK_INFO>Datenträgerinfo</DISK_INFO>
+	<DISK_OFF>Datenträger aus</DISK_OFF>
+	<DISK_SETTING>Datenträgereinstellung</DISK_SETTING>
+	<DISK_SIZE>Datenträgergröße</DISK_SIZE>
+	<DISK_SIZE_TOTAL>Datenträgergröße (gesamt)</DISK_SIZE_TOTAL>
+	<DISK_SIZE_USAGE>Datenträgergröße (Auslastung)</DISK_SIZE_USAGE>
+	<DISK_TEMP>Datenträgertemperatur</DISK_TEMP>
+	<DISPLAY>Anzeige</DISPLAY>
+	<DISPLAY_DURATION>Anzeigedauer</DISPLAY_DURATION>
+	<DISPLAY_SETTING>Anzeigeeinstellung</DISPLAY_SETTING>
+	<DNS_SERVER1>DNS-Sever 1</DNS_SERVER1>
+	<DNS_SERVER2>DNS-Sever 2</DNS_SERVER2>
+	<DONE>Fertig</DONE>
+	<DOWNLOAD_PLAYER>Player herunterladen</DOWNLOAD_PLAYER>
+	<DST_OFF>Sommerzeit aus</DST_OFF>
+	<DST_ON>Sommerzeit ein</DST_ON>
+	<DUTCH>Niederländisch</DUTCH>
+	<DVR_ID>DVR-ID</DVR_ID>
+	<DVR_NAME>DVR-Name</DVR_NAME>
+	<DVR_R_RW_IS_NOT_SUPPORTED>DVD-R/RW wird nicht unterstützt.</DVR_R_RW_IS_NOT_SUPPORTED>
+	<DWELL_TIME>Verweilzeit (Sek.)</DWELL_TIME>
+	<DWELL_TIME_L>Verweilzeit links</DWELL_TIME_L>
+	<DWELL_TIME_R>Verweilzeit rechts</DWELL_TIME_R>
+	<EDIT>Bearbeiten</EDIT>
+	<EDIT_MOTION_GRID>Bewegungsgitter bearbeiten</EDIT_MOTION_GRID>
+	<EDIT_PASSWORD>Kennwort bearbeiten</EDIT_PASSWORD>
+	<EDIT_TIMEZONE>Zeitzone bearbeiten</EDIT_TIMEZONE>
+	<EDIT_USER_ACCOUNT>Benutzerkonto bearbeiten</EDIT_USER_ACCOUNT>
+	<EDITING>Bearbeitung</EDITING>
+	<EJECT>Auswerfen</EJECT>
+	<EMAIL>eMail</EMAIL>
+	<EMAIL_NOTIFY>eMail-Benachrichtigung</EMAIL_NOTIFY>
+	<EMAIL_SUBJECT>eMail-Betreff</EMAIL_SUBJECT>
+	<EMAIL_TEST>eMail-Test</EMAIL_TEST>
+	<EMPTY>Leer</EMPTY>
+	<ENABLE>Aktivieren</ENABLE>
+	<END>Ende</END>
+	<END_DATE>Enddatum</END_DATE>
+	<END_DATE_TIME>Enddatum/-zeit</END_DATE_TIME>
+	<END_TIME>Endzeit</END_TIME>
+	<END_TIME_HHMM>Endzeit (hh:mm)</END_TIME_HHMM>
+	<ENGLISH>Englisch</ENGLISH>
+	<ENSLESS_MODE>Endlosmodus</ENSLESS_MODE>
+	<ENTER_THE_EMAIL_ADDRESS>eMail-Adresse eingeben.</ENTER_THE_EMAIL_ADDRESS>
+	<ENTER_THE_NEW_PASSWORD>Neues Kennwort eingeben.</ENTER_THE_NEW_PASSWORD>
+	<ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>IP-Adresse des privaten Zeitservers eingeben.</ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>
+	<ENTER_THE_SMTP_SERVER_IP_ADDRESS>IP-Adresse des SMTP-Servers eingeben.</ENTER_THE_SMTP_SERVER_IP_ADDRESS>
+	<ENTER_THE_USER_NAME>Benutzernamen eingeben.</ENTER_THE_USER_NAME>
+	<ESTIMATE>Schätzen</ESTIMATE>
+	<ESTIMATE_EVENT>Ereignis schätzen</ESTIMATE_EVENT>
+	<ESTIMATION_RESULT>Schätzungsergebnis:</ESTIMATION_RESULT>
+	<EVEN>Gerade</EVEN>
+	<EVENT>Ereignis</EVENT>
+	<EVENT_ACTION>Ereignisaktion</EVENT_ACTION>
+	<EVENT_FORMAT_RATE>Ereignisformatrate</EVENT_FORMAT_RATE>
+	<EVENT_LIST>Ereignisliste</EVENT_LIST>
+	<EVENT_ONLY>Nur Ereignis</EVENT_ONLY>
+	<EVENT_POPUP>Ereignismeldung</EVENT_POPUP>
+	<EVENT_SEARCH>Ereignissuche</EVENT_SEARCH>
+	<EVENT_SETTING>Ereigniseinstellung</EVENT_SETTING>
+	<EVENT_SPEED>Ereignisgeschwindigkeit</EVENT_SPEED>
+	<EVENT_STATUS>Ereignisstatus</EVENT_STATUS>
+	<EVENT_TIME_REQUIRED>Ereigniszeit erforderlich!</EVENT_TIME_REQUIRED>
+	<EVENT_TYPE>Ereignistyp</EVENT_TYPE>
+	<EVENTS>Ereignisse</EVENTS>
+	<EVERFOCUS>Everfocus</EVERFOCUS>
+	<EVERFOCUS_DDNS>Everfocus-DDNS</EVERFOCUS_DDNS>
+	<EXCEPTION_DAYS>Ausgenommene Tage</EXCEPTION_DAYS>
+	<EXIT>Verlassen</EXIT>
+	<EXIT_PTZ>PTZ verlassen</EXIT_PTZ>
+	<EXIT_ZOOM>Zoom verlassen</EXIT_ZOOM>
+	<EXPORT>Exportieren</EXPORT>
+	<EXPORT_CONFIGURATION>Konfiguration exportieren</EXPORT_CONFIGURATION>
+	<EXPORT_FAILED>Export fehlgeschlagen</EXPORT_FAILED>
+	<EXPORT_FINISHED>Export abgeschlossen</EXPORT_FINISHED>
+	<EXPORT_IS_IN_PROGRESS>Export wird durchgeführt.</EXPORT_IS_IN_PROGRESS>
+	<EXPORT_LOG_COMPLETED>Exportieren des Protokolls abgeschlossen.</EXPORT_LOG_COMPLETED>
+	<EXPORT_LOG_FAILED>Exportieren des Protokolls fehlgeschlagen.</EXPORT_LOG_FAILED>
+	<EXPORT_LOG_TO_FILE>Protokoll in Datei exportieren</EXPORT_LOG_TO_FILE>
+	<EXPORT_LOG_TO_USB>Protokoll auf USB exportieren</EXPORT_LOG_TO_USB>
+	<EXPORT_SERVICE_LOG>Serviceprotokoll exportieren</EXPORT_SERVICE_LOG>
+	<EXPRESS>Schnell</EXPRESS>
+	<EXPRESS_SETUP>Schnelleinrichtung</EXPRESS_SETUP>
+	<EXTENDED_RECORD>Erweiterte Aufnahme</EXTENDED_RECORD>
+	<FACTORY_DEFAULT_SETTING_COMPLETE>Einstellung auf Werksstandard abgeschlossen.</FACTORY_DEFAULT_SETTING_COMPLETE>
+	<FACTORY_DEFAULTS>Werksstandard</FACTORY_DEFAULTS>
+	<FAIL>Fehlgeschlagen</FAIL>
+	<FAIL_INIT_NETWORK>Netzwerkinitiierung fehlgeschlagen</FAIL_INIT_NETWORK>
+	<FAILED_TO_EXPORT_CONFIG_INFO>Export der Konfigurationsinformationen fehlgeschlagen.</FAILED_TO_EXPORT_CONFIG_INFO>
+	<FAILED_TO_FORMAT_HARD_DISK_DRIVE>Formatierung der Festplatte fehlgeschlagen.</FAILED_TO_FORMAT_HARD_DISK_DRIVE>
+	<FAILED_TO_IMPORT_CONFIG_INFO>Import der Konfigurationsinformationen fehlgeschlagen.</FAILED_TO_IMPORT_CONFIG_INFO>
+	<FAN_FAILURE>Lüfterfehler</FAN_FAILURE>
+	<FAN_STATUS>Lüfterstatus</FAN_STATUS>
+	<FANS>Lüfter</FANS>
+	<FAST_FORWARD>Schnellvorlauf</FAST_FORWARD>
+	<FAST_REWIND>Schnellrücklauf</FAST_REWIND>
+	<FEB>Feb</FEB>
+	<FILE>Datei</FILE>
+	<FILE_NAME>Dateiname</FILE_NAME>
+	<FIRMWARE>Firmware</FIRMWARE>
+	<FIRMWARE_UPGRADE>Firmware-Aktualisierung</FIRMWARE_UPGRADE>
+	<FIRMWARE_UPGRADE_ERROR>Firmware-Aktualisierungsfehler</FIRMWARE_UPGRADE_ERROR>
+	<FOCUS>Fokus</FOCUS>
+	<FORGET_REPLY>Antwort vergessen</FORGET_REPLY>
+	<FORMAT>Formatieren</FORMAT>
+	<FORMAT_DISK>Festplatte formatieren</FORMAT_DISK>
+	<FORWARD>Vorlauf</FORWARD>
+	<FRAME_RATE>Bildwiederholfrequenz</FRAME_RATE>
+	<FREE_SPACE>Freier Speicher:</FREE_SPACE>
+	<FRENCH>Französisch</FRENCH>
+	<FRI>Fr</FRI>
+	<FRIDAY>Freitag</FRIDAY>
+	<FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>Firmware-Aktualisierung/Konfigurations-Upload</FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>
+	<FROM>Von</FROM>
+	<FROM_DATE>Von: Datum</FROM_DATE>
+	<FTP_SERVER>FTP-Server</FTP_SERVER>
+	<FTP_UPLOAD>FTP-Upload</FTP_UPLOAD>
+	<FTP_UPLOAD_FILE_TYPE>FTP-Upload-Dateityp</FTP_UPLOAD_FILE_TYPE>
+	<FULL_SCREEN>Vollbild</FULL_SCREEN>
+	<GATEWAY>Gateway</GATEWAY>
+	<GO>Los</GO>
+	<GRID_SETTING>Gittereinstellung</GRID_SETTING>
+	<H12>12 Std.</H12>
+	<H24>24 Std.</H24>
+	<HALLWAY_MODE>Flurmodus</HALLWAY_MODE>
+	<HD_MONITOR>HD-Monitor</HD_MONITOR>
+	<HDD_STATUS>HDD-Status</HDD_STATUS>
+	<HDD_TEMP>HDD-Temp</HDD_TEMP>
+	<HDD_USAGE>HDD-Nutzung</HDD_USAGE>
+	<HEALTH_STATUS>Gesundheitszustand</HEALTH_STATUS>
+	<HIGH>Hoch</HIGH>
+	<HIGHEST>Am höchsten</HIGHEST>
+	<HOL>Frei</HOL>
+	<HOLIDAY>Feiertage</HOLIDAY>
+	<HOLIDAYS>Feiertage</HOLIDAYS>
+	<HOST_NAME>Hostname</HOST_NAME>
+	<HOUR_AGO>Stunde her</HOUR_AGO>
+	<HOUR_S>Stunde(n)</HOUR_S>
+	<HOURLY>Stündlich</HOURLY>
+	<HOURS_AGO>Stunden her</HOURS_AGO>
+    <HOURS_PER_DAY>Stunde(n) pro Tag</HOURS_PER_DAY>
+	<HTTP_PORT>HTTP-Port</HTTP_PORT>
+	<ID>ID</ID>
+	<ID485>485 ID</ID485>
+	<IMAGE>Bild</IMAGE>
+	<IMPORT_CONFIGURATION>Konfiguration importieren</IMPORT_CONFIGURATION>
+	<IN_USE>Verwendet</IN_USE>
+	<INFO>Info</INFO>
+	<INFORMATION>Informationen</INFORMATION>
+	<INPUT_BEEPER>Eingangssignalton</INPUT_BEEPER>
+	<INPUT_MOTION>Eingang/Bewegung</INPUT_MOTION>
+	<INPUT_RECORDING>Eingangsaufnahme</INPUT_RECORDING>
+	<INPUT_TYPE>Eingangstyp</INPUT_TYPE>
+	<INSTALL>Installieren</INSTALL>
+	<INSUFFICIENT_FREE_SPACE>Nicht genügend freier Speicher.</INSUFFICIENT_FREE_SPACE>
+	<INVALID_ARG>Ungültiges Argument</INVALID_ARG>
+	<INVALID_EXPORT_TIME_RANGE>Ungültiger Exportzeitbereich.</INVALID_EXPORT_TIME_RANGE>
+	<INVALID_IP_NUMBER>Ungültige IP-Nummer</INVALID_IP_NUMBER>
+	<INVALID_MAC>Ungültige MAC</INVALID_MAC>
+	<INVALID_NAME>Ungültiger Name</INVALID_NAME>
+	<INVALID_NUMBER>Ungültige Nummer</INVALID_NUMBER>
+	<INVALID_PORT>Ungültiger Port</INVALID_PORT>
+	<IO_CONTROL>E/A-Steuerung</IO_CONTROL>
+	<IP>IP</IP>
+	<IP_ADDRESS>IP-Adresse</IP_ADDRESS>
+	<IP_CAMERA>IP-Kamera</IP_CAMERA>
+	<IP_PTZ>IP-PTZ</IP_PTZ>
+	<IR_REMOTE_CONTROLLER>IR-Fernbedienung</IR_REMOTE_CONTROLLER>
+	<IR_REMOTE_ID>IR-Fernbedienungs-ID</IR_REMOTE_ID>
+	<IRIS>Iris</IRIS>
+	<JAN>Jan</JAN>
+	<JAPANESE>Japanisch</JAPANESE>
+	<JUL>Jul</JUL>
+	<JUN>Jun</JUN>
+	<LAN>LAN</LAN>
+	<LANGUAGE>Sprache</LANGUAGE>
+	<LANPORT>LAN-Port</LANPORT>
+	<LAST>Zuletzt</LAST>
+	<LAYOUT>Layout</LAYOUT>
+	<LAYOUT_SWITCH>Layout-Wechsel</LAYOUT_SWITCH>
+	<LEVEL>Stufe</LEVEL>
+	<LIST>Liste</LIST>
+	<LIST_OF_HOLIDAYS>Liste der Feiertage</LIST_OF_HOLIDAYS>
+	<LIVE>Echtzeit</LIVE>
+	<LIVE_AUDIO>Echtzeitaudio</LIVE_AUDIO>
+	<LOAD>Laden</LOAD>
+	<LOAD_FACTORY_DEFAULT>Werksstandard laden</LOAD_FACTORY_DEFAULT>
+	<LOAD_FROM_FILE>Aus Datei laden</LOAD_FROM_FILE>
+	<LOAD_FROM_USB>Von USB laden</LOAD_FROM_USB>
+	<LOCAL_ACCESS>Lokaler Zugang</LOCAL_ACCESS>
+	<LOCK>Sperren</LOCK>
+	<LOCK_FORMAT>Sperren/Formatieren</LOCK_FORMAT>
+	<LOG>Protokoll</LOG>
+	<LOG_EXPORT_ERROR>Protokollexportfehler</LOG_EXPORT_ERROR>
+	<LOG_LIST>Protokollliste</LOG_LIST>
+	<LOG_TYPE>Protokolltyp</LOG_TYPE>
+	<LOGIN>Anmelden</LOGIN>
+	<LOGIN_PROTECT>Anmeldungsschutz</LOGIN_PROTECT>
+	<LOGIN_SUCCESS>Anmeldung erfolgreich!</LOGIN_SUCCESS>
+	<LOGOUT>Abmelden</LOGOUT>
+	<LOW>Gering</LOW>
+	<LOWER_LEFT>Unten links</LOWER_LEFT>
+	<LOWER_RIGHT>Unten rechts</LOWER_RIGHT>
+	<LOWEST>Am geringsten</LOWEST>
+	<MAIL>Mail</MAIL>
+	<MAIN_MONITOR>Hauptmonitor</MAIN_MONITOR>
+	<MAIN_MONITOR_OUTPUT>Hauptmonitorausgang</MAIN_MONITOR_OUTPUT>
+	<MAIN_RESOLUTION>Hauptauflösung</MAIN_RESOLUTION>
+	<MAIN_STREAM>Haupt-Stream</MAIN_STREAM>
+	<MANAGER>Manager</MANAGER>
+	<MANAGER_USER_LEVEL>Benutzer auf eigener Stufe verwalten</MANAGER_USER_LEVEL>
+	<MANUAL>Manuell</MANUAL>
+	<MAR>Mär</MAR>
+	<MASK_CHANNEL>Maskenkanal</MASK_CHANNEL>
+	<MATRIX_SETTING>Matrix-Seq.</MATRIX_SETTING>
+	<MAX_LOCK>Maximalee Sperre (%)</MAX_LOCK>
+	<MAY>Mai</MAY>
+	<MB>MB</MB>
+	<MEDIA_NOT_FOUND>Medium nicht gefunden</MEDIA_NOT_FOUND>
+	<MENU>Menü</MENU>
+	<MESSAGE>Mitteilung</MESSAGE>
+	<META>Meta</META>
+	<MIN_10>10 Min.</MIN_10>
+	<MIN_20>20 Min.</MIN_20>
+	<MIN_30>30 Min.</MIN_30>
+	<MIN_60>60 Min.</MIN_60>
+	<MIN_90>90 Min.</MIN_90>
+	<MIN_AREA>Min-Bereich</MIN_AREA>
+	<MINS>Min.</MINS>
+	<MISC>Versch.</MISC>
+	<MISCELLANEOUS>Verschiedenes</MISCELLANEOUS>
+	<MOBILEFOCUS_OR_OTHER_SMART_PHONES>MobileFocus oder andere Smartphones.</MOBILEFOCUS_OR_OTHER_SMART_PHONES>
+	<MODE_NAME>Modusname</MODE_NAME>
+	<MODEL>Modell</MODEL>
+	<MODIFY>Modifizieren</MODIFY>
+	<MODIFY_IP_CAMERA>IP-Kamera modifizieren</MODIFY_IP_CAMERA>
+	<MODULE>Modul</MODULE>
+	<MON>Mo</MON>
+	<MONDAY>Montag</MONDAY>
+	<MONITOR_FORMAT>Monitorformat</MONITOR_FORMAT>
+	<MONITOR_OSD>Monitor-OSD</MONITOR_OSD>
+	<MONTH_DATE>Monat/Datum</MONTH_DATE>
+	<MONTH_WEEKDAY>Monat/Wochentag</MONTH_WEEKDAY>
+	<MONTHLY>Monatlich</MONTHLY>
+	<MORE_EMAIL_SETTINGS>Weitere eMail-Einstellungen</MORE_EMAIL_SETTINGS>
+	<MOTION>Bewegung</MOTION>
+	<MOTION_BEEPER>Bewegungssignalton</MOTION_BEEPER>
+	<MOTION_DELAY>Bewegungsverzögerung</MOTION_DELAY>
+	<MOTION_DETECT>Bewegungserkennung</MOTION_DETECT>
+	<MOTION_OR_INPUT>Bewegung oder Eingang</MOTION_OR_INPUT>
+	<MOTION_RECORDING>Bewegungsaufnahme</MOTION_RECORDING>
+	<MOTION_SETTING>Bewegungseinstellung</MOTION_SETTING>
+	<MOVE>Verschieben</MOVE>
+	<MSG_AUTO_ASSIGN>Einige IP-Adresse wurden zur Kanalliste hinzugefügt. Klicken Sie zum Überschreiben der vorherigen Kanaleinstellungen auf Ja und zum Abbrechen dieser Einstellung auf Nein.</MSG_AUTO_ASSIGN>
+	<MSG_DEL_DATA>Alle ausgewählten Elemente wurden gelöscht</MSG_DEL_DATA>
+	<MSG_DEL_IPCAM>Möchten Sie die IP-Kameras löschen?</MSG_DEL_IPCAM>
+	<MSG_DISCONNECT>DVR vorübergehend nicht erreichbar. Bitte später noch einmal versuchen</MSG_DISCONNECT>
+	<MSG_ESTIMATE_ERROR>DVT kann das Ergebnis basierend auf der aktuellen Einstellung nicht schätzen</MSG_ESTIMATE_ERROR>
+	<MSG_FORMAT>Alle Daten werden gelöscht. Wirklich fortfahren?</MSG_FORMAT>
+	<MSG_H264>Nur für MobileFocus oder Mobiltelefonanzeige nicht benötigt.</MSG_H264>
+	<MSG_IPCAM_CONFIG>Bitte prüfen, ob IP-Adresskonfiguration richtig ist.</MSG_IPCAM_CONFIG>
+	<MSG_IPCAM_EXISTED>Diese IP-Kamera existiert bereits.</MSG_IPCAM_EXISTED>
+	<MSG_LOCK>Alle gesperrte Daten werden freigegeben. Wirklich fortfahren?</MSG_LOCK>
+	<MSG_LOCK_DATA>Alle ausgewählten Elemente wurden gesperrt</MSG_LOCK_DATA>
+	<MSG_MJPEG>MobileFocus (Nicht-iPhone-Edition) oder andere Smartphones. </MSG_MJPEG>
+	<MSG_NOTICE>Hinweis: Das Ergebnis dient nur als Referenz!</MSG_NOTICE>
+	<MSG_OVERWRITE_CURRENT>Der Kanal wurde ausgewählt. Zum Überschreiben der vorherigen Kanaleinstellung Ja anklicken. Wirklich übernehmen?</MSG_OVERWRITE_CURRENT>
+	<MSG_OVERWRITE_SETTING>Aktuelle Einstellungen überschreiben?</MSG_OVERWRITE_SETTING>
+	<MSG_REFRENCE_ONLY>Das Ergebnis dient nur als Referenz</MSG_REFRENCE_ONLY>
+	<MSG_RESTART>Netzwerk getrennt. Statusrücksetzung</MSG_RESTART>
+	<MSG_SEARCH_IPCAM>Sie haben noch keine Kameras konfiguriert. Möchten Sie im lokalen Netzwerk (LAN) nach Kameras suchen?</MSG_SEARCH_IPCAM>
+	<MSG_SESSION_FAIL>Beziehen der Sitzungs-ID fehlgeschlagen</MSG_SESSION_FAIL>
+	<MSG_UNLOCK>Alle freigegebenen Daten werden gelöscht. Wirklich fortfahren?</MSG_UNLOCK>
+	<MSG_UNLOCK_DATA>Alle ausgewählten Elemente wurden freigegeben</MSG_UNLOCK_DATA>
+	<MSG_UPGRADE_FAIL>Aktualisierung fehlgeschlagen! Bitte noch einmal versuchen</MSG_UPGRADE_FAIL>
+	<MSG_UPLOAD_FAIL>Upload fehlgeschlagen! Bitte noch einmal versuchen</MSG_UPLOAD_FAIL>
+	<MT_SEQ>M/T-SEQ</MT_SEQ>
+	<N_A>Nicht verfügbar</N_A>
+	<N_C>N.V.</N_C>
+	<N_O>N.O.</N_O>
+	<NAME>Name</NAME>
+	<NAME_EMPTY>Name leer</NAME_EMPTY>
+	<NAME_EXISTS>Name existiert</NAME_EXISTS>
+	<ND2>2</ND2>
+	<NETWORK>Netzwerk</NETWORK>
+	<NETWORK_ALARM>Netzwerkalarm</NETWORK_ALARM>
+	<NETWORK_ID>Netzwerk-ID</NETWORK_ID>
+	<NETWORK_LIVE_STREAMING>Netzwerk-Echtzeit-Streaming</NETWORK_LIVE_STREAMING>
+	<NETWORK_LOSS>Netzwerk verloren</NETWORK_LOSS>
+	<NETWORK_SETTING>Netzwerkeinstellung</NETWORK_SETTING>
+	<NETWORK_TEST>Netzwerktest</NETWORK_TEST>
+	<NETWORK_TYPE>Netzwerktyp</NETWORK_TYPE>
+	<NEXT>Weiter</NEXT>
+	<NEXT_PAGE>Nächste Seite</NEXT_PAGE>
+	<NO>Nein</NO>
+	<NO_AUTHORITY>Keine Autorität</NO_AUTHORITY>
+	<NO_CHANGE>Keine Änderung</NO_CHANGE>
+	<NO_COMPETENCE>Keine Kompetenz</NO_COMPETENCE>
+	<NO_DATA>Keine Daten</NO_DATA>
+	<NO_INPUT_ASSIGNED>Kein Eingang zugewiesen</NO_INPUT_ASSIGNED>
+	<NO_RECORD>Keine Aufnahme</NO_RECORD>
+	<NO_RECORDING>Keine Aufnahme</NO_RECORDING>
+	<NO_SIGNAL>Kein Signal</NO_SIGNAL>
+	<NONE>Ohne</NONE>
+	<NORMAL>Normal</NORMAL>
+	<NORMAL_EVENT>Normal + Ereignis</NORMAL_EVENT>
+	<NORMAL_FORMAT_RATE>Normalformatrate</NORMAL_FORMAT_RATE>
+	<NORMAL_PARTITION>Normale Partition</NORMAL_PARTITION>
+	<NORMAL_SPEED>Normale Geschwindigkeit</NORMAL_SPEED>
+	<NORMAL_USER>Normaler Benutzer</NORMAL_USER>
+	<NOT_AVAILABLE>Nicht verfügbar</NOT_AVAILABLE>
+	<NOT_CERTIFIED>Nicht zertifiziert</NOT_CERTIFIED>
+	<NOT_INSTALL>Nicht installiert</NOT_INSTALL>
+	<NOTICE>Hinweis</NOTICE>
+	<NOTIFICATION>Benachrichtigung</NOTIFICATION>
+	<NOTIFICATION_SETTING>Benachrichtigungseinstellung</NOTIFICATION_SETTING>
+	<NOV>Nov</NOV>
+	<NTP_FAILED>NTP fehlgeschlagen</NTP_FAILED>
+	<NTP_SERVER>NTP-Server</NTP_SERVER>
+	<NTP_SERVER_ACCESSED_SUCCESSFULLY>Erfolgreicher Zugriff auf NTP-Server.</NTP_SERVER_ACCESSED_SUCCESSFULLY>
+	<NTP_TEST>NTP-Test</NTP_TEST>
+	<NTP_UPDATE>NTP-Aktualisierungsintervall</NTP_UPDATE>
+	<NUMBER>Nr.</NUMBER>
+	<OBJECT_SIZE_SETTING>Objektgrößeneinstellung</OBJECT_SIZE_SETTING>
+	<OCT>Okt</OCT>
+	<ODD>Ungerade</ODD>
+	<OFF>Aus</OFF>
+	<OK>OK</OK>
+	<ON>Ein</ON>
+	<ON_INPUT>Bei Eingang</ON_INPUT>
+	<ON_MOTION>Bei Bewegung</ON_MOTION>
+	<ONE_TIME>Einmal</ONE_TIME>
+	<ONVIF>ONVIF</ONVIF>
+	<ONVIF_DISCOVERY>ONVIF-Erkennung</ONVIF_DISCOVERY>
+	<OPERATION>Operation</OPERATION>
+	<OPERATOR>Bediener</OPERATOR>
+	<OSD_DISPLAY_MODE>OSD-Anzeigemodus</OSD_DISPLAY_MODE>
+	<OTH>Sonst.</OTH>
+	<OTHER>Sonstiges</OTHER>
+	<OTHERS>Sonstiges</OTHERS>
+	<OUTPUT>Ausgang</OUTPUT>
+	<OUTPUT_DEVICE>Ausgangsgerät</OUTPUT_DEVICE>
+	<OUTPUT_TYPE>Ausgangstyp</OUTPUT_TYPE>
+	<OVERWRITE>Überschreiben</OVERWRITE>
+	<PAGE>Seite</PAGE>
+	<PAN_TILT_LIMIT>Schwenk-/Neigungslimit</PAN_TILT_LIMIT>
+	<PARITY>Parität</PARITY>
+	<PART_OF_THE_FIELD_IS_NOT_FILLED>Teil des Feldes nicht ausgefüllt</PART_OF_THE_FIELD_IS_NOT_FILLED>
+	<PASS>Passieren</PASS>
+	<PASSWORD>Kennwort</PASSWORD>
+	<PASSWORD_CONFIRMED_ERROR>Kennwortbestätigungsfehler</PASSWORD_CONFIRMED_ERROR>
+	<PASSWORD_ERROR>Kennwortfehler</PASSWORD_ERROR>
+	<PATTERN>Muster</PATTERN>
+	<PATTERN_NO>Muster-Nr.</PATTERN_NO>
+	<PATTERN_TOUR>Mustertour</PATTERN_TOUR>
+	<PELCO_D>Pelco_D</PELCO_D>
+	<PELCO_P>Pelco_P</PELCO_P>
+	<PERMANENT>Permanent</PERMANENT>
+	<PING>Ping</PING>
+	<PING_SUCCESSFUL>Ping erfolgreich</PING_SUCCESSFUL>
+	<PLAY>Wiedergabe</PLAY>
+	<PLAY_FROM>Wiedergabe von</PLAY_FROM>
+	<PLAY_REVERSE>Rückwärts wiedergeben</PLAY_REVERSE>
+	<PLAYBACK>Wiedergabe</PLAYBACK>
+	<PLAYBACK_AUDIO>Wiedergabeaudio</PLAYBACK_AUDIO>
+	<PLAYBACK_DATE_TIME>Wiedergabedatum/-zeit</PLAYBACK_DATE_TIME>
+	<PLAYBACK_DAYLIGHT_SAVING>Wiedergabe-Sommerzeit</PLAYBACK_DAYLIGHT_SAVING>
+	<PLAYBACK_FROM>Wiedergabe von</PLAYBACK_FROM>
+	<PLAYBACK_SEARCH>Wiedergabe/Suche</PLAYBACK_SEARCH>
+	<PLAYBACK_STATUS>Wiedergabestatus</PLAYBACK_STATUS>
+	<PLAYER>Player</PLAYER>
+	<PLEASE_CONFIRM_PASSWORD_AGAIN>Kennwort bitte erneut bestätigen</PLEASE_CONFIRM_PASSWORD_AGAIN>
+	<PLEASE_ENTER_THE_CHANNEL_NAME>Bitte den Kanalnamen eingeben.</PLEASE_ENTER_THE_CHANNEL_NAME>
+	<PLEASE_ENTER_THE_CURRENT_PASSWORD>Bitte das aktuelle Kennwort eingeben.</PLEASE_ENTER_THE_CURRENT_PASSWORD>
+	<PLEASE_ENTER_THE_IP_ADDRESS>Bitte die IP-Adresse eingeben. Beispiel: 123.255.255.123.</PLEASE_ENTER_THE_IP_ADDRESS>
+	<PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>Bitte Namen des ausgeschlossenen Tages eingeben.</PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>
+	<PLEASE_ENTER_THE_PASSWORD>Bitte das Kennwort eingeben.</PLEASE_ENTER_THE_PASSWORD>
+	<PLEASE_SELECT_CHANNEL>Bitte Kanal wählen</PLEASE_SELECT_CHANNEL>
+	<PLEASE_SELECT_CHANNEL_AND_EVENT>Bitte Kanal und Ereignis wählen</PLEASE_SELECT_CHANNEL_AND_EVENT>
+	<PLEASE_SELECT_CHANNELS_TO_SEARCH>Bitte Kanäle zur Suche wählen.</PLEASE_SELECT_CHANNELS_TO_SEARCH>
+	<PLEASE_SELECT_EVENT>Bitte Ereignis wählen</PLEASE_SELECT_EVENT>
+	<PLEASE_WAIT>Bitte warten.</PLEASE_WAIT>
+	<PLZ_CHOOSE_CAMERA>Bitte Kamera wählen!</PLZ_CHOOSE_CAMERA>
+	<PLZ_CHOOSE_DATE>Bitte ein Datum wählen!</PLZ_CHOOSE_DATE>
+	<PLZ_CHOOSE_EVENT>Bitte Ereignis wählen!</PLZ_CHOOSE_EVENT>
+	<PLZ_CHOOSE_FILE>Bitte eine Datei wählen!</PLZ_CHOOSE_FILE>
+	<PLZ_CHOOSE_USER>Bitte einen Benutzer wählen!</PLZ_CHOOSE_USER>
+	<PM>PM</PM>
+	<PORT>Port</PORT>
+	<PORTUGUESE>Portugiesisch</PORTUGUESE>
+	<POS_LIST>POS-Liste</POS_LIST>
+	<POS_SEARCH>POS-Suche</POS_SEARCH>
+	<POS_STRING>POS-String</POS_STRING>
+	<POST_EVENT>Nachereignis</POST_EVENT>
+	<POST_EVENT_TIME>Nachereigniszeit</POST_EVENT_TIME>
+	<POWER_LOSS>Stromausfall</POWER_LOSS>
+	<POWER_ON>Eingeschaltet</POWER_ON>
+	<PRE_ALARM_RECORD>Voralarmaufnahme</PRE_ALARM_RECORD>
+	<PRE_ALARM_RECORDING>Voralarmaufnahme</PRE_ALARM_RECORDING>
+	<PRE_EVENT>Vorereignis</PRE_EVENT>
+	<PRE_PAGE>Vorseite</PRE_PAGE>
+	<PRESET>Voreinstellung</PRESET>
+	<PRESET_SETTINGS>Voreinstellungen</PRESET_SETTINGS>
+	<PREVIEW>Vorschau</PREVIEW>
+	<PREVIOUS>Vorheriges</PREVIOUS>
+	<PRIMARY_DNS>Primary DNS</PRIMARY_DNS>
+	<PRIVATE_SERVER>Privater Server</PRIVATE_SERVER>
+	<PRIVATE_TIME_SERVER>Privater Zeitserver</PRIVATE_TIME_SERVER>
+	<PROTOCOL>Protokoll</PROTOCOL>
+	<PROTOCOL_ERROR>Protokollfehler</PROTOCOL_ERROR>
+	<PTZ>PTZ</PTZ>
+	<PTZ_CONTROL>PTZ-Steuerung</PTZ_CONTROL>
+	<PTZ_CONTROL_PAD>PTZ-Steuerpad</PTZ_CONTROL_PAD>
+	<PTZ_ID>PTZ-ID</PTZ_ID>
+	<PTZ_PRESET>PTZ-Voreinstellung</PTZ_PRESET>
+	<PTZ_PROTOCOL>PTZ-Protokoll</PTZ_PROTOCOL>
+	<PTZ_TEST>PTZ-Test</PTZ_TEST>
+	<PUBLIC_SERVER>Öffentlicher Server</PUBLIC_SERVER>
+	<QUALITY>Qualität</QUALITY>
+	<QUICK_ARCHIVE>Schnellarchiv</QUICK_ARCHIVE>
+	<QUICK_ARCHIVE_INTERVAL>Schnellarchivintervall</QUICK_ARCHIVE_INTERVAL>
+	<QUICK_PLAYBACK>Schnellwiedergabe</QUICK_PLAYBACK>
+	<RAID>RAID</RAID>
+	<RAID_STATE>RAID-Status</RAID_STATE>
+	<RAID_TYPE>RAID-Typ</RAID_TYPE>
+	<RAID0>RAID 0</RAID0>
+	<RAID1>RAID 1</RAID1>
+	<RAID1_0>RAID 1+0</RAID1_0>
+	<RATIO>Verhältnis</RATIO>
+	<RD3>3</RD3>
+	<RE_DISCOVERY>Erneute Erkennung</RE_DISCOVERY>
+	<READ_DATA>Daten lesen</READ_DATA>
+	<REBOOT>Neu starten</REBOOT>
+	<REBOOT_NOW>Jetzt neu starten</REBOOT_NOW>
+	<REC>Aufn.</REC>
+	<REC_DUAL_STREAM>Dual-Stream aufnehmen</REC_DUAL_STREAM>
+	<RECEIVER_EMAIL1>Empfänger-eMail 1</RECEIVER_EMAIL1>
+	<RECEIVER_EMAIL2>Empfänger-eMail 2</RECEIVER_EMAIL2>
+	<RECEIVER_EMAIL3>Empfänger-eMail 3</RECEIVER_EMAIL3>
+	<RECODE_MODE>Aufnahmemodus</RECODE_MODE>
+	<RECONNECT>Erneut verbinden</RECONNECT>
+	<RECORD>Aufnahme</RECORD>
+	<RECORD_AUDIO>Audio aufnehmen</RECORD_AUDIO>
+	<RECORD_DAYS>Aufnahmetage</RECORD_DAYS>
+	<RECORD_DUAL_STREAM>Dual-Stream aufnehmen</RECORD_DUAL_STREAM>
+	<RECORD_ID>Aufnahme-ID</RECORD_ID>
+	<RECORD_MODE>Aufnahmemodus</RECORD_MODE>
+	<RECORD_OVERWRITE>Aufnahmeüberschreibung</RECORD_OVERWRITE>
+	<RECORD_PLAY>Aufnahmewiedergabe</RECORD_PLAY>
+	<RECORD_QUALITY>Aufnahmequalität</RECORD_QUALITY>
+	<RECORD_SETTING>Aufnahmeeinstellung</RECORD_SETTING>
+	<RECORD_STATUS_RELAY_OUTPUT>Aufnahmestatusrelaisausgang</RECORD_STATUS_RELAY_OUTPUT>
+	<RECORD_TIME_END>Aufnahmezeit (Ende)</RECORD_TIME_END>
+	<RECORD_TIME_START>Aufnahmezeit (Start)</RECORD_TIME_START>
+	<RECORD_TYPE>Aufnahmetyp</RECORD_TYPE>
+	<RECORD_WITH>Aufnehmen mit</RECORD_WITH>
+	<RECORDING_DAYS>Aufnahmetage</RECORDING_DAYS>
+	<RECORDING_WILL_BEDISABLED_FOR_CAMERA1>Aufnahme wird für Kamer 1 deaktiviert</RECORDING_WILL_BEDISABLED_FOR_CAMERA1>
+	<RECURRENT_TYPE>Rekurrenter Typ</RECURRENT_TYPE>
+	<REFRESH>Aktualisieren</REFRESH>
+	<REGISTER_UPDATE>Registrieren / Aktualisieren</REGISTER_UPDATE>
+	<RELAY_OUTPUT>Relaisausgang</RELAY_OUTPUT>
+	<REMOTE>Extern</REMOTE>
+	<REMOTE_MOBILE>Extern/Mobil</REMOTE_MOBILE>
+	<REMOTE_REBOOT>Externer Neustart</REMOTE_REBOOT>
+	<REMOTER_ACCESS>Externer Zugriff</REMOTER_ACCESS>
+	<REMOVE>Entfernen</REMOVE>
+	<REQUIRED_SPACE>Erforderlicher Speicher:</REQUIRED_SPACE>
+	<RESOLUTION>Auflösung</RESOLUTION>
+	<RESULT_INTERVAL>Ergebnisintervall</RESULT_INTERVAL>
+	<RTSP_PORT>RTSP-Port</RTSP_PORT>
+	<RTSP_SERVER>RTSP-Server</RTSP_SERVER>
+	<RUSSIAN>Russisch</RUSSIAN>
+	<S100MBPS>100 Mb/s</S100MBPS>
+	<S10FPS>10 Bilder/s</S10FPS>
+	<S10MBPS>10 Mb/s</S10MBPS>
+	<S12FPS>12 Bilder/s</S12FPS>
+	<S15FPS>15 Bilder/s</S15FPS>
+	<S1MBPS>1 Mb/s</S1MBPS>
+	<S25FPS>25 Bilder/s</S25FPS>
+	<S2CIF>2CIF</S2CIF>
+	<S2FPS>2 Bilder/s</S2FPS>
+	<S2MBPS>2 Mb/s</S2MBPS>
+	<S30FPS>30 Bilder/s</S30FPS>
+	<S3FPS>3 Bilder/s</S3FPS>
+	<S4CIF>4CIF</S4CIF>
+	<S5FPS>5 Bilder/s</S5FPS>
+	<S5MBPS>5 Mb/s</S5MBPS>
+	<S5MIN>5 Minuten</S5MIN>
+	<S60FPS>60 Bilder/s</S60FPS>
+	<S6FPS>6 Bilder/s</S6FPS>
+	<S7FPS>7 Bilder/s</S7FPS>
+	<S8FPS>8 Bilder/s</S8FPS>
+	<SAT>Sa</SAT>
+	<SATURDAY>Samstag</SATURDAY>
+	<SAVE>Speichern</SAVE>
+	<SAVE_AND_BACK>Speichern und zurück</SAVE_AND_BACK>
+	<SAVE_SUCCESS>Speicherung erfolgreich</SAVE_SUCCESS>
+	<SAVE_TO_FILE>In Datei speichern</SAVE_TO_FILE>
+	<SAVE_TO_USB>Auf USB speichern</SAVE_TO_USB>
+	<SCHEDULE>Zeitplan</SCHEDULE>
+	<SCHEDULE_RECORD>Zeitplanaufnahme</SCHEDULE_RECORD>
+	<SCHEDULE_SETTING>Zeitplaneinstellung</SCHEDULE_SETTING>
+	<SCREEN_MODE>Bildschirmmodus</SCREEN_MODE>
+	<SEARCH>Suche</SEARCH>
+	<SEARCH_CAMERA>Kamera suchen</SEARCH_CAMERA>
+	<SEARCH_DATE>Datum suchen</SEARCH_DATE>
+	<SEARCH_DIRECTION>Richtung suchen</SEARCH_DIRECTION>
+	<SEARCH_TEXT>Text suchen</SEARCH_TEXT>
+	<SEARCH_TIME>Zeit suchen</SEARCH_TIME>
+	<SEC>s</SEC>
+	<SECONDARY_DNS>Secondary DNS</SECONDARY_DNS>
+	<SECONDS_AGO>Sekunde(n) her</SECONDS_AGO>
+	<SECS>Sek.</SECS>
+	<SEL_ALL>Alles auswählen</SEL_ALL>
+	<SELECT>Auswählen</SELECT>
+	<SELECT_AUTO_ARCHIVE>Auto-Archivierungslogik wählen</SELECT_AUTO_ARCHIVE>
+	<SELECT_PLAY_DATA>Wiedergabedaten wählen.</SELECT_PLAY_DATA>
+	<SELECT_STARTING_CHANNEL>Startkanal wählen</SELECT_STARTING_CHANNEL>
+	<SEND_MAIL>Mail  senden</SEND_MAIL>
+	<SENDER_MAIL>Absender-eMail</SENDER_MAIL>
+	<SENSITIVITY>Empfindlichkeit</SENSITIVITY>
+	<SENSITIVITY_HIGHEST_LOWEST>Empfindlichkeit [10]:Am höchsten, [1]:Am geringsten</SENSITIVITY_HIGHEST_LOWEST>
+	<SENTENCE1>Schätzung zu Bewegungs- und Alarmprozentzahl abgeben:</SENTENCE1>
+	<SENTENCE2>Tag(e) mit Daten kann/können basierend auf der aktuellen Einstellung gespeichert werden</SENTENCE2>
+	<SENTENCE3>Hinweis: Das Ergebnis dient nur als Referenz!</SENTENCE3>
+	<SEP>Sep</SEP>
+	<SEQUENCE>Sequenz</SEQUENCE>
+	<SEQUENCE_DWELL_TIME>Sequenzverweilzeit</SEQUENCE_DWELL_TIME>
+	<SERVER_IP1>Server-IP 1</SERVER_IP1>
+	<SERVER_IP2>Server-IP 2</SERVER_IP2>
+	<SERVER_IP3>Server-IP 3</SERVER_IP3>
+	<SET>Einstellen</SET>
+	<SET_ALL>Alles einstellen</SET_ALL>
+	<SET_LEFT_POS>Linke Position festlegen</SET_LEFT_POS>
+	<SET_RIGHT_POS>Rechte Position festlegen</SET_RIGHT_POS>
+	<SET_TO>Einstellen auf (hh:mm)</SET_TO>
+	<SETTING>Einstellung</SETTING>
+	<SHOW_TEXT_DATA>Textdaten anzeigen</SHOW_TEXT_DATA>
+	<SIMPLIFIED_CHINESE>Vereinfachtes Chinesisch</SIMPLIFIED_CHINESE>
+	<SIZE_ESTIMATION_COMPLETED>Größenschätzung abgeschlossen.</SIZE_ESTIMATION_COMPLETED>
+	<SMART>Intelligent</SMART>
+	<SMART_LIST>Intelligente Liste</SMART_LIST>
+	<SMART_SEARCH>Intelligente Suche</SMART_SEARCH>
+	<SMTP_PORT>SMTP-Port</SMTP_PORT>
+	<SMTP_PORT_NO_SSL>SMTP-Port-Nr./SSL</SMTP_PORT_NO_SSL>
+	<SMTP_SERVER>SMTP-Server</SMTP_SERVER>
+	<SN>S/N</SN>
+	<SNAPSHOT_SEARCH>Schnappschusssuche</SNAPSHOT_SEARCH>
+	<SOURCE_IP>Quellen-IP</SOURCE_IP>
+	<SOURCE_IP_ADDRESS>Quellen-IP-Adresse</SOURCE_IP_ADDRESS>
+	<SPANISH>Spanisch</SPANISH>
+	<SPEED>Geschwindigkeit</SPEED>
+	<ST1>1</ST1>
+	<STANDARD>Standard</STANDARD>
+	<STANDARD_ARCHIVE>Standardarchiv</STANDARD_ARCHIVE>
+	<STANDARD_COPY>Standardkopie</STANDARD_COPY>
+	<START>Start</START>
+	<START_DATE>Startdatum</START_DATE>
+	<START_DATE_END_DATE>Startdatum / Enddatum</START_DATE_END_DATE>
+	<START_DATE_TIME>Startdatum/-zeit</START_DATE_TIME>
+	<START_PLAYBACK>Wiedergabe starten</START_PLAYBACK>
+	<START_TIME>Startzeit</START_TIME>
+	<START_TIME_HHMM>Startzeit (hh:mm)</START_TIME_HHMM>
+	<STATIC_IP>Statische IP</STATIC_IP>
+	<STATUS>Status</STATUS>
+	<STEP>Schritt</STEP>
+	<STOP>Beenden</STOP>
+	<STOP_BIT>Stoppbit</STOP_BIT>
+	<STOP_RECORDING>Aufnahme beenden</STOP_RECORDING>
+	<SUB_REC>Sub-Aufnahme</SUB_REC>
+	<SUB_RESOLUTION>Sub-Auflösung</SUB_RESOLUTION>
+	<SUB_STREAM>Sub-Stream</SUB_STREAM>
+	<SUBJECT>Betreff:</SUBJECT>
+	<SUBNET_MASK>Subnetzmaske</SUBNET_MASK>
+	<SUCCESS>Erfolgreich</SUCCESS>
+	<SUN>So</SUN>
+	<SUNDAY>Sonntag</SUNDAY>
+	<SUPERIOR>Ausgezeichnet</SUPERIOR>
+	<SW_UPDATE_IS_IN_PROGRESS>S/W-Aktualisierung erfolgt.</SW_UPDATE_IS_IN_PROGRESS>
+	<SYSTEM>System</SYSTEM>
+	<SYSTEM_BEEPER>Systemsignalton</SYSTEM_BEEPER>
+	<SYSTEM_DISK_TEMP>System-/Datenträgertemp.</SYSTEM_DISK_TEMP>
+	<SYSTEM_EVENT>Systemereignis</SYSTEM_EVENT>
+	<SYSTEM_INFO>Systeminfo</SYSTEM_INFO>
+	<SYSTEM_INFORMATION>Systeminformationen</SYSTEM_INFORMATION>
+	<SYSTEM_LOG>Systemprotokoll</SYSTEM_LOG>
+	<SYSTEM_LOG_LIST>Systemprotokollliste</SYSTEM_LOG_LIST>
+	<SYSTEM_LOG_VIEW>Systemprotokollansicht/Export</SYSTEM_LOG_VIEW>
+	<SYSTEM_SETTING>Systemeinstellung</SYSTEM_SETTING>
+	<SYSTEM_VIDEO_MODE>Systemvideomodus</SYSTEM_VIDEO_MODE>
+	<SYSTEM_WILL_BE_RESTARTED>System wird neu gestartet</SYSTEM_WILL_BE_RESTARTED>
+	<T10DAY>10 Tage</T10DAY>
+	<T10MIN>10 Minuten</T10MIN>
+	<T12HOUR>12 Stunden</T12HOUR>
+	<T14DAY>14 Tage</T14DAY>
+	<T15MIN>15 Minuten</T15MIN>
+	<T1DAY>1 Tag</T1DAY>
+	<S1FPS>1 Bild/s</S1FPS>
+	<T1HOUR>1 Stunde</T1HOUR>
+	<T1MIN>1 Minute</T1MIN>
+	<T1MONTH>1 Monat</T1MONTH>
+	<T1WEEK>1 Woche</T1WEEK>
+	<T20DAY>20 Tage</T20DAY>
+	<T20MIN>20 Minuten</T20MIN>
+	<T2DAY>2 Tage</T2DAY>
+	<T2HOUR>2 Stunden</T2HOUR>
+	<T30DAY>30 Tage</T30DAY>
+	<T30MIN>30 Minuten</T30MIN>
+	<T3DAY>3 Tage</T3DAY>
+	<T40DAY>40 Tage</T40DAY>
+	<T4HOUR>4 Stunden</T4HOUR>
+	<T50DAY>50 Tage</T50DAY>
+	<T5DAY>5 Tage</T5DAY>
+	<T60DAY>60 Tage</T60DAY>
+	<T60MIN>60 Minuten</T60MIN>
+	<T7DAY>7 Tage</T7DAY>
+	<T90DAYS>90 Tage</T90DAYS>
+	<TARGET_DEVICE>Zielgerät</TARGET_DEVICE>
+	<TCP_WR_FAILED>TCP-L/S fehlgeschlagen</TCP_WR_FAILED>
+	<TEMP_WARNING_LIMIT>Temp.- Warnlimit</TEMP_WARNING_LIMIT>
+	<TEMPERATURE_WARNING>Temperaturwarnung</TEMPERATURE_WARNING>
+	<TEST_SERVER_ADDRESS>Testserveradresse</TEST_SERVER_ADDRESS>
+	<TEXT_DATA>Textdaten</TEXT_DATA>
+	<TEXT_INSERT>Texteinsatz</TEXT_INSERT>
+	<TEXT_POSITION>Textposition</TEXT_POSITION>
+	<TH4>4</TH4>
+	<THE_EXCEPTION_DAYS_LIST_IS_FULL>Die Liste ausgeschlossener Tage ist voll.</THE_EXCEPTION_DAYS_LIST_IS_FULL>
+	<THE_SERVER_ADDRESS_IS_NULL>Die Serveradresse ist null.</THE_SERVER_ADDRESS_IS_NULL>
+	<THERE_IS_NO_DATA_SELECTED>Keine Daten ausgewählt.</THERE_IS_NO_DATA_SELECTED>
+	<THERE_IS_NO_RECORDED_DATA>Keine aufgezeichneten Daten</THERE_IS_NO_RECORDED_DATA>
+	<THU>Do</THU>
+	<THURSDAY>Donnerstag</THURSDAY>
+	<TIME>Zeit</TIME>
+	<TIME_FORMAT>Zeitformat</TIME_FORMAT>
+	<TIME_MASK>Zeitmaske</TIME_MASK>
+	<TIME_SEARCH>Zeitsuche</TIME_SEARCH>
+	<TIME_SERVER>Zeitserver</TIME_SERVER>
+	<TIME_STAMP>Zeitstempel</TIME_STAMP>
+	<TIME_ZONE>Zeitzone</TIME_ZONE>
+	<TIMEOUT>Zeitüberschreitung</TIMEOUT>
+	<TIMEOUT_DURATION>Zeitüberschreitungsdauer</TIMEOUT_DURATION>
+	<TITLE>Titel</TITLE>
+	<TO>Bis</TO>
+	<TO_DATE>Bis: Datum</TO_DATE>
+	<TODAY_DELETE>Heute alte Daten löschen?</TODAY_DELETE>
+	<TOP>Top</TOP>
+	<TOTAL>Gesamt</TOTAL>
+	<TOUR>Tour</TOUR>
+	<TRACKING>Verfolgung</TRACKING>
+	<TRACKING_DURATION>Verfolgungsdauer</TRACKING_DURATION>
+	<TRACKING_MASK>Verfolgungsmaske</TRACKING_MASK>
+	<TRADITIONAL_CHINESE>Traditionelles Chinesisch</TRADITIONAL_CHINESE>
+	<TRANS_TIMEOUT>Trans+Zeitüberschreitung</TRANS_TIMEOUT>
+	<TRANSPARENT>Transparent</TRANSPARENT>
+	<TRIGGER_ALARM>Auslöseralarm</TRIGGER_ALARM>
+	<TUE>Di</TUE>
+	<TUESDAY>Dienstag</TUESDAY>
+	<TV_STANDARD>TV-Standard</TV_STANDARD>
+	<TYPE>Typ</TYPE>
+	<UNKNOW>unbekannt</UNKNOW>
+	<UNKNOW_HOST>Unbekannter Host</UNKNOW_HOST>
+	<UNKNOWN_ERR>Unbekannter Fehler</UNKNOWN_ERR>
+	<UNLOCK>Freigeben</UNLOCK>
+	<UNLOCK_ALL>Alles freigeben</UNLOCK_ALL>
+	<UPDATE>Aktualisieren</UPDATE>
+	<UPDATE_FIRMWARE>Firmware aktualisieren</UPDATE_FIRMWARE>
+	<UPDATE_SUCCEED>Aktualisierung erfolgreich</UPDATE_SUCCEED>
+	<UPDATE_SUCCESSED>Aktualisierung erfolgreich</UPDATE_SUCCESSED>
+	<UPDATING>Aktualisierung</UPDATING>
+	<UPGRADE_L>Aktualisieren</UPGRADE_L>
+	<UPGRADE_U>Aufrüstung</UPGRADE_U>
+	<UPPER_LEFT>Oben links</UPPER_LEFT>
+	<UPPER_RIGHT>Oben rechts</UPPER_RIGHT>
+	<USAGE>Nutzung</USAGE>
+	<USB>USB</USB>
+	<USB_NOT_FOUND>USB nicht gefunden</USB_NOT_FOUND>
+	<USED_TO>Verwendet zu</USED_TO>
+	<USER>Benutzer</USER>
+	<USER_ALREADY_EXISTS>Benutzer existiert bereits</USER_ALREADY_EXISTS>
+	<USER_EXIST>Dieser Benutzer existiert bereits. Bitte einen anderen Namen versuchen.</USER_EXIST>
+	<USER_GROUP>Benutzergruppe</USER_GROUP>
+	<USER_LOGIN>Benutzeranmeldung</USER_LOGIN>
+	<USER_MANAGEMENT>Benutzerverwaltung</USER_MANAGEMENT>
+	<USER_NUMBER_IS_FULL>Benutzeranzahl ist voll</USER_NUMBER_IS_FULL>
+	<USER_RIGHT>Benutzerrecht</USER_RIGHT>
+	<USER_SETTING>Benutzereinstellung</USER_SETTING>
+	<USERNAME>Benutzername</USERNAME>
+	<VERSION>Version</VERSION>
+	<VIDEO>Video</VIDEO>
+	<VIDEO_ADJUST>Videoanpassung</VIDEO_ADJUST>
+	<VIDEO_ADJUSTMENT>Videoanpassung</VIDEO_ADJUSTMENT>
+	<VIDEO_DETECTED>Video erkannt</VIDEO_DETECTED>
+	<VIDEO_ENCODER>Videoenkoder</VIDEO_ENCODER>
+	<VIDEO_FORMAT>Videoformat</VIDEO_FORMAT>
+	<VIDEO_LOSS>Videoverlust</VIDEO_LOSS>
+	<VIDEO_LOSS_BEEPER>Videoverlustsignalton</VIDEO_LOSS_BEEPER>
+	<VIDEO_ONLY>Nur Video</VIDEO_ONLY>
+	<VIDEO_PORT>Video-Port (RTSP)</VIDEO_PORT>
+	<VIDEO_SIGNALS>Videosignale</VIDEO_SIGNALS>
+	<VIEW_LOG>Protokoll anzeigen</VIEW_LOG>
+	<VIEW_SETTING>Einstellung anzeigen</VIEW_SETTING>
+	<WARNING>Warnung</WARNING>
+	<WARNING_SENTENCE1>Es wurden mehrere Firmware-Code-Images auf dem/den USB-Gerät(en) gefunden. Zur Installation eines Image die anderen bitte entfernen oder umbenennen.</WARNING_SENTENCE1>
+	<WARNING_SENTENCE10>Bitte einen Benutzernamen wählen und ein Kennwort eingeben.</WARNING_SENTENCE10>
+	<WARNING_SENTENCE11>DVR auf werkseitige Standardkonfiguration rücksetzen?</WARNING_SENTENCE11>
+	<WARNING_SENTENCE12>Kann gültige Konfigurationsdatei nicht finden.</WARNING_SENTENCE12>
+	<WARNING_SENTENCE13>S/W-Aktualisierung abgeschlossen. System wird neu gestartet.</WARNING_SENTENCE13>
+	<WARNING_SENTENCE14>Jeden Zielkanal wählen, der eine Kopie des Aufnahmezeitplans empfangen soll.</WARNING_SENTENCE14>
+	<WARNING_SENTENCE15>Wöchentliche Dauer zum Kopieren des hervorgehobenen Zeitplans wählen.</WARNING_SENTENCE15>
+	<WARNING_SENTENCE16>Test-eMails werden gesendet. Bitte warten...</WARNING_SENTENCE16>
+	<WARNING_SENTENCE17>Die Firmware, die Sie auf den DVR laden möchten, ist eine ältere Version. Diese Firmware installieren?</WARNING_SENTENCE17>
+	<WARNING_SENTENCE18>Anmeldebenutzer kann nicht gelöscht werden!</WARNING_SENTENCE18>
+	<WARNING_SENTENCE19>Alle Daten werden rückgesetzt. Sicher?</WARNING_SENTENCE19>
+	<WARNING_SENTENCE2>Sie können die Zeit nicht ändern, wenn NTP aktiviert ist</WARNING_SENTENCE2>
+	<WARNING_SENTENCE20>Alle Zeitplandaten werden rückgesetzt! Sicher?</WARNING_SENTENCE20>
+	<WARNING_SENTENCE21>Möchten Sie die Konfiguration exportieren?</WARNING_SENTENCE21>
+	<WARNING_SENTENCE22>Protokoll auf USB exportieren?</WARNING_SENTENCE22>
+	<WARNING_SENTENCE23>Export fehlgeschlagen. Exportmedium ist nicht verfügbar.</WARNING_SENTENCE23>
+	<WARNING_SENTENCE24>Kann gültige Aktualisierungsdatei nicht finden.</WARNING_SENTENCE24>
+	<WARNING_SENTENCE25>Kann gültigen USB-Speicherstick nicht finden.</WARNING_SENTENCE25>
+	<WARNING_SENTENCE26>Durch Auswahl einer höheren als vom Monitor unterstützten Auflösung zeigt der Bildschirm nach einem DVR-Neustart möglicherweise nichts an. Fortfahren?</WARNING_SENTENCE26>
+	<WARNING_SENTENCE27>Möchten Sie die Konfiguration importieren?</WARNING_SENTENCE27>
+	<WARNING_SENTENCE28>Durch die Formatierung wird die Festplatte formatiert. Alle bestehenden Daten werden gelöscht. Fortfahren?</WARNING_SENTENCE28>
+	<WARNING_SENTENCE29>Anmeldung fehlgeschlagen. Benutzerkennwort prüfen.</WARNING_SENTENCE29>
+	<WARNING_SENTENCE3>Neue Festplatte gefunden. Neue Festplatte formatieren?</WARNING_SENTENCE3>
+	<WARNING_SENTENCE30>Medium für Format nicht geeignet. Noch einmal mit anderem Medientyp versuchen.</WARNING_SENTENCE30>
+	<WARNING_SENTENCE31>Gerät für Export nicht gefunden.</WARNING_SENTENCE31>
+	<WARNING_SENTENCE32>DVR-Aktualisierungsdatei enthält Fehler.</WARNING_SENTENCE32>
+	<WARNING_SENTENCE33>Der Benutzer wird gelöscht. Fortfahren?</WARNING_SENTENCE33>
+	<WARNING_SENTENCE34>Kameravideoformat ist nicht mit im DVR eingestellten Videoformat identisch. Kamera zur automatischen Erkennung bitte mit Kanal 1 und Einschaltzyklus-Einheit verbinden.</WARNING_SENTENCE34>
+	<WARNING_SENTENCE4>Kein Kanal ausgewählt. Bitte einen Kanal zum Exportieren wählen.</WARNING_SENTENCE4>
+	<WARNING_SENTENCE5>Keine Daten zum Exportieren gefunden.</WARNING_SENTENCE5>
+	<WARNING_SENTENCE6>Keine eMail-Adresse eingegeben. Mindestens eine eMail-Adresse erforderlich.</WARNING_SENTENCE6>
+	<WARNING_SENTENCE7>Bitte Internetverbindung oder Netzwerkkonfigurationseinstellungen prüfen.</WARNING_SENTENCE7>
+	<WARNING_SENTENCE8>Bitte Benutzernamen oder Kennwort prüfen</WARNING_SENTENCE8>
+	<WARNING_SENTENCE9>Bitte TCP/IP-Portnummer eingeben. Gültige TCP/IP-Portnummern: 1 bis 65535.</WARNING_SENTENCE9>
+	<WEB_VERSION>Webversion</WEB_VERSION>
+	<WED>Mi</WED>
+	<WEDNESDAY>Mittwoch</WEDNESDAY>
+	<WEEKDAY_DAYTIME>Wochentag-Tageszeit</WEEKDAY_DAYTIME>
+	<WEEKDAY_NIGHTTIME>Wochentag-Nachtzeit</WEEKDAY_NIGHTTIME>
+	<WEEKEND>Wochenende</WEEKEND>
+	<WEEKEND_END>Wochenende-Ende</WEEKEND_END>
+	<WEEKEND_START>Wochenende-Beginn</WEEKEND_START>
+	<WEEKLY>Wöchentlich</WEEKLY>
+	<X>X</X>
+	<YES>Ja</YES>
+	<ZOOM>Zoom</ZOOM>
+	<ZOOM_CONTROL_ON_TRACKING>Zoomsteuerung bei Verfolgung</ZOOM_CONTROL_ON_TRACKING>
+	<ZOOM_IN>Vergrößern</ZOOM_IN>
+	<ZOOM_OUT>Verkleinern</ZOOM_OUT>
+    <WARNING_SENTENCE35>""</WARNING_SENTENCE35>
+    <WARNING_SENTENCE36>Schalten Sie Benutzerkontensteuerung ab, falls Sie nicht auf die externe Echtzeitseite zugreifen können.</WARNING_SENTENCE36>
+    <WARNING_SENTENCE37>Laden Sie die aktuellste Version der JAVA-Software zur Anzeige der externen Echtzeitseite herunter. Klicken Sie zum Herunterladen der Java-Software auf Ja.</WARNING_SENTENCE37>
+    <WARNING_SENTENCE38>Bitte H.264-Codec wählen, wenn Sie die FTP-Funktion zum Hochladen des MP4-Videoformats nutzen müssen.</WARNING_SENTENCE38>
+    <SHOW_DATA_STORE>Daten können ??? Tag(e) und ??? Stunde(n) gespeichert werden</SHOW_DATA_STORE>
+    <PAUSE>Pause</PAUSE>
+    <DISCONNECT>Trennen</DISCONNECT>
+    <WELCOME>Willk.</WELCOME>
+    <DWELL_TIME_CPL>Verweilzeit</DWELL_TIME_CPL>
+    <VALUE>Wert</VALUE>
+    <MODE>Mod.</MODE>
+    <TOUR_NO>Tour-Nr.</TOUR_NO>
+    <STREAM_TYPE>Streamtyp</STREAM_TYPE>
+    <SOUND>Ton</SOUND>
+    <SNAPSHOT>Schn.</SNAPSHOT>
+    <INDEX>Index</INDEX>
+    <MINIMUM>Minimum</MINIMUM>
+    <WARNING_SENTENCE39>USB-Dongle n. erkannt. USB-Dongle erneut einstecken, mit Ja NVR-Betriebs fortsetzen (etwa 30 s warten), mit Nein NVR abschalten.</WARNING_SENTENCE39>
+    <WARNING_SENTENCE40>Aktuellste Java-Softwareversion zur Anz. d. ext. Echtzeitansicht herunterl. Mit Ja Java-Software herunterladen.</WARNING_SENTENCE40>
+    <WARNING_SENTENCE41>Benutzerkontensteuerung abschalten, falls ext. Echtzeitansicht n. verf.</WARNING_SENTENCE41>
+    <WARNING_SENTENCE42>Sitz.-ID n. beziehbar.</WARNING_SENTENCE42>
+    <WARNING_SENTENCE43>Durch Auswahl einer höheren als vom Monitor unterst. Aufl. zeigt der Bildsch. nach DVR-Neustart mögl. nichts an. Fortfahren?</WARNING_SENTENCE43>
+    <WARNING_SENTENCE44>Extern neu starten?</WARNING_SENTENCE44>
+    <WARNING_SENTENCE45>Neustart erfolgr.</WARNING_SENTENCE45>
+    <WARNING_SENTENCE46>Neus. fehlg.</WARNING_SENTENCE46>
+    <WARNING_SENTENCE47>Ext. Neustart nicht erlaubt.</WARNING_SENTENCE47>
+    <WARNING_SENTENCE48>Der Kanal wurde ausgewählt. Mit Ja vorherige Kanaleinstellung überschreiben. Wirklich übernehmen?</WARNING_SENTENCE48>
+    <WARNING_SENTENCE49>Bitte prüfen, ob IP-Adresskonfiguration richtig ist.</WARNING_SENTENCE49>
+    <WARNING_SENTENCE50>Noch keine Kameras konfiguriert. Möchten Sie im lokalen Netzwerk (LAN) nach Kameras suchen?</WARNING_SENTENCE50>
+    <WARNING_SENTENCE51>Akt. Einst. überschreiben?</WARNING_SENTENCE51>
+    <WARNING_SENTENCE52>Bei Objektverlust am Bildschirm</WARNING_SENTENCE52>
+    <WARNING_SENTENCE53>In ??? s</WARNING_SENTENCE53>
+    <WARNING_SENTENCE54>und zurück zum Startp.</WARNING_SENTENCE54>
+    <WARNING_SENTENCE55>Akt. Zoomverh. beib.</WARNING_SENTENCE55>
+    <WARNING_SENTENCE56>Mehrstuf. Zoomfunktion</WARNING_SENTENCE56>
+    <WARNING_SENTENCE57>Verf. beibeh.</WARNING_SENTENCE57>
+    <WARNING_SENTENCE58>Verkl. &amp; nach neuem Objekt such.</WARNING_SENTENCE58>
+    <WARNING_SENTENCE59>Verf. beenden &amp; verkleinern</WARNING_SENTENCE59>
+    <WARNING_SENTENCE60>Bei man. Stopp weiter ??? s</WARNING_SENTENCE60>
+    <COMPLETE>Fertig</COMPLETE>
+    <UP>Auf</UP>
+    <LEFT>Links</LEFT>
+    <RIGHT>Rechts</RIGHT>
+    <DOWN>Ab</DOWN>
+    <NORMAL_FRAME_RATE>Normale Bildrate</NORMAL_FRAME_RATE>
+    <EVENT_FRAME_RATE>Ereignisbildrate</EVENT_FRAME_RATE>
+    <BIT_RATE>Bitrate</BIT_RATE>
+    <CAMERA_STATUS>Kamerastatus</CAMERA_STATUS>
+    <POE_POWER>PoE-Strom</POE_POWER>
+    <RECORDING>Aufnahme</RECORDING>
+    <SHARPNESS>Schärfe</SHARPNESS>
+    <WARNING_SENTENCE61>Diese IP-Kam. exist. bereits im Kanal</WARNING_SENTENCE61>
+    <WARNING_SENTENCE62>Kameras aus der Kameraliste in die Kanalliste ziehen und dort ablegen.</WARNING_SENTENCE62>
+    <WARNING_SENTENCE63>Einträge in der Kanalliste werden ersetzt, zum Bestätigen OK anklicken.</WARNING_SENTENCE63>
+    <WARNING_SENTENCE64>Kamera man. hinzuf.</WARNING_SENTENCE64>
+    <TV_FORMAT>TV-Format</TV_FORMAT>
+    <SHUTDOWN>Abschaltung</SHUTDOWN>
+    <EKB200SETTING>EKB200-Einst.</EKB200SETTING>
+    <SET_PRESET>Voreinst.festl.</SET_PRESET>
+    <GOTO_PRESET>Vorein.aufr.</GOTO_PRESET>
+    <GOTO_HOME>Starts.aufr.</GOTO_HOME>
+    <CLEAR_PRESET>Vorein.lösch.</CLEAR_PRESET>
+    <RUN_AUTOPAN>AutopanStart</RUN_AUTOPAN>
+    <STOP_AUTOPAN>AutopanStopp</STOP_AUTOPAN>
+    <TOUR_RUN>TourStart</TOUR_RUN>
+    <TOUR_STOP>TourStopp</TOUR_STOP>
+    <PATTERN_RUN>MusterStart</PATTERN_RUN>
+    <PATTERN_STOP>MusterStopp</PATTERN_STOP>
+    <SET_AUTO_TRACKING>Auto-Verf. festl.</SET_AUTO_TRACKING>
+    <SELECT_TRACKING_OBJECT>Verfolgungsobj. wähl.</SELECT_TRACKING_OBJECT>
+    <TOGGLE_FULLSCREEN>Vollbild umsch.</TOGGLE_FULLSCREEN>
+    <IRIS_PLUS>Iris +</IRIS_PLUS>
+    <IRIS_MINUS>Iris -</IRIS_MINUS>
+    <FOCUS_NEAR>Fokus nah</FOCUS_NEAR>
+    <FOCUS_FAR>FokusFern</FOCUS_FAR>
+    <KEY_NO>Tastennr.</KEY_NO>
+    <DEVICE>Gerät</DEVICE>
+    <MAPPING_CAMERA>Kartierungskamera</MAPPING_CAMERA>
+    <YOU_CAN_SAFELY_TURN_OFF_POWER>Sie können das Gerät sicher abschalten</YOU_CAN_SAFELY_TURN_OFF_POWER>
+    <DEVICE_STATUS>Gerätestatus</DEVICE_STATUS>
+    <CHECK>Prüfen</CHECK>
+    <RECORDING_FORMAT>Aufnahmeformat</RECORDING_FORMAT>
+    <PORT_TYPE>Porttyp</PORT_TYPE>
+</language>

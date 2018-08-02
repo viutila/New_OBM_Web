@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var change_pass_flag = 0;
+
+function init(){
+	setLanguage();
+	GetXML();
+	initFunc() 
+}
+
+function initFunc() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    var funcNum = 0;
+    var i, j, q;
+    var str = "FTP";
+
+    funcNum = setHx.getNodeChildSize("FTP");
+    for (i = 0; i < funcNum; i++) {
+
+        switch (setHx.getNodeChildName("FTP", i)) {
+
+            case "ServerIP":
+                setIdDisplay("td_ServerIP", "table-cell");
+                setIdDisplay("td_ServerIP_Address", "table-cell");
+                setIdInnerHTML("td_ServerIP", hl.get("FTP_SERVER"));
+
+                setIdValue("txt_ServerIP", hx.getNodeValue(str, "ipAddress"));
+                break;
+            case "Port":
+                setIdDisplay("td_Port", "table-cell");
+                setIdDisplay("txt_Port", "table-cell");
+                setIdInnerHTML("td_Port", hl.get("PORT"));
+                setIdValue("txt_Port", hx.getNodeValue(str, "portNo"));
+                break;
+            case "UserName":
+                setIdDisplay("td_Username", "table-cell");
+                setIdDisplay("txt_Username", "table-cell");
+                setIdInnerHTML("td_Username", hl.get("USERNAME"));
+                setIdValue("txt_Username", hx.getNodeValue(str, "userName"));
+                break;
+            case "Password":
+                setIdDisplay("td_Password", "table-cell");
+                setIdDisplay("txt_Password", "table-cell");
+                setIdInnerHTML("td_Password", hl.get("PASSWORD"));
+                //setIdValue("txt_Password", hx.getNodeValue(str, "password"));
+                break;
+            case "FileName":
+                setIdDisplay("td_Filename", "table-cell");
+                setIdDisplay("txt_Filename", "table-cell");
+                setIdInnerHTML("td_Filename", hl.get("FILE_NAME"));
+                setIdValue("txt_Filename", hx.getNodeValue(str, "baseFileName"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+
+    }
+}
+
+function GetXML(){
+    hx.setUrl("../cgi-bin/NetworkFTP.xml");
+}
+
+function SetXML() {
+
+    var funcNum = 0;
+    var i, j, q;
+    var str = "FTP";
+
+    funcNum = setHx.getNodeChildSize("FTP");
+
+    if (change_pass_flag == 1) {
+        if (getIdValue("txt_Password") == getIdValue("txt_Confirm")) {  //getIdValue("txt_Password").trim() != ""
+            for (i = 0; i < funcNum; i++) {
+                switch (setHx.getNodeChildName("FTP", i)) {
+                    case "ServerIP":
+                        hx.setNodeValue(getIdValue("txt_ServerIP"), str, "ipAddress");
+                        break;
+                    case "Port":
+                        hx.setNodeValue(getIdValue("txt_Port"), "portNo");
+                        break;
+                    case "UserName":
+                        hx.setNodeValue(getIdValue("txt_Username"), "userName");
+                        break;
+                    case "Password":
+                        hx.setNodeValue(getIdValue("txt_Password"), "password");
+                        break;
+                    case "FileName":
+                        hx.setNodeValue(getIdValue("txt_Filename"), "baseFileName");
+                        break;
+                    case "#text":   //******* for chrome
+                        funcNum++;
+                        break;
+                }
+            }
+            change_pass_flag = 0;
+        } else {
+            alert(hl.get("PASSWORD_ERROR"));
+            return;
+        }
+    } else {
+        for (i = 0; i < funcNum; i++) {
+            switch (setHx.getNodeChildName("FTP", i)) {
+                case "ServerIP":
+                    hx.setNodeValue(getIdValue("txt_ServerIP"), str, "ipAddress");
+                    break;
+                case "Port":
+                    hx.setNodeValue(getIdValue("txt_Port"), "portNo");
+                    break;
+                case "UserName":
+                    hx.setNodeValue(getIdValue("txt_Username"), "userName");
+                    break;
+                case "Password":
+                    //hx.setNodeValue(getIdValue("txt_Password"), "password");
+                    break;
+                case "FileName":
+                    hx.setNodeValue(getIdValue("txt_Filename"), "baseFileName");
+                    break;
+                case "#text":   //******* for chrome
+                    funcNum++;
+                    break;
+            }
+        }
+    }
+
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/NetworkFTP.xml", newxml);
+
+    var hx2 = new HandleXml();
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+}
+
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+
+	setIdValue("btn_Save", hl.get("SAVE"));
+	setIdInnerHTML("td_Confirm", hl.get("CONFIRM"));
+	setIdValue("txt_Password", "123456789012345678901234567890");
+
+	EFDEF_("txt_Password").readOnly(1)
+		.onclick(function () {
+		    if (getIdReadOnly(this)) {
+		        if (window.confirm(hl.get("EDIT_PASSWORD") + "?")) {
+		            hx.setNodeValue(1, "EMAIL_SETTING", "USE_PWD");
+		            setIdValue(this, "");
+		            setIdReadOnly(this, 0);
+		            setIdVisibility("tr_Confirm", 1);
+		            this.focus();
+		            this.select();
+		            EFDEF_id("txt_Password").focus();
+		            change_pass_flag = 1;
+		            setTimeout("EFDEF_id('txt_Password').focus()",500);
+		        } else {
+		            setIdReadOnly(this, 1);
+		            this.blur();
+		            return false;
+		        }
+		    }
+		})
+		.onfocus(getIdOnclick("txt_Password"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_ServerIP" style="display:none; width:auto;"></td>
+				<td id="td_ServerIP_Address" class="txtLeft" style="display:none">
+					<input type="text" id="txt_ServerIP" maxlength="64" style="width:200px;" onblur="CheckUnicodeTitle(this);"/>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Port" style="display:none"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_Port" maxlength="5" style="width:100px;display:none;" onblur="CheckCharKeyin(this,0,1,65535);"/>
+				</td>
+			</tr>
+            <tr>
+				<td id="td_Username" style="display:none"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_Username" maxlength="32" style="width:300px;display:none;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>	
+            <tr>
+				<td id="td_Password" style="display:none"></td>
+				<td class="txtLeft">
+					<input type="password" id="txt_Password" maxlength="32" style="width:300px;display:none;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>
+            <tr id="tr_Confirm" style="visibility: hidden;">
+				<td id="td_Confirm"></td>
+				<td>
+					<input type="password" id="txt_Confirm" maxlength="32" style="width:300px;" onblur="CheckTitle(this);"/>
+				</td>
+			</tr>	
+            <tr>
+				<td id="td_Filename" style="display:none"></td>
+				<td class="txtLeft">
+					<input type="text" id="txt_Filename" maxlength="32" style="width:300px;display:none;" onblur="CheckFTPFilename(this)"/>
+				</td>
+			</tr>
+		</table>
+    </div>
+
+	<div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+</body>
+</html>

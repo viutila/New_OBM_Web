@@ -1,0 +1,17 @@
+.lb_div{
+	border: solid 1px #000000;
+	text-align: left;
+	z-index: 91;
+}
+.lb_msg{
+	text-align: center;
+	font-weight: bold;
+	color: #0000FF;
+	z-index: 91;
+}
+.lb_span{
+	background-color: #00FF00;
+}
+.lb_block{
+	background-color: #0000FF;
+}

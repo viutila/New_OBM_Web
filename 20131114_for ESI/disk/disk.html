@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var rsHx = new HandleXml();
+
+function init(){
+    setLanguage();
+    parent.checkDST_NV();
+	GetXML();
+}
+function initDiskSel(){
+	var hs = new HandleSelect("sel_Disk");
+	var locFlag = 0;
+	var extFlag = 0;
+	var diskCount = 0;
+	for (var i = 0; i < hx.getItemSize("install"); i++) {
+	    if (hx.getItemValue(i, "install") == "1") {
+	        hs.addOpt(diskCount, i + 1, i);
+	        diskCount++;
+		}
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/Disk.xml");
+	initDiskSel();
+	changeDisk();
+	var st = "";
+	var et = "";
+	var timeFormat1 = parent.g_time_fmt_ary[parent.g_time_fmt].replace(":ss", "");
+	if (hx.getNodeValue("totalRecordStart").toInt() == 0) {
+		st = "N/A";
+	}else{
+    st = new Date((hx.getNodeValue("totalRecordStart").toInt() + parent.g_time_zone_sec) * 1000).format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + timeFormat1, true);
+	}
+    if (hx.getNodeValue("totalRecordEnd").toInt() == 0) {
+		et = "N/A";
+	}else{
+    et = new Date((hx.getNodeValue("totalRecordEnd").toInt() + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000).format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + timeFormat1, true);
+	}
+	setIdInnerHTML("Total_Rec_Time_Start_val"	,st);
+	setIdInnerHTML("Total_Rec_Time_End_val"		,et);
+}
+function changeDisk(){
+	var tmpStr = "";
+	if(getIdValue("sel_Disk") != ""){
+	    if (hx.getItemValue(getIdValue("sel_Disk"), "install") == "0") {
+			tmpStr = hl.get("NO_INSTALL");
+		}else{
+			tmpStr = hl.get("OK");
+		}	
+		setIdInnerHTML("Health_Status_val"	,tmpStr);
+		var tmpC = hx.getItemValue(getIdValue("sel_Disk"), "temperature");
+		var tmpF = tmpC * (9 / 5) + 32;
+		setIdInnerHTML("Disk_Temp_val", tmpC + " ℃ / " + tmpF.toFixed() + " ℉");
+		setIdInnerHTML("Total_val", hx.getItemValue(getIdValue("sel_Disk"), "totalSize") + " GB");
+		setIdInnerHTML("Usage_val", hx.getItemValue(getIdValue("sel_Disk"), "usageSize") + " GB");
+	}else{
+		setIdInnerHTML("Health_Status_val"	,hl.get("NO_INSTALL"));
+		setIdInnerHTML("Disk_Temp_val"		,"-- C / -- F");
+		setIdInnerHTML("Total_val"		,"N/A");
+		setIdInnerHTML("Usage_val"		,"N/A");
+	}
+}
+function setLanguage(){
+	EFDEF_("^td_").className("txtLeft");
+	
+	setIdInnerHTML("td_Disk"				,hl.get("DISK"));
+	setIdInnerHTML("td_Health_Status"		,hl.get("HEALTH_STATUS"));
+	setIdInnerHTML("td_Disk_Temp"			,hl.get("DISK_TEMP"));
+	setIdInnerHTML("td_Total"				,hl.get("DISK_SIZE") + " (" + hl.get("TOTAL") + ")");
+	setIdInnerHTML("td_Usage"				,hl.get("DISK_SIZE") + " (" + hl.get("USAGE") + ")");
+	setIdInnerHTML("td_Total_Rec_Time_Start", hl.get("RECORD_TIME_START"));
+	setIdInnerHTML("td_Total_Rec_Time_End", hl.get("RECORD_TIME_END"));
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+				<td id="td_Total_Rec_Time_Start" style="width:auto;"></td>
+				<td id="Total_Rec_Time_Start_val" class="txtLeft" nowrap></td>
+			</tr>
+			<tr>
+				<td id="td_Total_Rec_Time_End"></td>
+				<td id="Total_Rec_Time_End_val" class="txtLeft" nowrap></td>
+			</tr>
+			<tr><td></td></tr>
+			<tr>
+				<td id="td_Disk"></td>
+				<td width="200" align="left">
+					<select id="sel_Disk" onchange="changeDisk();" style="width:100px;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td id="td_Health_Status"></td>
+				<td id="Health_Status_val" class="txtLeft"></td>
+			</tr>
+			<tr>
+				<td id="td_Disk_Temp"></td>
+				<td id="Disk_Temp_val" class="txtLeft"></td>
+			</tr>
+			<tr>
+				<td id="td_Total"></td>
+				<td id="Total_val" class="txtLeft"></td>
+			</tr>
+			<tr>
+				<td id="td_Usage"></td>
+				<td id="Usage_val" class="txtLeft"></td>
+			</tr>
+		</table>
+    </div>
+</body>
+</html>

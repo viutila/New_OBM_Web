@@ -1,0 +1,718 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/jquery-ui.css"/>
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="../include/js/jquery-ui.custom.js"></script>
+
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hx2 = new HandleXml();
+var sm;
+
+var sel_flag = null;
+var type_flag = null;
+var add_flag = 0;
+var change_pass_flag = 0;
+
+function init() {
+    sm = new ScreenMask("", "sm");
+    //GetXML();
+    //initSearchTable();
+    hx2.setUrl("../cgi-bin/IPCam.xml");
+    initChannelTable();
+    initDroppable();
+    setLanguage();
+    setMouseEvent();
+}
+
+function GetXML() {
+
+    //hx.setUrl("../cgi-bin/IPCamSearch.cgi");
+    hx.setUrl("../cgi-bin/IPCamSearch.cgi?action=start");
+    if (hx.getNodeValue("result") == "1") {
+        //hx.setUrl("../cgi-bin/IPCamSearch.cgi?action=query");
+        GetSearchQuery();
+    }
+    //hx.setUrl("../CamSearch.xml");
+    
+    /* 
+    hx2.setUrl("../cgi-bin/IPCam.xml");
+    initChannelTable();
+    initDroppable();
+    setMouseEvent();
+    */
+}
+function GetSearchQuery() {
+    hx.setUrl("../cgi-bin/IPCamSearch.cgi?action=query");
+    if (hx.getNodeValue("Progress") != "100") {
+        setTimeout("GetSearchQuery()", 1000)
+    } else {
+        initSearchTable();
+        closeMask();
+        setIdDisabled("btn_auto_assign", 0);
+    }
+}
+
+function initSearchTable(){
+    //var cameralen = hx.getNodeChildSize("CAM_SEARCH");
+    var cameralen = hx.getNodeValue("CAM_SEARCH", "Num");
+    
+    var HtmlStr = "";
+    var brand, modname, ip;
+    
+    for (var cnt = 0; cnt < cameralen; cnt++) {
+        /*brand = hx.getNodeValue("CAM" + cnt, "BND");
+        modname = hx.getNodeValue("CAM" + cnt, "HW");
+        ip = hx.getNodeValue("CAM" + cnt, "IP");*/
+        var cnt2 = cnt + 1;
+        brand = hx.getItemValue(cnt, "BND");
+        modname = hx.getItemValue(cnt, "HW");
+        ip = hx.getItemValue(cnt, "IP");
+        if (cnt2 % 2 == 1) {
+            HtmlStr += "<div id='div_camera_" + cnt2 + "'style='background-color:#CCCCCC;height:36px;' ><div class='cameraItemStyle'   value='" + cnt2 + "' camera='CAM" + cnt2 + "' brand='" + brand + "' modname='" + modname + "' ip='" + ip + "'";
+            //HtmlStr += " username='user1' password='11111111' httpport='80' mainencodetype='H264' enabled='0' mainconnecttype='TCP' mainquality='75' mainwidth='320' mainheight='240' mainnormal='30' mainevent='30'  subencodetype='H264' subconnecttype='TCP' subquality='75' subwidth='320' subheight='240' subnormal='30' subevent='30'>";
+        } else {
+            HtmlStr += "<div id='div_camera_" + cnt2 + "' style='height:36px;'><div class='cameraItemStyle'  value='" + cnt2 + "' camera='CAM" + cnt2 + "' brand='" + brand + "' modname='" + modname + "' ip='" + ip + "'";
+            //HtmlStr += " username='user1' password='11111111' httpport='80' mainencodetype='H264' enabled='0' mainconnecttype='TCP' mainquality='75' mainwidth='320' mainheight='240' mainnormal='30' mainevent='30'  subencodetype='H264' subconnecttype='TCP' subquality='75' subwidth='320' subheight='240' subnormal='30' subevent='30'>";
+        }
+        HtmlStr += "title='' enabled='0' devicetype='' recordmode='Normal+Event' recorddual='1' connectchannel='1' maskchannel='0' ratio='4:3' username='user1' password='11111111' ipformattype='' protocol='' rtspport='' httpport='80' ";
+        HtmlStr += "mainencodetype='H264' mainconnecttype='Nevio' mainquality='75' mainwidth='0' mainheight='0' mainnormal='30' mainevent='30' mainaudio='1' subencodetype='H264' subconnecttype='Nevio' subquality='75' subwidth='0' subheight='0' subnormal='30' subevent='30' subaudio='1'>";
+        HtmlStr += "<table border='0'><tr><td width='40px'>" + cnt2 + "</td><td width='80px' style='word-break:break-all'>" + brand + "</td><td width='250px' style='word-break:break-all'>" + modname + "</td><td width='120px'>" + ip + "</td></td></tr></table></div></div>";
+    }
+    setIdInnerHTML("div_camera_list_sortable", HtmlStr);
+    $(".cameraItemStyle").draggable({
+        revert: true,
+        helper: "clone",
+        opacity: "0.5"
+    });
+}
+function initChannelTable() {
+    var channellen = hx2.getNodeChildSize("IPCam"); ;
+    var HtmlStr = "";
+    var enabled;
+
+    var title, enabled,brand,modname, devicetype, recordmode,recorddual,connectchannel,maskchannel;
+    var ratio, username, password, ipformattype, ip, protocol, rtspport, httpport;
+    var mainencodetype, mainconnecttype, mainquality, mainwidth, mainheight, mainnormal, mainevent,mainaudio;
+    var subencodetype, subconnecttype, subquality, subwidth, subheight, subnormal, subevent,subaudio;
+    for (var cnt = 1; cnt <= channellen; cnt++) {
+        HtmlStr = "";
+        enabled = hx2.getNodeValue("camera" + cnt.toFill(2), "enabled").toInt();
+        if (enabled) {
+            title = hx2.getNodeValue("camera" + cnt.toFill(2), "title");
+            brand = hx2.getNodeValue("camera" + cnt.toFill(2), "brand");
+            modname = hx2.getNodeValue("camera" + cnt.toFill(2), "model");
+            devicetype = hx2.getNodeValue("camera" + cnt.toFill(2), "deviceType");
+            recordmode = hx2.getNodeValue("camera" + cnt.toFill(2), "recordMode");
+            recorddual = hx2.getNodeValue("camera" + cnt.toFill(2), "recordDual");
+            connectchannel = hx2.getNodeValue("camera" + cnt.toFill(2), "connectChannel");
+            maskchannel = hx2.getNodeValue("camera" + cnt.toFill(2), "maskChannel");
+            ratio = hx2.getNodeValue("camera" + cnt.toFill(2), "ratio");
+            username = hx2.getNodeValue("camera" + cnt.toFill(2), "username");
+            password = hx2.getNodeValue("camera" + cnt.toFill(2), "password");
+            ipformattype = hx2.getNodeValue("camera" + cnt.toFill(2), "ipAddressFormatType");
+            ip = hx2.getNodeValue("camera" + cnt.toFill(2), "ipAddress");
+            protocol = hx2.getNodeValue("camera" + cnt.toFill(2), "protocol");
+            rtspport = hx2.getNodeValue("camera" + cnt.toFill(2), "rtspPort");
+            httpport = hx2.getNodeValue("camera" + cnt.toFill(2), "httpPort");
+            
+            mainencodetype = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "encodeType");
+            mainconnecttype = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "connectType");
+            mainquality = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "recordQuality");
+            mainwidth = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "resolutionWidth");
+            mainheight = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "resolutionHeight");
+            mainnormal = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "normalSpeed");
+            mainevent = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "eventSpeed");
+            mainaudio = hx2.getNodeValue("camera" + cnt.toFill(2), "Main", "recordAudio");
+            subencodetype = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "encodeType");
+            subconnecttype = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "connectType");
+            subquality = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "recordQuality");
+            subwidth = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "resolutionWidth");
+            subheight = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "resolutionHeight");
+            subnormal = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "normalSpeed");
+            subevent = hx2.getNodeValue("camera" + cnt.toFill(2), "Sub", "eventSpeed");
+            subaudio = hx2.getNodeValue("camera" + cnt.toFill(2), "sub", "recordAudio");
+
+            HtmlStr += "<div class='droppedItemStyle' value='" + cnt + "' camera='CAM" + cnt + "'title='" + title + "' enabled='" + enabled + "' brand='" + brand + "' modname='" + modname + "' devicetype='" + devicetype + "' recordmode='" + recordmode + "' recorddual='" + recorddual + "'";
+            HtmlStr += " connectchannel='" + connectchannel + "' maskchannel='" + maskchannel + "' ratio='" + ratio + "' username='" + username + "' password='" + password + "' ipformattype='" + ipformattype + "' ip='" + ip + "'protocol='" + protocol + "' rtspport='" + rtspport + "' httpport='" + httpport + "'";
+            HtmlStr += " mainencodetype='" + mainencodetype + "' mainconnecttype='" + mainconnecttype + "' mainquality='" + mainquality + "' mainwidth='" + mainwidth + "' mainheight='" + mainheight + "' mainnormal='" + mainnormal + "' mainevent='" + mainevent + "' mainaudio='" + mainaudio + "'";
+            HtmlStr += "subencodetype='" + subencodetype + "' subconnecttype='" + subconnecttype + "' subquality='" + subquality + "' subwidth='" + subwidth + "' subheight='" + subheight + "' subnormal='" + subnormal + "' subevent='" + subevent + "' subaudio='"+subaudio+"'>";
+            HtmlStr += "<table border='0'><tr><td width='40px'>" + cnt + "</td><td width='80px' style='word-break:break-all'>" + brand + "</td><td width='250px'style='word-break:break-all'>" + modname + "</td><td width='120px'>" + ip + "</td>";
+            HtmlStr += "<td><input type='button' class='delete'  name='" + cnt + "' value='" + hl.get("REMOVE")+"'/></td></tr></table></div>";
+        } else {
+            HtmlStr += "<div class='droppedItemStyle' value='" + cnt + "' camera='' title='camera"+ cnt +"' enabled='0'  brand='' modname='' devicetype='' recordmode='Normal+Event' recorddual='0'";
+            HtmlStr += " connectchannel='0' maskchannel='0' ratio='4:3' username='' password='' ipformattype='' ip='0.0.0.0' protocol='' rtspport='' httpport=''";
+            HtmlStr += " mainencodetype='' mainconnecttype='' mainquality='' mainwidth='' mainheight='' mainnormal='' mainevent='' mainaudio='0'";
+            HtmlStr += "subencodetype='' subconnecttype='' subquality='' subwidth='' subheight='' subnormal='' subevent='' subaudio='0'>";
+            HtmlStr += "<table border='0'><tr><td width='40px'>" + cnt + "</td><td width='80px'></td><td width='250px'></td><td width='120px'>0.0.0.0</td></tr></table></div>";
+        }
+        setIdInnerHTML("div_channel_"+cnt, HtmlStr);
+    }
+    $(".channelItemStyle div input.delete").live("click", function () {
+        var id = $(this).attr("name");
+        var HtmlStr = "";
+        $("#div_channel_" + id).children().remove(".droppedItemStyle");
+        $("#div_channel_" + id).addClass("");
+        HtmlStr += "<div class='droppedItemStyle' value='" + id + "' camera='' title='camera"+ id +"' enabled='0'  brand='' modname='' devicetype='' recordmode='Normal+Event' recorddual='0'";
+        HtmlStr += " connectchannel='0' maskchannel='0' ratio='4:3' username='' password='' ipformattype='' ip='0.0.0.0' protocol='' rtspport='' httpport=''";
+        HtmlStr += " mainencodetype='' mainconnecttype='' mainquality='' mainwidth='' mainheight='' mainnormal='' mainevent='' mainaudio='0'";
+        HtmlStr += "subencodetype='' subconnecttype='' subquality='' subwidth='' subheight='' subnormal='' subevent='' subaudio='0'>";
+        HtmlStr += "<table border='0'><tr><td width='40px'>" + id + "</td><td width='80px'></td><td width='250px'></td><td width='120px'>0.0.0.0</td></tr></table></div>";
+        setIdInnerHTML("div_channel_" + id, HtmlStr);
+
+    });
+    $(".droppedItemStyle").draggable({
+        helper: "clone",
+        opacity: "0.5"
+    });
+}
+
+function clearSearchTable(){
+    setIdInnerHTML("div_camera_list_sortable", "");
+}
+function initDroppable() {
+    $("div.channelItemStyle").droppable({
+        //accept: ".productItemStyle",
+        //activeClass: "ui-state-hover",
+        //hoverClass: "ui-state-active",
+        drop: function (event, ui) {
+            //$( this ).addClass( "settableA" );
+            var droppedItem;
+            var divid = $(this).attr("id"); //拿到這個droppable的id
+            var value = divid.split("_")[2];
+            var HtmlStr = "";
+            if (ui.draggable[0].className.match("droppedItemStyle"))//交換
+            {
+                var nowCart = $("#" + divid).find("div");
+                var oldtitle = nowCart[0].attributes["title"].nodeValue;
+                var oldenabled = nowCart[0].attributes["enabled"].nodeValue.toInt();
+                var oldbrand = nowCart[0].attributes["brand"].nodeValue; //把目前的camera存起來
+                var oldname = nowCart[0].attributes["modname"].nodeValue;
+                var olddevicetype = nowCart[0].attributes["devicetype"].nodeValue;
+                var oldrecordmode=nowCart[0].attributes["recordmode"].nodeValue;
+                var oldrecorddual = nowCart[0].attributes["recorddual"].nodeValue.toInt();
+                var oldconnectchannel=nowCart[0].attributes["connectchannel"].nodeValue;
+                var oldmaskchannel=nowCart[0].attributes["maskchannel"].nodeValue;
+                var oldratio=nowCart[0].attributes["ratio"].nodeValue;
+                var olduser = nowCart[0].attributes["username"].nodeValue;
+                var oldpass = nowCart[0].attributes["password"].nodeValue;
+                var oldipformattype=nowCart[0].attributes["ipformattype"].nodeValue;
+                var oldip = nowCart[0].attributes["ip"].nodeValue;
+                var oldprotocol=nowCart[0].attributes["protocol"].nodeValue;
+                var oldrtspport = nowCart[0].attributes["rtspport"].nodeValue;
+                var oldhttpport = nowCart[0].attributes["httpport"].nodeValue;
+              
+                var oldmainencodetype = nowCart[0].attributes["mainencodetype"].nodeValue;
+                var oldmainconnecttype = nowCart[0].attributes["mainconnecttype"].nodeValue;
+                var oldmainquality = nowCart[0].attributes["mainquality"].nodeValue;
+                var oldmainwidth = nowCart[0].attributes["mainwidth"].nodeValue;
+                var oldmainheight = nowCart[0].attributes["mainheight"].nodeValue;
+                var oldmainnormal = nowCart[0].attributes["mainnormal"].nodeValue;
+                var oldmainevent = nowCart[0].attributes["mainevent"].nodeValue;
+                var oldmainaudio = nowCart[0].attributes["mainaudio"].nodeValue; ;
+                var oldsubencodetype = nowCart[0].attributes["subencodetype"].nodeValue;
+                var oldsubconnecttype = nowCart[0].attributes["subconnecttype"].nodeValue;
+                var oldsubquality = nowCart[0].attributes["subquality"].nodeValue;
+                var oldsubwidth = nowCart[0].attributes["subwidth"].nodeValue;
+                var oldsubheight = nowCart[0].attributes["subheight"].nodeValue;
+                var oldsubnormal = nowCart[0].attributes["subnormal"].nodeValue;
+                var oldsubevent = nowCart[0].attributes["subevent"].nodeValue;
+                var oldsubaudio = nowCart[0].attributes["subaudio"].nodeValue;
+                $(this).children().remove(".droppedItemStyle");
+                //複製新的div 
+                droppedItem = ui.draggable.clone().addClass("droppedItemStyle");
+                //ui.draggable.remove();
+                var title=droppedItem[0].attributes["title"].nodeValue;
+                var enabled = droppedItem[0].attributes["enabled"].nodeValue.toInt();
+                var brand = droppedItem[0].attributes["brand"].nodeValue;
+                var modname = droppedItem[0].attributes["modname"].nodeValue;
+                var devicetype = droppedItem[0].attributes["devicetype"].nodeValue;
+                var recordmode = droppedItem[0].attributes["recordmode"].nodeValue; 
+                var recorddual = droppedItem[0].attributes["recorddual"].nodeValue.toInt();
+                var connectchannel = droppedItem[0].attributes["connectchannel"].nodeValue;
+                var maskchannel = droppedItem[0].attributes["maskchannel"].nodeValue;
+                var ratio = droppedItem[0].attributes["ratio"].nodeValue;
+                var username = droppedItem[0].attributes["username"].nodeValue;
+                var password = droppedItem[0].attributes["password"].nodeValue;
+                var ipformattype = droppedItem[0].attributes["ipformattype"].nodeValue;
+                var ip = droppedItem[0].attributes["ip"].nodeValue;
+                var protocol = droppedItem[0].attributes["protocol"].nodeValue;
+                var rtspport = droppedItem[0].attributes["rtspport"].nodeValue;
+                var httpport = droppedItem[0].attributes["httpport"].nodeValue;
+                
+                var mainencodetype = droppedItem[0].attributes["mainencodetype"].nodeValue;
+                var mainconnecttype = droppedItem[0].attributes["mainconnecttype"].nodeValue;
+                var mainquality = droppedItem[0].attributes["mainquality"].nodeValue;
+                var mainwidth = droppedItem[0].attributes["mainwidth"].nodeValue;
+                var mainheight = droppedItem[0].attributes["mainheight"].nodeValue;
+                var mainnormal = droppedItem[0].attributes["mainnormal"].nodeValue;
+                var mainevent = droppedItem[0].attributes["mainevent"].nodeValue;
+                var mainaudio = droppedItem[0].attributes["mainaudio"].nodeValue;
+                var subencodetype = droppedItem[0].attributes["subencodetype"].nodeValue;
+                var subconnecttype = droppedItem[0].attributes["subconnecttype"].nodeValue;
+                var subquality = droppedItem[0].attributes["subquality"].nodeValue;
+                var subwidth = droppedItem[0].attributes["subwidth"].nodeValue;
+                var subheight = droppedItem[0].attributes["subheight"].nodeValue;
+                var subnormal = droppedItem[0].attributes["subnormal"].nodeValue;
+                var subevent = droppedItem[0].attributes["subevent"].nodeValue;
+                var subaudio = droppedItem[0].attributes["subaudio"].nodeValue;
+                var oldDiv = droppedItem[0].attributes["value"].nodeValue  //取得跟哪個div交換資料 
+                HtmlStr += "<table border='0'><tr><td width='40px'>" + value + "</td><td width='80px'style='word-break:break-all'>" + brand + "</td><td width='250px' style='word-break:break-all'>" + modname + "</td><td width='120px'>" + ip + "</td>";
+                if (enabled)
+                    HtmlStr += "<td><input type='button' class='delete' name='" + value + "' value='" + hl.get("REMOVE") + "'/></td></tr></table></div>";
+                else
+                    HtmlStr += "</tr></table></div>";
+                droppedItem[0].attributes["value"].nodeValue = value; //設成現在的divid
+                droppedItem[0].innerHTML = HtmlStr;
+                $(this).append(droppedItem);
+                HtmlStr = "";
+                ui.draggable[0].attributes["title"].nodeValue = oldtitle;
+                ui.draggable[0].attributes["enabled"].nodeValue = oldenabled;
+                ui.draggable[0].attributes["brand"].nodeValue = oldbrand;
+                ui.draggable[0].attributes["modname"].nodeValue = oldname;
+                ui.draggable[0].attributes["devicetype"].nodeValue = olddevicetype;
+                ui.draggable[0].attributes["recordmode"].nodeValue = oldrecordmode;
+                ui.draggable[0].attributes["recorddual"].nodeValue = recorddual;
+                ui.draggable[0].attributes["connectchannel"].nodeValue = oldconnectchannel;
+                ui.draggable[0].attributes["maskchannel"].nodeValue = oldmaskchannel;
+                ui.draggable[0].attributes["ratio"].nodeValue = oldratio;
+                ui.draggable[0].attributes["username"].nodeValue = olduser;
+                ui.draggable[0].attributes["password"].nodeValue = oldpass;
+                ui.draggable[0].attributes["ipformattype"].nodeValue = ipformattype;
+                ui.draggable[0].attributes["ip"].nodeValue = oldip;
+                ui.draggable[0].attributes["protocol"].nodeValue = oldprotocol;
+                ui.draggable[0].attributes["rtspport"].nodeValue = oldrtspport;
+                ui.draggable[0].attributes["httpport"].nodeValue = oldhttpport;
+
+                ui.draggable[0].attributes["value"].nodeValue = oldDiv;              
+                
+                ui.draggable[0].attributes["mainencodetype"].nodeValue = oldmainencodetype;
+                ui.draggable[0].attributes["mainconnecttype"].nodeValue = oldmainconnecttype;
+                ui.draggable[0].attributes["mainquality"].nodeValue = oldmainquality;
+                ui.draggable[0].attributes["mainwidth"].nodeValue = oldmainwidth;
+                ui.draggable[0].attributes["mainheight"].nodeValue = oldmainheight;
+                ui.draggable[0].attributes["mainnormal"].nodeValue = oldmainnormal;
+                ui.draggable[0].attributes["mainevent"].nodeValue = oldmainevent;
+                ui.draggable[0].attributes["mainaudio"].nodeValue = oldmainaudio;
+                ui.draggable[0].attributes["subencodetype"].nodeValue = oldsubencodetype;
+                ui.draggable[0].attributes["subconnecttype"].nodeValue = oldsubconnecttype;
+                ui.draggable[0].attributes["subquality"].nodeValue = oldsubquality;
+                ui.draggable[0].attributes["subwidth"].nodeValue = oldsubwidth;
+                ui.draggable[0].attributes["subheight"].nodeValue = oldsubheight;
+                ui.draggable[0].attributes["subnormal"].nodeValue = oldsubnormal;
+                ui.draggable[0].attributes["subevent"].nodeValue = oldsubevent;
+                ui.draggable[0].attributes["subaudio"].nodeValue = oldsubaudio;
+
+
+                HtmlStr += "<table border='0'><tr><td width='40px'>" + oldDiv + "</td><td width='80px' style='word-break:break-all'>" + oldbrand + "</td><td width='250px' style='word-break:break-all'>" + oldname + "</td><td width='120px'>" + oldip + "</td>";
+                if (oldenabled)
+                    HtmlStr += "<td><input type='button' class='delete' name='" + oldDiv + "' value='"+hl.get("REMOVE")+"'/></td></tr></table></div>";
+                else
+                    HtmlStr += "</tr></table></div>";
+
+                ui.draggable[0].innerHTML = HtmlStr;
+            }
+            else {
+                var dragIP = ui.draggable[0].attributes["ip"].nodeValue;
+                if (checkItem(value, dragIP)) {
+                    alert(hl.get("MSG_IPCAM_EXISTED"));
+                    return;
+                }
+                $(this).children().remove(".droppedItemStyle");
+                droppedItem = ui.draggable.clone().addClass("droppedItemStyle");
+                //ui.draggable.remove();
+                var brand = droppedItem[0].attributes["brand"].nodeValue;
+                var name = droppedItem[0].attributes["modname"].nodeValue;
+                var ip = droppedItem[0].attributes["ip"].nodeValue;
+                var username = droppedItem[0].attributes["username"].nodeValue;
+                var password = droppedItem[0].attributes["password"].nodeValue;
+                droppedItem[0].attributes["value"].nodeValue = value;
+                droppedItem[0].attributes["enabled"].nodeValue = 1; //enable
+                droppedItem[0].attributes["title"].nodeValue = "camera" + value;
+                droppedItem[0].attributes["connectchannel"].nodeValue = 1;
+                droppedItem[0].innerHTML = "<table border='0'><tr><td width='40px'>" + value + "</td><td width='80px' style='word-break:break-all'>" + brand + "</td><td width='250px' style='word-break:break-all'>" + name + "</td><td width='120px'>" + ip + "</td><td><input type='button' class='delete' name='" + value + "' value='"+hl.get("REMOVE")+"'/></td></tr></table></div>";
+                $(this).append(droppedItem);
+            }
+            $(".droppedItemStyle").draggable({
+                helper: "clone",
+                opacity: "0.5"
+
+            });
+        },
+        over: function () {
+            $(this).css("background-color", "#EEEE00");
+        },
+        out: function () {
+            var divid = $(this).attr("id"); //拿到這個droppable的id
+            var value = divid.split("_")[2];
+            if (value % 2)
+                $(this).css("background-color", "#CCCCCC");
+            else
+                $(this).css("background-color", "");
+        }
+
+    });
+
+}
+function AutoAssign() {
+    //var result = confirm(hl.get("MSG_AUTO_ASSIGN"));
+    var result = confirm(hl.get("WARNING_SENTENCE63"));
+    if (result) {
+        cleanChannelList();
+        //var cameralen = hx.getNodeChildSize("CAM_SEARCH");
+        var cameralen = hx.getNodeValue("CAM_SEARCH", "Num");
+        var HtmlStr = "";
+        var brand, modname, ip, enabled;
+        if (cameralen >= parent.g_total_ch_num)
+            cameralen = parent.g_total_ch_num;
+        //for (var cnt = 1; cnt <= cameralen; cnt++) {
+        for (var cnt = 0; cnt < cameralen; cnt++) {
+            HtmlStr = "";
+            /*brand = hx.getNodeValue("CAM" + cnt, "BND");
+            modname = hx.getNodeValue("CAM" + cnt, "HW");
+            ip = hx.getNodeValue("CAM" + cnt, "IP");*/
+            var cnt2 = cnt + 1;
+            brand = hx.getItemValue(cnt, "BND");
+            modname = hx.getItemValue(cnt, "HW");
+            ip = hx.getItemValue(cnt, "IP");
+            enabled = 1;
+            HtmlStr += "<div class='droppedItemStyle' value='" + cnt2 + "' camera='CAM" + cnt2 + "'title='cmaera" + cnt2 + "' enabled='" + enabled + "'  brand='" + brand + "' modname='" + modname + "'  devicetype='' recordmode='Normal+Event' recorddual='1'";
+            HtmlStr += "connectchannel='1' maskchannel='0' ratio='4:3' username='user1' password='11111111' ipformattype='' ip='" + ip + "' protocol='' rtspport='' httpport='80'";
+            HtmlStr += "mainencodetype='H264' mainconnecttype='Nevio' mainquality='75' mainwidth='0' mainheight='0' mainnormal='30' mainevent='30' mainaudio='1'  subencodetype='H264' subconnecttype='Nevio' subquality='75' subwidth='0' subheight='0' subnormal='30' subevent='30' subaudio='1'>";
+            HtmlStr += "<table border='0'><tr><td width='40px'>" + cnt2 + "</td><td width='80px' style='word-break:break-all'>" + brand + "</td><td width='250px'style='word-break:break-all'>" + modname + "</td><td width='120px'>" + ip + "</td>";
+            if (enabled)
+                HtmlStr += "<td><input type='button' class='delete' name='" + cnt2 + "' value='" + hl.get("REMOVE") + "'/></td></tr></table></div>";
+            else
+                HtmlStr += "</tr></table></div>";
+            setIdInnerHTML("div_channel_" + cnt2, HtmlStr);
+
+        }
+    } else
+        return;
+}
+function cleanChannelList() {
+    var HtmlStr = "";
+    for (var cnt = 1; cnt <= parent.g_total_ch_num; cnt++) {
+        HtmlStr = "";
+        $("#div_channel_" + cnt).children().remove(".droppedItemStyle");
+        $("#div_channel_" + cnt).addClass("");
+        HtmlStr += "<div class='droppedItemStyle' value='" + cnt + "' camera='' title='camera"+ cnt +"' enabled='0'  brand='' modname='' devicetype='' recordmode='Normal+Event' recorddual='0'";
+        HtmlStr += " connectchannel='0' maskchannel='0' ratio='4:3' username='' password='' ipformattype='' ip='0.0.0.0' protocol='' rtspport='' httpport=''";
+        HtmlStr += " mainencodetype='' mainconnecttype='' mainquality='' mainwidth='' mainheight='' mainnormal='' mainevent='' mainaudio='0'";
+        HtmlStr += "subencodetype='' subconnecttype='' subquality='' subwidth='' subheight='' subnormal='' subevent='' subaudio='0'>";
+        HtmlStr += "<table border='0'><tr><td width='40px'>" + cnt + "</td><td width='80px'></td><td width='250px'></td><td width='120px'>0.0.0.0</td></tr></table></div>";
+        setIdInnerHTML("div_channel_" + cnt, HtmlStr);
+    }
+    $(".channelItemStyle div input.delete").live("click", function () {
+        var id = $(this).attr("name");
+        var HtmlStr = "";
+        $("#div_channel_" + id).children().remove(".droppedItemStyle");
+        $("#div_channel_" + id).addClass("");
+        HtmlStr += "<div class='droppedItemStyle' value='" + id + "' camera='' title='canera"+id+"' enabled='0'  brand='' modname='' devicetype='' recordmode='Normal+Event' recorddual='0'";
+        HtmlStr += " connectchannel='0' maskchannel='0' ratio='4:3' username='' password='' ipformattype='' ip='0.0.0.0' protocol='' rtspport='' httpport=''";
+        HtmlStr += " mainencodetype='' mainconnecttype='' mainquality='' mainwidth='' mainheight='' mainnormal='' mainevent='' mainaudio='0'";
+        HtmlStr += "subencodetype='' subconnecttype='' subquality='' subwidth='' subheight='' subnormal='' subevent='' subaudio='0'>";
+        HtmlStr += "<table border='0'><tr><td width='40px'>" + id + "</td><td width='80px'></td><td width='250px'></td><td width='120px'>0.0.0.0</td></tr></table></div>";
+        setIdInnerHTML("div_channel_" + id, HtmlStr);
+
+    });
+    $(".droppedItemStyle").draggable({
+        helper: "clone",
+        opacity: "0.5"
+    });
+}
+
+function setMouseEvent() {
+    for (var cnt = 1; cnt <= parent.g_total_ch_num; cnt++) {
+        $("#div_camera_" + cnt).mouseover(function () {
+            $(this).css("background-color", "#F5FFFA");
+        });
+        if (cnt % 2) {
+            $("#div_camera_" + cnt).mouseout(function () {
+                $(this).css("background-color", "#CCCCCC");
+            });
+        }
+        else {
+            $("#div_camera_" + cnt).mouseout(function () {
+                $(this).css("background-color", "");
+            });
+        }
+        $("#div_channel_" + cnt).mouseover(function () {
+            $(this).css("background-color", "#F5FFFA");
+        });
+        if (cnt % 2) {
+            $("#div_channel_" + cnt).mouseout(function () {
+                $(this).css("background-color", "#CCCCCC");
+            });
+        }
+        else {
+            $("#div_channel_" + cnt).mouseout(function () {
+                $(this).css("background-color", "");
+            });
+        }
+    }
+
+}
+function saveChannelData() {
+    var cnt;
+    var nowdiv;
+    var title, enable, brand, modname, devicetype, recordmode, recorddual, connectchannel, maskchannel;
+    var ratio, username, password, ipformattype, ip, protocol, rtspport, httpport;
+    var mainencodetype, mainconnecttype, mainquality, mainwidth, mainheight, mainnormal, mainevent,mainaudio;
+    var subencodetype, subconnecttype, subquality, subwidth, subheight, subnormal, subevent,subaudio;
+    var str;
+    var modifyFlag;
+    for (cnt = 1; cnt <= parent.g_total_ch_num; cnt++) {
+        str = "camera" + cnt.toFill(2);
+        nowdiv = $("#div_channel_" + cnt).find("div");
+        title = nowdiv[0].attributes["title"].nodeValue;
+        enabled = nowdiv[0].attributes["enabled"].nodeValue;
+        brand = nowdiv[0].attributes["brand"].nodeValue;
+        modname = nowdiv[0].attributes["modname"].nodeValue;
+        devicetype=nowdiv[0].attributes["devicetype"].nodeValue;
+        recordmode=nowdiv[0].attributes["recordmode"].nodeValue;
+        recorddual = nowdiv[0].attributes["recorddual"].nodeValue;
+        connectchannel=nowdiv[0].attributes["connectchannel"].nodeValue;
+        maskchannel=nowdiv[0].attributes["maskchannel"].nodeValue;
+        ratio=nowdiv[0].attributes["ratio"].nodeValue;
+        username = nowdiv[0].attributes["username"].nodeValue;
+        password = nowdiv[0].attributes["password"].nodeValue;
+        ipformattype=nowdiv[0].attributes["ipformattype"].nodeValue;
+        ip = nowdiv[0].attributes["ip"].nodeValue;
+        if (ip != hx2.getNodeValue(str, "ipAddress"))//20130424 julia add
+            hx2.setNodeValue(1, str, "modified");
+
+        protocol = nowdiv[0].attributes["protocol"].nodeValue;
+        rtspport = nowdiv[0].attributes["rtspport"].nodeValue;
+        httpport = nowdiv[0].attributes["httpport"].nodeValue;
+        
+        mainencodetype = nowdiv[0].attributes["mainencodetype"].nodeValue;
+        mainconnecttype = nowdiv[0].attributes["mainconnecttype"].nodeValue;
+        mainquality = nowdiv[0].attributes["mainquality"].nodeValue;
+        mainwidth = nowdiv[0].attributes["mainwidth"].nodeValue;
+        mainheight = nowdiv[0].attributes["mainheight"].nodeValue;
+        mainnormal = nowdiv[0].attributes["mainnormal"].nodeValue;
+        mainevent = nowdiv[0].attributes["mainevent"].nodeValue;
+        mainaudio = nowdiv[0].attributes["mainaudio"].nodeValue;
+        subencodetype = nowdiv[0].attributes["subencodetype"].nodeValue;
+        subconnecttype = nowdiv[0].attributes["subconnecttype"].nodeValue;
+        subquality = nowdiv[0].attributes["subquality"].nodeValue;
+        subwidth = nowdiv[0].attributes["subwidth"].nodeValue;
+        subheight = nowdiv[0].attributes["subheight"].nodeValue;
+        subnormal = nowdiv[0].attributes["subnormal"].nodeValue;
+        subevent = nowdiv[0].attributes["subevent"].nodeValue;
+        subaudio = nowdiv[0].attributes["subaudio"].nodeValue;
+
+        if ((brand != "EverFocus") && (mainconnecttype != "") && (subconnecttype!="")) {
+            mainconnecttype = "TCP";
+            subconnecttype = "TCP";
+        }
+
+        hx2.setNodeValue(title, str, "title")
+		   .setNodeValue(enabled, str, "enabled")
+		   .setNodeValue(brand, str, "brand")
+           .setNodeValue(modname, str, "model")
+		   .setNodeValue(devicetype, str, "deviceType")
+		   .setNodeValue(recordmode, str, "recordMode")
+		   .setNodeValue(recorddual, str, "recordDual")
+		   .setNodeValue(connectchannel, str, "connectChannel")
+		   .setNodeValue(maskchannel, str, "maskChannel")
+		   .setNodeValue(ratio, str, "ratio")
+		   .setNodeValue(username, str, "username")
+           .setNodeValue(password, str, "password")
+		   .setNodeValue(ipformattype, str, "ipAddressFormatType")
+           .setNodeValue(ip, str, "ipAddress")
+           .setNodeValue(protocol, str, "protocol")
+		   .setNodeValue(rtspport, str, "rtspPort")
+           .setNodeValue(httpport, str, "httpPort")
+           .setNodeValue(mainencodetype, str, "Main", "encodeType")
+           .setNodeValue(mainconnecttype, str, "Main", "connectType")
+           .setNodeValue(mainquality, str, "Main", "recordQuality")
+           .setNodeValue(mainwidth, str, "Main", "resolutionWidth")
+           .setNodeValue(mainheight, str, "Main", "resolutionHeight")
+           .setNodeValue(mainnormal, str, "Main", "normalSpeed")
+           .setNodeValue(mainevent, str, "Main", "eventSpeed")
+           .setNodeValue(mainaudio, str, "Main", "recordAudio")
+           .setNodeValue(subencodetype, str, "Sub", "encodeType")
+           .setNodeValue(subconnecttype, str, "Sub", "connectType")
+           .setNodeValue(subquality, str, "Sub", "recordQuality")
+           .setNodeValue(subwidth, str, "Sub", "resolutionWidth")
+           .setNodeValue(subheight, str, "Sub", "resolutionHeight")
+           .setNodeValue(subnormal, str, "Sub", "normalSpeed")
+           .setNodeValue(subevent, str, "Sub", "eventSpeed")
+           .setNodeValue(subaudio, str, "Sub", "recordAudio");
+    }
+
+
+}
+function SetXML() {
+    saveChannelData();
+    var temphx = new HandleXml();
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx2.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx2.getXml()).replace(/\t/g, "");
+    }
+
+    ajax.postData("../cgi-bin/IPCam.xml", newxml);
+
+    temphx.setXml(ajax.data);
+    if (temphx.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+    } else {
+        alert(hl.get("FAIL"));
+    }
+}
+
+function checkItem(no, ip) {
+    var nowdiv;
+    var divIp;
+    var flag=0;
+    for (var cnt = 1; cnt <= parent.g_total_ch_num; cnt++) {
+        nowdiv = $("#div_channel_" + cnt).find("div");
+        divIp = nowdiv[0].attributes["ip"].nodeValue;
+        if (cnt != no && divIp !="0.0.0.0") {
+            if (ip == divIp) {
+                flag = 1;
+                break;
+            }
+        }
+    }
+
+    return flag;
+
+
+}
+function search() {
+    openMask();
+    setTimeout(function () { GetXML(); }, 1000);
+
+}
+function openMask() {
+    setIdDisplay("mask", "inline");
+
+}
+function closeMask() {
+    setIdDisplay("mask", "none");
+
+}
+
+function setLanguage() {
+    setIdInnerHTML("td_auto_search", hl.get("AUTO_SEARCH") + " - " + hl.get("WARNING_SENTENCE62"));
+    setIdInnerHTML("td_camera_list", hl.get("CAMERA_LIST"));
+    setIdInnerHTML("td_channel_list", hl.get("CHANNEL_LIST"));
+
+    setIdInnerHTML("td_camera_list_no", hl.get("NUMBER"));
+    setIdInnerHTML("td_camera_brand", hl.get("BRAND"));
+    setIdInnerHTML("td_camera_name", hl.get("CAMERA_NAME"));
+    setIdInnerHTML("td_camera_ip", hl.get("IP_ADDRESS"));
+
+    setIdInnerHTML("td_channel_list_no", hl.get("NUMBER"));
+    setIdInnerHTML("td_channel_brand", hl.get("BRAND"));
+    setIdInnerHTML("td_channel_name", hl.get("CAMERA_NAME"));
+    setIdInnerHTML("td_channel_ip", hl.get("IP_ADDRESS"));
+    setIdInnerHTML("td_remove", hl.get("REMOVE"));
+
+    setIdValue("btn_search",hl.get("SEARCH"));
+    setIdValue("btn_auto_assign",hl.get("AUTO_ASSIGN"));
+    setIdValue("btn_ok",hl.get("OK"));
+    setIdValue("btn_cancel", hl.get("CANCEL"));
+    setIdInnerHTML("td_search", hl.get("SEARCH")+"...");
+    
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="AutoSearchFrame">
+    
+    <table border="0">
+    <tr><td id="td_auto_search" colspan="2" style="height:40px;" class="txtLeft">Auto Search</td></tr>
+    <tr>
+        <td id="td_camera_list" align="left" style="height:30px" class="txtLeft">Camera List</td>
+        <td id="td_channel_list" align="left" style="height:30px" class="txtLeft">Channel List</td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <table>
+                <tr> 
+                    <td id="td_camera_list_no" width="45px" align="center">No</td>
+                    <td id="td_camera_brand" width="80px" align="center">Brand</td>
+                    <td id="td_camera_name" width="250px" align="center">Camera Name</td>
+                    <td id="td_camera_ip" width="120px" align="center">IP Address</td>
+                    <td style="width:20px"></td>
+                </tr>
+                </table>
+            </div>
+        </td>
+        <td>
+            <div>
+               <table>
+               <tr> 
+                    <td id="td_channel_list_no" width="45px" align="center">No</td>
+                    <td id="td_channel_brand" width="80px" align="center">Brand</td>
+                    <td id="td_channel_name" width="250px" align="center">Camera Name</td>
+                    <td id="td_channel_ip" width="120px" align="center">IP Address</td>
+                    <td id="td_remove" align="center" >Remove</td>
+                    <td style="width:20px"></td>
+               </tr>
+               </table>
+            </div>
+        </td>
+    </tr>
+   <tr>
+       <td>
+            <div id="div_camera_list_sortable" style="overflow:auto; width:100%; height:450px"></div>
+       </td>
+       <td>
+           <div style=" overflow:auto; width:100%; height:450px;">
+                <div id="div_channel_1" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_2" style="height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_3" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_4" style="height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_5" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_6" style=" height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_7" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_8" style=" height:36px;"  class="channelItemStyle"></div>
+                <div id="div_channel_9" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_10" style=" height:36px;"  class="channelItemStyle"></div>
+                <div id="div_channel_11" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_12" style=" height:36px;"  class="channelItemStyle"></div>
+                <div id="div_channel_13" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_14" style=" height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_15" style="background-color:#CCCCCC; height:36px;" class="channelItemStyle"></div>
+                <div id="div_channel_16" style=" height:36px;" class="channelItemStyle"></div>
+           </div>
+           
+       </td>
+   </tr> 
+</table>
+   
+    <div style="position:absolute; top:600px; left:400px"><input class="btnStyle"type="button" value="Search" id="btn_search" onclick="search();"/></div>
+    <div style="position:absolute; top:600px; left:800px">
+       <input class="btnStyle" style="" type="button" value="Auto Assign" id="btn_auto_assign" onclick="AutoAssign();" disabled="disabled"/> 
+       <input class="btnStyle" style="width:60px"type="button" value="OK" id="btn_ok" onclick="SetXML();"/>
+       <input class="btnStyle" style="width:60px"type="button" value="Cancel" id="btn_cancel" onclick="cleanChannelList();"/></div>
+	</div>
+    
+    <div id="mask" style="position:absolute;top:50px;left:50px;height:770px;width:1220px; z-index:99;  background-color:Gray; filter:alpha(opacity=30);-moz-opacity:0.3;display:none;">
+    <table style="width:100%"><tr><td align="center"><img src="../img/loading.gif" style="width:48px; height:48px;top:300px;left:600px;position:absolute;"  ondrag="return false;"/></td></tr></table>  
+    <span id="td_search" style="top:360px;left:600px;position:absolute;">Search...</span>
+    </div>
+    <div id="sm"></div>
+    <div id="mask1" class="ScreenMask"></div>
+</body>
+</html>

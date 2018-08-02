@@ -1,0 +1,16 @@
+.pb_div{
+	border: solid 1px #000000;
+	background-color: #FF0000;
+	text-align: left;
+	z-index: 100;
+}
+.pb_front{
+	background-color: #00FF00;
+}
+.pb_info{
+	color: #0000FF;
+}
+.pb_msg{
+	color: #000000;
+	z-index: 100;
+}

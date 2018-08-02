@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language type="Russian">
+	<ACCESSING_NTP_SERVERS>Доступ к NTP серверам.</ACCESSING_NTP_SERVERS>
+	<ACTION>Действие</ACTION>
+	<ACTIVE_CAMERA>Активная камера</ACTIVE_CAMERA>
+	<ADD>Добавить</ADD>
+	<ADD_DIRECT_IP_ENTRY>Добавить Прямой IP</ADD_DIRECT_IP_ENTRY>
+	<ADD_IP_CAMERA>Добавить IP-камеру</ADD_IP_CAMERA>
+	<ADD_TO_CHANNEL>Добавить к каналу</ADD_TO_CHANNEL>
+	<ADD_USER_ACCOUNT>Добавить учетную запись пользователя</ADD_USER_ACCOUNT>
+	<ADD_USER_SUCCESS>Пользователь добавлен</ADD_USER_SUCCESS>
+	<ADDRESS>Адрес</ADDRESS>
+	<ADJUST>Корректировать</ADJUST>
+	<ADMIN>Администратор</ADMIN>
+	<ADMIN_PW_CHANGED>Пароль админ. изменен</ADMIN_PW_CHANGED>
+	<ADVANCED_SETTING>Расширенная настройка</ADVANCED_SETTING>
+	<ALARM>Аварийная сигнализация</ALARM>
+	<ALARM_ACKNOWLEDGE>Подтверждение тревоги</ALARM_ACKNOWLEDGE>
+	<ALARM_ACTION>Действие при тревоге</ALARM_ACTION>
+	<ALARM_AUDIO>Звук аварийного сигнала </ALARM_AUDIO>
+	<ALARM_EVENT>Аварийный сигнал и событие</ALARM_EVENT>
+	<ALARM_EVENT_SETTING>Настройка Тревоги/События</ALARM_EVENT_SETTING>
+	<ALARM_OUTPUT>Трев. Выход</ALARM_OUTPUT>
+	<ALARM_SERVER>Трев. Сервер</ALARM_SERVER>
+	<ALARM1>Тревога 1</ALARM1>
+	<ALARM2>Тревога 2</ALARM2>
+	<ALARM3>Тревога 3</ALARM3>
+	<ALARM4>Тревога 4</ALARM4>
+	<ALL>Все</ALL>
+	<ALL_AUDIO>Все аудио</ALL_AUDIO>
+	<ALLOW_REMOTE_REBOOT>Разрешить удаленную перезагрузку</ALLOW_REMOTE_REBOOT>
+	<AM>AM</AM>
+	<APPLY>Применить</APPLY>
+	<APPLY_TO>Применить к</APPLY_TO>
+	<APPLY_TO_ALL>Применить ко всем</APPLY_TO_ALL>
+	<APPLY_TO_CAMERAS>Применить к Камерам</APPLY_TO_CAMERAS>
+	<APPLY_TO_DAYS>Применить к Дням</APPLY_TO_DAYS>
+	<APR>Апр</APR>
+	<ARCHIVAL_FUNCTION>Функция Архивирования</ARCHIVAL_FUNCTION>
+	<ARCHIVE>Архивировать</ARCHIVE>
+	<ARCHIVE_ABORT>Архивирование прервано</ARCHIVE_ABORT>
+	<ARCHIVE_CONTENT>Содержимое архива</ARCHIVE_CONTENT>
+	<ARCHIVE_ERROR>Ошибка архивирования!</ARCHIVE_ERROR>
+	<ARCHIVE_INTERVAL>Интервал архивирования</ARCHIVE_INTERVAL>
+	<ARCHIVE_NOW>Начать архивирование</ARCHIVE_NOW>
+	<ARCHIVE_TIME_FROM>Время архивирования с</ARCHIVE_TIME_FROM>
+	<ARE_YOU_SURE>Вы уверены?</ARE_YOU_SURE>
+	<AUDIO>Аудио</AUDIO>
+	<AUDIO_BROADCAST>Аудиовещание</AUDIO_BROADCAST>
+	<AUG>Август</AUG>
+	<AUTHENTICATION>Идентификация</AUTHENTICATION>
+	<AUTO>Авто</AUTO>
+	<AUTO_ARCHIVE>Автоархивирование</AUTO_ARCHIVE>
+	<AUTO_ASSIGN>Авто назначение </AUTO_ASSIGN>
+	<AUTO_DELETE>Автоудаление</AUTO_DELETE>
+	<AUTO_DETECT>Автопоиск по Кан1(NTSC/PAL)</AUTO_DETECT>
+	<AUTO_DETECTION>Автообнаружение</AUTO_DETECTION>
+	<AUTO_ERASE_VIDEO>Автоудаление Видео</AUTO_ERASE_VIDEO>
+	<AUTO_LOCK>Автоблокировка</AUTO_LOCK>
+	<AUTO_LOG_OFF>Автоматический выход из системы</AUTO_LOG_OFF>
+	<AUTO_SEARCH>Авто поиск </AUTO_SEARCH>
+	<AUTO_TRACK_START_POINT>Точка начала авто слежение</AUTO_TRACK_START_POINT>
+	<AUTO_USER_LOG_OFF>Автоматический выход пользователя</AUTO_USER_LOG_OFF>
+	<AUTOPAN>Автопанорамирование</AUTOPAN>
+	<BACK>Назад</BACK>
+	<BACKWARD>Назад</BACKWARD>
+	<BANDWIDTH_LIMIT>Огран. Потока</BANDWIDTH_LIMIT>
+	<BASED_ON_CURRENT_SETTING>в зависимости от текущей настройки.</BASED_ON_CURRENT_SETTING>
+	<BASIC>Основные</BASIC>
+	<BASIC_SETTING>Основная настройка</BASIC_SETTING>
+	<BAUD_RATE>Скорость</BAUD_RATE>
+	<BEEPER>Зуммер</BEEPER>
+	<BEST>Лучший</BEST>
+	<BEST_QUALITY>Лучшее качество</BEST_QUALITY>
+	<BLANK>Пустой</BLANK>
+	<BOTTOM>Нижний</BOTTOM>
+	<BRAND>Бренд</BRAND>
+	<BRIGHTNESS>Яркость</BRIGHTNESS>
+	<BUZZER>Гудок</BUZZER>
+	<CALL_MONITOR>Тревожный монитор</CALL_MONITOR>
+	<CAMERA>Камера</CAMERA>
+	<CAMERA_ACCESS>Доступ к Камере</CAMERA_ACCESS>
+	<CAMERA_CHANNEL>Канал камеры</CAMERA_CHANNEL>
+	<CAMERA_LIST>Список камер</CAMERA_LIST>
+	<CAMERA_NAME>Название камеры</CAMERA_NAME>
+	<CAMERA_PARAMETER>Параметр камеры</CAMERA_PARAMETER>
+	<CAMERA_SETTING>Настройки Камеры</CAMERA_SETTING>
+	<CAMERA_TITLE>Имя Камеры</CAMERA_TITLE>
+	<CAMERA1>Камера 1</CAMERA1>
+	<CAMERA10>Камера 10</CAMERA10>
+	<CAMERA11>Камера 11</CAMERA11>
+	<CAMERA12>Камера 12</CAMERA12>
+	<CAMERA13>Камера 13</CAMERA13>
+	<CAMERA14>Камера 14</CAMERA14>
+	<CAMERA15>Камера 15</CAMERA15>
+	<CAMERA16>Камера 16</CAMERA16>
+	<CAMERA2>Камера 2</CAMERA2>
+	<CAMERA3>Камера 3</CAMERA3>
+	<CAMERA4>Камера 4</CAMERA4>
+	<CAMERA5>Камера 5</CAMERA5>
+	<CAMERA6>Камера 6</CAMERA6>
+	<CAMERA7>Камера 7</CAMERA7>
+	<CAMERA8>Камера 8</CAMERA8>
+	<CAMERA9>Камера 9</CAMERA9>
+	<CAMERAS>Камеры</CAMERAS>
+	<CANCEL>Отмена</CANCEL>
+	<CANT_ADD_USER>Невозможно добавить новых пользователей!</CANT_ADD_USER>
+	<CANT_DEL_ADMIN>Невозможно удалить учетные данные пользователя!</CANT_DEL_ADMIN>
+	<CANT_FIND_DATA>Нет данных</CANT_FIND_DATA>
+	<CH>Кан</CH>
+	<CHANGE_CHANNEL>Изменить канал</CHANGE_CHANNEL>
+	<CHANGE_NORMAL_USER_RIGHTS>Изменить права обычного пользователя</CHANGE_NORMAL_USER_RIGHTS>
+	<CHANGE_OWN_PASSWORD>Изменить собственный пароль</CHANGE_OWN_PASSWORD>
+	<CHANGE_RIGHTS>Изменить права</CHANGE_RIGHTS>
+	<CHANGE_VIEWS>Изменить режим просмотра</CHANGE_VIEWS>
+	<CHANNEL>Канал</CHANNEL>
+	<CHANNEL_LIST>Список каналов</CHANNEL_LIST>
+	<CHANNEL_NUMBER>Номер канала</CHANNEL_NUMBER>
+	<CHECK_DATA>Проверить данные.</CHECK_DATA>
+	<CHECKING>Выполняется проверка</CHECKING>
+	<CHINESE>Китайский</CHINESE>
+	<CIF>CIF</CIF>
+	<CLEAN>Очистить</CLEAN>
+	<CLEAR>Очистить</CLEAR>
+	<CLEAR_ALL>Очистить Все</CLEAR_ALL>
+	<CLEAR_LOG>Очистить Журнал</CLEAR_LOG>
+	<CLOSE>Закрыть</CLOSE>
+	<COLOR>Цвет</COLOR>
+	<COM_PORT>COM-порт</COM_PORT>
+	<COMMAND_PORT>Порт команд (HTTP)</COMMAND_PORT>
+	<CONFIG_EXPORT_COMPLETE>Экспорт конфигурации завершен.</CONFIG_EXPORT_COMPLETE>
+	<CONFIG_IMPORT_COMPLETE>Импорт конфигурации завершен.</CONFIG_IMPORT_COMPLETE>
+	<CONFIGURATION>Конфигурация</CONFIGURATION>
+	<CONFIGURATIONS>Конфигурация</CONFIGURATIONS>
+	<CONFIGURE>Настроить</CONFIGURE>
+	<CONFIRM>Подтвердить</CONFIRM>
+	<CONFIRM_PASSWORD>Подтвердить пароль.</CONFIRM_PASSWORD>
+	<CONNECT>Подключиться</CONNECT>
+	<CONNECTED_CHANNEL>Подключенный канал</CONNECTED_CHANNEL>
+	<CONTINUOUS>Непрерывный</CONTINUOUS>
+	<CONTRAST>Контрастность</CONTRAST>
+	<CONTROL>Управление</CONTROL>
+	<CONTROL_ID>ID управления</CONTROL_ID>
+	<COPY>Копировать</COPY>
+	<COPY_AT_DVR>Копировать на DVR</COPY_AT_DVR>
+	<COPY_DATA_TYPE>Тип копирования данных</COPY_DATA_TYPE>
+	<COPY_NOW>Начать копирование</COPY_NOW>
+	<COPY_TO>Копировать в</COPY_TO>
+	<COPY_TYPE>Тип копии </COPY_TYPE>
+	<COPY_USER_ACCOUNT>Копировать учетную запись пользователя</COPY_USER_ACCOUNT>
+	<CORRUPTED_REPLY>Ответ поврежден</CORRUPTED_REPLY>
+	<COVERT>Скрыть</COVERT>
+	<CURRENT_LOCK>Текущая блокировка (%)</CURRENT_LOCK>
+	<CURRENT_VERSION>Текущая версия прошивки</CURRENT_VERSION>
+	<DAILY>Ежедневно</DAILY>
+	<DATA_BIT>Бит информации</DATA_BIT>
+	<DATA_SIZE>Размер данных</DATA_SIZE>
+	<DATA_TYPE>Тип данных</DATA_TYPE>
+	<DATE>Дата</DATE>
+	<DATE_FORMAT>Формат даты</DATE_FORMAT>
+	<DATE_SETTING>Настройка Даты/Времени</DATE_SETTING>
+	<DATE_TIME>Дата/Время </DATE_TIME>
+	<DATE_TIME_SEARCH>Поиск по Дате/Времени</DATE_TIME_SEARCH>
+	<DATE_TYPE>Тип даты</DATE_TYPE>
+	<DAY>День</DAY>
+	<DAY_COPY>Копировать за день</DAY_COPY>
+	<DAYLIGHT_SAVING>Летнее время</DAYLIGHT_SAVING>
+	<DAYLIGHT_SAVING_COMPLETE>Летнее время</DAYLIGHT_SAVING_COMPLETE>
+	<DAYLIGHT_SAVING_END>Переход на зимнее время</DAYLIGHT_SAVING_END>
+	<DAYLIGHT_SAVING_START>Переход на летнее время</DAYLIGHT_SAVING_START>
+	<DAYS>Дней</DAYS>
+	<DAYS_AGO>Дней назад</DAYS_AGO>
+	<DAYS_OF_DATA_CAN_BE_STORED>сохраняются данные за        дней</DAYS_OF_DATA_CAN_BE_STORED>
+	<DAYTIME_END>Конец дня</DAYTIME_END>
+	<DAYTIME_START>Начало дня</DAYTIME_START>
+	<DDNS_SERVER>Сервер DDNS</DDNS_SERVER>
+	<DDNS_SERVICE>Служба DDNS</DDNS_SERVICE>
+	<DEC>Дек</DEC>
+	<DEFAULT>По умолчанию</DEFAULT>
+	<DELAY>Задержка</DELAY>
+	<DELETE>Удалить</DELETE>
+	<DELETE_ALL>Удалить все</DELETE_ALL>
+	<DESTINATION>Назначение</DESTINATION>
+	<DESTINATION_PORT>Порт назначения</DESTINATION_PORT>
+	<DETAILS>Детали</DETAILS>
+	<DEUTSCH>Немецкий</DEUTSCH>
+	<DEVICE_TITLE>Заголовок устройства</DEVICE_TITLE>
+	<DEVICE_TYPE>Тип Устройства</DEVICE_TYPE>
+	<DIRECT_IP>Прямой IP</DIRECT_IP>
+	<DISABLE>Отключить</DISABLE>
+	<DISABLED>Отключено</DISABLED>
+	<DISCOVERY>Обнаружение</DISCOVERY>
+	<DISK>Диск</DISK>
+	<DISK_ERROR>Ошибка диска</DISK_ERROR>
+	<DISK_FAIL>Сбой диска</DISK_FAIL>
+	<DISK_FAILURE>Отказ диска</DISK_FAILURE>
+	<DISK_FULL>Диск заполнен</DISK_FULL>
+	<DISK_FULL_WARNING>Предупреждение о заполнении диска</DISK_FULL_WARNING>
+	<DISK_INFO>Сведения о диске</DISK_INFO>
+	<DISK_OFF>Диск выкл.</DISK_OFF>
+	<DISK_SETTING>Настройка диска</DISK_SETTING>
+	<DISK_SIZE>Размер диска</DISK_SIZE>
+	<DISK_SIZE_TOTAL>Размер диска (Общий)</DISK_SIZE_TOTAL>
+	<DISK_SIZE_USAGE>Размер диска (Используемый)</DISK_SIZE_USAGE>
+	<DISK_TEMP>Температура диска</DISK_TEMP>
+	<DISPLAY>Отображение</DISPLAY>
+	<DISPLAY_DURATION>Длительность Отображения</DISPLAY_DURATION>
+	<DISPLAY_SETTING>Настройка Отображения</DISPLAY_SETTING>
+	<DNS_SERVER1>DNS сервер 1</DNS_SERVER1>
+	<DNS_SERVER2>DNS сервер 2</DNS_SERVER2>
+	<DONE>Готово</DONE>
+	<DOWNLOAD_PLAYER>Загрузить проигрыватель</DOWNLOAD_PLAYER>
+	<DST_OFF>DST выкл.</DST_OFF>
+	<DST_ON>DST вкл.</DST_ON>
+	<DUTCH>Голландский</DUTCH>
+	<DVR_ID>Идентификатор DVR</DVR_ID>
+	<DVR_NAME>Имя DVR</DVR_NAME>
+	<DVR_R_RW_IS_NOT_SUPPORTED>DVD-R/RW не поддерживается</DVR_R_RW_IS_NOT_SUPPORTED>
+	<DWELL_TIME>Интервал (сек.)</DWELL_TIME>
+	<DWELL_TIME_L>Время задержки Л</DWELL_TIME_L>
+	<DWELL_TIME_R>Время задержки П</DWELL_TIME_R>
+	<EDIT>Редактировать</EDIT>
+	<EDIT_MOTION_GRID>Редактировать сетку движения</EDIT_MOTION_GRID>
+	<EDIT_PASSWORD>Сменить пароль</EDIT_PASSWORD>
+	<EDIT_TIMEZONE>Редакт. Врем.Зону</EDIT_TIMEZONE>
+	<EDIT_USER_ACCOUNT>Изменить учетную запись пользователя</EDIT_USER_ACCOUNT>
+	<EDITING>Редактирование</EDITING>
+	<EJECT>Извлечь</EJECT>
+	<EMAIL>Email</EMAIL>
+	<EMAIL_NOTIFY>Email Уведомления</EMAIL_NOTIFY>
+	<EMAIL_SUBJECT>Тема Email</EMAIL_SUBJECT>
+	<EMAIL_TEST>E-Mail тест</EMAIL_TEST>
+	<EMPTY>Пустой</EMPTY>
+	<ENABLE>Включить</ENABLE>
+	<END>Конец</END>
+	<END_DATE>Дата Оконч.</END_DATE>
+	<END_DATE_TIME>Дата/Время Оконч.</END_DATE_TIME>
+	<END_TIME>Время Оконч.</END_TIME>
+	<END_TIME_HHMM>Время Оконч. (чч:мм)</END_TIME_HHMM>
+	<ENGLISH>Английский</ENGLISH>
+	<ENSLESS_MODE>Бесконечный режим</ENSLESS_MODE>
+	<ENTER_THE_EMAIL_ADDRESS>Введите email адрес</ENTER_THE_EMAIL_ADDRESS>
+	<ENTER_THE_NEW_PASSWORD>Введите новый пароль.</ENTER_THE_NEW_PASSWORD>
+	<ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>Введите IP-адрес сервера времени.</ENTER_THE_PRIVATE_TIME_SERVER_IP_ADDRESS>
+	<ENTER_THE_SMTP_SERVER_IP_ADDRESS>Введите IP-адрес сервера SMTP.</ENTER_THE_SMTP_SERVER_IP_ADDRESS>
+	<ENTER_THE_USER_NAME>Введите имя пользователя.</ENTER_THE_USER_NAME>
+	<ESTIMATE>Оценить</ESTIMATE>
+	<ESTIMATE_EVENT>Оценить Cобытие</ESTIMATE_EVENT>
+	<ESTIMATION_RESULT>Результат Оценки:</ESTIMATION_RESULT>
+	<EVEN>Четный</EVEN>
+	<EVENT>Событие</EVENT>
+	<EVENT_ACTION>Действие при событии</EVENT_ACTION>
+	<EVENT_FORMAT_RATE>Частота форматирования событий</EVENT_FORMAT_RATE>
+	<EVENT_LIST>Список Событий</EVENT_LIST>
+	<EVENT_ONLY>Только для событий</EVENT_ONLY>
+	<EVENT_POPUP>Всплыв. Окно События</EVENT_POPUP>
+	<EVENT_SEARCH>Поиск Событ.</EVENT_SEARCH>
+	<EVENT_SETTING>Настройка События</EVENT_SETTING>
+	<EVENT_SPEED>Скорость События</EVENT_SPEED>
+	<EVENT_STATUS>Состояние События</EVENT_STATUS>
+	<EVENT_TIME_REQUIRED>Требуется указать время события!</EVENT_TIME_REQUIRED>
+	<EVENT_TYPE>Тип События</EVENT_TYPE>
+	<EVENTS>События</EVENTS>
+	<EVERFOCUS>Everfocus</EVERFOCUS>
+	<EVERFOCUS_DDNS>EverfocusDDNS</EVERFOCUS_DDNS>
+	<EXCEPTION_DAYS>Исключенные дни</EXCEPTION_DAYS>
+	<EXIT>Выход</EXIT>
+	<EXIT_PTZ>Выход PTZ</EXIT_PTZ>
+	<EXIT_ZOOM>Выход Zoom</EXIT_ZOOM>
+	<EXPORT>Экспорт</EXPORT>
+	<EXPORT_CONFIGURATION>Экспорт конфигурации</EXPORT_CONFIGURATION>
+	<EXPORT_FAILED>Ошибка экспорта</EXPORT_FAILED>
+	<EXPORT_FINISHED>Экспорт завершен</EXPORT_FINISHED>
+	<EXPORT_IS_IN_PROGRESS>Выполняется экспортирование.</EXPORT_IS_IN_PROGRESS>
+	<EXPORT_LOG_COMPLETED>Журнал экспорта заполнен.</EXPORT_LOG_COMPLETED>
+	<EXPORT_LOG_FAILED>Ошибка журнала экспорта.</EXPORT_LOG_FAILED>
+	<EXPORT_LOG_TO_FILE>Экспортировать журнал в файл</EXPORT_LOG_TO_FILE>
+	<EXPORT_LOG_TO_USB>Экспорт журнала на USB</EXPORT_LOG_TO_USB>
+	<EXPORT_SERVICE_LOG>Экспорт сервисн. журнала</EXPORT_SERVICE_LOG>
+	<EXPRESS>Экспресс</EXPRESS>
+	<EXPRESS_SETUP>Экспресс Настройка</EXPRESS_SETUP>
+	<EXTENDED_RECORD>Расширенная запись</EXTENDED_RECORD>
+	<FACTORY_DEFAULT_SETTING_COMPLETE>Установка заводских параметров по умолчанию завершена.</FACTORY_DEFAULT_SETTING_COMPLETE>
+	<FACTORY_DEFAULTS>Заводские параметры по умолчанию</FACTORY_DEFAULTS>
+	<FAIL>СБОЙ</FAIL>
+	<FAIL_INIT_NETWORK>Сбой инициализации сети</FAIL_INIT_NETWORK>
+	<FAILED_TO_EXPORT_CONFIG_INFO>Сведения об ошибке экспорта конфигурации.</FAILED_TO_EXPORT_CONFIG_INFO>
+	<FAILED_TO_FORMAT_HARD_DISK_DRIVE>Ошибка форматирования жесткого диска.</FAILED_TO_FORMAT_HARD_DISK_DRIVE>
+	<FAILED_TO_IMPORT_CONFIG_INFO>Сведения об ошибке импорта конфигурации.</FAILED_TO_IMPORT_CONFIG_INFO>
+	<FAN_FAILURE>Отказ вентилятора</FAN_FAILURE>
+	<FAN_STATUS>Состояние вентилятора</FAN_STATUS>
+	<FANS>Вентиляторы</FANS>
+	<FAST_FORWARD>Ускоренная перемотка вперед</FAST_FORWARD>
+	<FAST_REWIND>Ускоренная перемотка назад</FAST_REWIND>
+	<FEB>Фев</FEB>
+	<FILE>Файл</FILE>
+	<FILE_NAME>Имя файла</FILE_NAME>
+	<FIRMWARE>Прошивка</FIRMWARE>
+	<FIRMWARE_UPGRADE>Обновление встроенного ПО</FIRMWARE_UPGRADE>
+	<FIRMWARE_UPGRADE_ERROR>Ошибка обновления прошивки</FIRMWARE_UPGRADE_ERROR>
+	<FOCUS>Фокусировка</FOCUS>
+	<FORGET_REPLY>Забыть ответ </FORGET_REPLY>
+	<FORMAT>Форматировать</FORMAT>
+	<FORMAT_DISK>Формат. Диск</FORMAT_DISK>
+	<FORWARD>Вперед</FORWARD>
+	<FRAME_RATE>Скорость</FRAME_RATE>
+	<FREE_SPACE>Своб. Память:</FREE_SPACE>
+	<FRENCH>Французский</FRENCH>
+	<FRI>Пят</FRI>
+	<FRIDAY>Пятница</FRIDAY>
+	<FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>Обновл. Прошивки./Загрузка Кофигурации</FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD>
+	<FROM>От</FROM>
+	<FROM_DATE>От: Дата</FROM_DATE>
+	<FTP_SERVER>FTP Сервер</FTP_SERVER>
+	<FTP_UPLOAD>FTP Загрузка</FTP_UPLOAD>
+	<FTP_UPLOAD_FILE_TYPE>FTP Загрузка Типа Файла</FTP_UPLOAD_FILE_TYPE>
+	<FULL_SCREEN>Полный Экран</FULL_SCREEN>
+	<GATEWAY>Шлюз</GATEWAY>
+	<GO>Вперед</GO>
+	<GRID_SETTING>Настройка Сетки</GRID_SETTING>
+	<H12>12 ч</H12>
+	<H24>24 ч</H24>
+	<HALLWAY_MODE>Режим коридора</HALLWAY_MODE>
+	<HD_MONITOR>HD монитор</HD_MONITOR>
+	<HDD_STATUS>Статус HDD</HDD_STATUS>
+	<HDD_TEMP>Температура жесткого диска</HDD_TEMP>
+	<HDD_USAGE>Использование жесткого диска</HDD_USAGE>
+	<HEALTH_STATUS>Состояние HDD</HEALTH_STATUS>
+	<HIGH>Высокий</HIGH>
+	<HIGHEST>Самый высокий</HIGHEST>
+	<HOL>Празд</HOL>
+	<HOLIDAY>Праздники</HOLIDAY>
+	<HOLIDAYS>Праздники</HOLIDAYS>
+	<HOST_NAME>Имя Хоста</HOST_NAME>
+	<HOUR_AGO>час назад</HOUR_AGO>
+	<HOUR_S>часов</HOUR_S>
+	<HOURLY>Каждый час</HOURLY>
+	<HOURS_AGO>часов назад</HOURS_AGO>
+    <HOURS_PER_DAY>час (ов)/день</HOURS_PER_DAY>
+	<HTTP_PORT>Порт HTTP</HTTP_PORT>
+	<ID>Идентификатор</ID>
+	<ID485>485 ID</ID485>
+	<IMAGE>Изображение</IMAGE>
+	<IMPORT_CONFIGURATION>Конфигурация импорта</IMPORT_CONFIGURATION>
+	<IN_USE>Используется</IN_USE>
+	<INFO>Информация </INFO>
+	<INFORMATION>Информация</INFORMATION>
+	<INPUT_BEEPER>Вх. Сигнал</INPUT_BEEPER>
+	<INPUT_MOTION>Вход/Движение</INPUT_MOTION>
+	<INPUT_RECORDING>Вх. Запись</INPUT_RECORDING>
+	<INPUT_TYPE>Вх. Тип</INPUT_TYPE>
+	<INSTALL>Установить</INSTALL>
+	<INSUFFICIENT_FREE_SPACE>Недостаточно свободного места.</INSUFFICIENT_FREE_SPACE>
+	<INVALID_ARG>Недопустимый аргумент</INVALID_ARG>
+	<INVALID_EXPORT_TIME_RANGE>Недопустимый интервал времени экспорта.</INVALID_EXPORT_TIME_RANGE>
+	<INVALID_IP_NUMBER>Недопустимый IP номер</INVALID_IP_NUMBER>
+	<INVALID_MAC>Недопустимый MAC</INVALID_MAC>
+	<INVALID_NAME>Недопустимое имя</INVALID_NAME>
+	<INVALID_NUMBER>Недопустимый номер</INVALID_NUMBER>
+	<INVALID_PORT>Недопустимый порт</INVALID_PORT>
+	<IO_CONTROL>Управление Вх/Вых</IO_CONTROL>
+	<IP>IP</IP>
+	<IP_ADDRESS>IP-адрес</IP_ADDRESS>
+	<IP_CAMERA>IP камера</IP_CAMERA>
+	<IP_PTZ>IP PTZ</IP_PTZ>
+	<IR_REMOTE_CONTROLLER>ИК пульт управления</IR_REMOTE_CONTROLLER>
+	<IR_REMOTE_ID>ID ИК пульта управления</IR_REMOTE_ID>
+	<IRIS>Диафрагма</IRIS>
+	<JAN>Янв</JAN>
+	<JAPANESE>Японский</JAPANESE>
+	<JUL>Июл</JUL>
+	<JUN>Июн</JUN>
+	<LAN>LAN</LAN>
+	<LANGUAGE>Язык</LANGUAGE>
+	<LANPORT>LAN порт</LANPORT>
+	<LAST>Последний</LAST>
+	<LAYOUT>Формат</LAYOUT>
+	<LAYOUT_SWITCH>Перекл. формата</LAYOUT_SWITCH>
+	<LEVEL>Уровень </LEVEL>
+	<LIST>Список</LIST>
+	<LIST_OF_HOLIDAYS>Список праздников</LIST_OF_HOLIDAYS>
+	<LIVE>Живой</LIVE>
+	<LIVE_AUDIO>Живой звук</LIVE_AUDIO>
+	<LOAD>Загрузить</LOAD>
+	<LOAD_FACTORY_DEFAULT>Загрузить заводские параметры по умолчанию</LOAD_FACTORY_DEFAULT>
+	<LOAD_FROM_FILE>Загрузить из файла</LOAD_FROM_FILE>
+	<LOAD_FROM_USB>Загрузить с USB-накопителя</LOAD_FROM_USB>
+	<LOCAL_ACCESS>Локальный доступ </LOCAL_ACCESS>
+	<LOCK>Блокировать</LOCK>
+	<LOCK_FORMAT>Блокировать/Форматировать</LOCK_FORMAT>
+	<LOG>Журнал</LOG>
+	<LOG_EXPORT_ERROR>Ошибка экспорта журнала</LOG_EXPORT_ERROR>
+	<LOG_LIST>Список журналов</LOG_LIST>
+	<LOG_TYPE>Тип журнала</LOG_TYPE>
+	<LOGIN>Вход</LOGIN>
+	<LOGIN_PROTECT>Защита входа</LOGIN_PROTECT>
+	<LOGIN_SUCCESS>Выполнен вход!</LOGIN_SUCCESS>
+	<LOGOUT>Выход</LOGOUT>
+	<LOW>Низкий</LOW>
+	<LOWER_LEFT>Слева внизу</LOWER_LEFT>
+	<LOWER_RIGHT>Справа внизу</LOWER_RIGHT>
+	<LOWEST>Самый низкий</LOWEST>
+	<MAIL>Mail</MAIL>
+	<MAIN_MONITOR>Главный монитор</MAIN_MONITOR>
+	<MAIN_MONITOR_OUTPUT>Выход главного монитора</MAIN_MONITOR_OUTPUT>
+	<MAIN_RESOLUTION>Основное разрешение</MAIN_RESOLUTION>
+	<MAIN_STREAM>Основной поток</MAIN_STREAM>
+	<MANAGER>Менеджер</MANAGER>
+	<MANAGER_USER_LEVEL>Управление пользователем на своем уровне</MANAGER_USER_LEVEL>
+	<MANUAL>Вручную</MANUAL>
+	<MAR>Мар</MAR>
+	<MASK_CHANNEL>Канал-выделение</MASK_CHANNEL>
+	<MATRIX_SETTING>Матричный ряд</MATRIX_SETTING>
+	<MAX_LOCK>Максимальная блокировка (%)</MAX_LOCK>
+	<MAY>Май</MAY>
+	<MB>МБ</MB>
+	<MEDIA_NOT_FOUND>Носитель информации не обнаружен</MEDIA_NOT_FOUND>
+	<MENU>Меню</MENU>
+	<MESSAGE>Сообщение</MESSAGE>
+	<META>Мета</META>
+	<MIN_10>10 мин.</MIN_10>
+	<MIN_20>20 мин.</MIN_20>
+	<MIN_30>30 мин.</MIN_30>
+	<MIN_60>60 мин.</MIN_60>
+	<MIN_90>90 мин.</MIN_90>
+	<MIN_AREA>Мин.обл.</MIN_AREA>
+	<MINS>мин.</MINS>
+	<MISC>Разн.</MISC>
+	<MISCELLANEOUS>Разное</MISCELLANEOUS>
+	<MOBILEFOCUS_OR_OTHER_SMART_PHONES>MobileFocus и другие смартфоны.</MOBILEFOCUS_OR_OTHER_SMART_PHONES>
+	<MODE_NAME>Название режима</MODE_NAME>
+	<MODEL>Модель</MODEL>
+	<MODIFY>Изменить</MODIFY>
+	<MODIFY_IP_CAMERA>Изменить IP-камеру</MODIFY_IP_CAMERA>
+	<MODULE>Модуль</MODULE>
+	<MON>Пон</MON>
+	<MONDAY>Понедельник</MONDAY>
+	<MONITOR_FORMAT>Формат монитора</MONITOR_FORMAT>
+	<MONITOR_OSD>Экранное меню монитора</MONITOR_OSD>
+	<MONTH_DATE>Месяц/число</MONTH_DATE>
+	<MONTH_WEEKDAY>Месяц/день недели</MONTH_WEEKDAY>
+	<MONTHLY>Ежемесячно</MONTHLY>
+	<MORE_EMAIL_SETTINGS>Дополнительные параметры эл. почты</MORE_EMAIL_SETTINGS>
+	<MOTION>Движение</MOTION>
+	<MOTION_BEEPER>Сигнал при движении</MOTION_BEEPER>
+	<MOTION_DELAY>Задержка движения</MOTION_DELAY>
+	<MOTION_DETECT>Обнаружение движения</MOTION_DETECT>
+	<MOTION_OR_INPUT>Движение или Вход</MOTION_OR_INPUT>
+	<MOTION_RECORDING>Запись по Движению</MOTION_RECORDING>
+	<MOTION_SETTING>Настройка Движения</MOTION_SETTING>
+	<MOVE>Переместить</MOVE>
+	<MSG_AUTO_ASSIGN>В Список каналов добавлено несколько IP-адресов.  Нажмите "Да", чтобы перезаписать предыдущие параметры канала, или "Нет", чтобы отменить эту настройку.</MSG_AUTO_ASSIGN>
+	<MSG_DEL_DATA>Все выделенные разблокированные элементы были удалены</MSG_DEL_DATA>
+	<MSG_DEL_IPCAM>Удалить IP-камеры?</MSG_DEL_IPCAM>
+	<MSG_DISCONNECT>DVR временно недоступен. Попробуйте подключиться позже</MSG_DISCONNECT>
+	<MSG_ESTIMATE_ERROR>DVR не может оценить результаты, основываясь на текущей настройке</MSG_ESTIMATE_ERROR>
+	<MSG_FORMAT>Все данные будут удалены. Продолжить?</MSG_FORMAT>
+	<MSG_H264>Только для MobileFocus или если не требуется просмотр с мобильного телефона.</MSG_H264>
+	<MSG_IPCAM_CONFIG>Проверьте правильность конфигурации IP-адреса для? </MSG_IPCAM_CONFIG>
+	<MSG_IPCAM_EXISTED>Эта IP-камера уже существует.</MSG_IPCAM_EXISTED>
+	<MSG_LOCK>Все заблокированные данные будут разблокированы. Продолжить?</MSG_LOCK>
+	<MSG_LOCK_DATA>Все выделенные элементы были заблокированы</MSG_LOCK_DATA>
+	<MSG_MJPEG>MobileFocus (редакция не предназначенная для iPhone) и другие смартфоны. </MSG_MJPEG>
+	<MSG_NOTICE>Уведомление: Результат предназначен только для справки!</MSG_NOTICE>
+	<MSG_OVERWRITE_CURRENT>Канал выбран. Нажмите "Да" для перезаписи параметров предыдущего канала. Применить?</MSG_OVERWRITE_CURRENT>
+	<MSG_OVERWRITE_SETTING>Перезаписать текущие параметры?</MSG_OVERWRITE_SETTING>
+	<MSG_REFRENCE_ONLY>Результат предназначен только для справки</MSG_REFRENCE_ONLY>
+	<MSG_RESTART>Подключение к сети разорвано. Сброс состояния</MSG_RESTART>
+	<MSG_SEARCH_IPCAM>Камеры не настроены. Искать камеры в локальной сети (ЛВС)?</MSG_SEARCH_IPCAM>
+	<MSG_SESSION_FAIL>Ошибка получения идентификатора сеанса</MSG_SESSION_FAIL>
+	<MSG_UNLOCK>Все разблокированные данные будут удалены. Продолжить?</MSG_UNLOCK>
+	<MSG_UNLOCK_DATA>Все выделенные элементы были разблокированы</MSG_UNLOCK_DATA>
+	<MSG_UPGRADE_FAIL>Сбой обновления! Повторите попытку</MSG_UPGRADE_FAIL>
+	<MSG_UPLOAD_FAIL>Сбой загрузки! Повторите попытку</MSG_UPLOAD_FAIL>
+	<MT_SEQ>ПОСЛ. ОСН. МОН.</MT_SEQ>
+	<N_A>N/A</N_A>
+	<N_C>Н.З.</N_C>
+	<N_O>Н.О.</N_O>
+	<NAME>Имя</NAME>
+	<NAME_EMPTY>Поле имени не заполнено</NAME_EMPTY>
+	<NAME_EXISTS>Имя существует</NAME_EXISTS>
+	<ND2>2-й</ND2>
+	<NETWORK>Сеть</NETWORK>
+	<NETWORK_ALARM>Сетевая Тревога</NETWORK_ALARM>
+	<NETWORK_ID>Идентификатор сети</NETWORK_ID>
+	<NETWORK_LIVE_STREAMING>Потоковое вещание в сети</NETWORK_LIVE_STREAMING>
+	<NETWORK_LOSS>Потеря Сети</NETWORK_LOSS>
+	<NETWORK_SETTING>Настройка Сети</NETWORK_SETTING>
+	<NETWORK_TEST>Тестирование Сети</NETWORK_TEST>
+	<NETWORK_TYPE>Тип Сети</NETWORK_TYPE>
+	<NEXT>Далее</NEXT>
+	<NEXT_PAGE>Следующая страница</NEXT_PAGE>
+	<NO>Нет</NO>
+	<NO_AUTHORITY>Нет прав</NO_AUTHORITY>
+	<NO_CHANGE>Без изменений</NO_CHANGE>
+	<NO_COMPETENCE>Нет компетентности</NO_COMPETENCE>
+	<NO_DATA>Нет данных</NO_DATA>
+	<NO_INPUT_ASSIGNED>Не назначен источник входного сигнала</NO_INPUT_ASSIGNED>
+	<NO_RECORD>Нет записей</NO_RECORD>
+	<NO_RECORDING>Нет записи</NO_RECORDING>
+	<NO_SIGNAL>Нет сигнала</NO_SIGNAL>
+	<NONE>нет</NONE>
+	<NORMAL>Обычный</NORMAL>
+	<NORMAL_EVENT>Обычный + Событие</NORMAL_EVENT>
+	<NORMAL_FORMAT_RATE>Обычная частота форматирования</NORMAL_FORMAT_RATE>
+	<NORMAL_PARTITION>Обычное разделение</NORMAL_PARTITION>
+	<NORMAL_SPEED>Обычная скорость</NORMAL_SPEED>
+	<NORMAL_USER>Обычный пользователь</NORMAL_USER>
+	<NOT_AVAILABLE>Недоступен</NOT_AVAILABLE>
+	<NOT_CERTIFIED>Не сертифицирован</NOT_CERTIFIED>
+	<NOT_INSTALL>Не установлен</NOT_INSTALL>
+	<NOTICE>Уведомление</NOTICE>
+	<NOTIFICATION>Оповещение</NOTIFICATION>
+	<NOTIFICATION_SETTING>Настройка Оповещения</NOTIFICATION_SETTING>
+	<NOV>Ноя</NOV>
+	<NTP_FAILED>Сбой NTP </NTP_FAILED>
+	<NTP_SERVER>NTP сервер</NTP_SERVER>
+	<NTP_SERVER_ACCESSED_SUCCESSFULLY>Установлено подключение к NTP серверу.</NTP_SERVER_ACCESSED_SUCCESSFULLY>
+	<NTP_TEST>Тестирование NTP сервера</NTP_TEST>
+	<NTP_UPDATE>Интервал обновления NTP сервера</NTP_UPDATE>
+	<NUMBER>№</NUMBER>
+	<OBJECT_SIZE_SETTING>Настройка габаритов объекта</OBJECT_SIZE_SETTING>
+	<OCT>Окт</OCT>
+	<ODD>Нечетный</ODD>
+	<OFF>Выкл</OFF>
+	<OK>OK</OK>
+	<ON>Вкл</ON>
+	<ON_INPUT>Вкл. ввод</ON_INPUT>
+	<ON_MOTION>Вкл. Движение</ON_MOTION>
+	<ONE_TIME>Однократно</ONE_TIME>
+	<ONVIF>ONVIF</ONVIF>
+	<ONVIF_DISCOVERY>Обнаружение ONVIF</ONVIF_DISCOVERY>
+	<OPERATION>Работа</OPERATION>
+	<OPERATOR>Оператор</OPERATOR>
+	<OSD_DISPLAY_MODE>Режим просмотра экранного меню</OSD_DISPLAY_MODE>
+	<OTH>Другое</OTH>
+	<OTHER>Другое</OTHER>
+	<OTHERS>Другие</OTHERS>
+	<OUTPUT>Вывод</OUTPUT>
+	<OUTPUT_DEVICE>Вых. Устройство</OUTPUT_DEVICE>
+	<OUTPUT_TYPE>Тип вывода </OUTPUT_TYPE>
+	<OVERWRITE>Перезапись</OVERWRITE>
+	<PAGE>Страница</PAGE>
+	<PAN_TILT_LIMIT>Предельное значение панорамы/наклона</PAN_TILT_LIMIT>
+	<PARITY>Четность</PARITY>
+	<PART_OF_THE_FIELD_IS_NOT_FILLED>Часть поля не заполнена</PART_OF_THE_FIELD_IS_NOT_FILLED>
+	<PASS>Передача</PASS>
+	<PASSWORD>Пароль</PASSWORD>
+	<PASSWORD_CONFIRMED_ERROR>Ошибка подтверждения пароля</PASSWORD_CONFIRMED_ERROR>
+	<PASSWORD_ERROR>Ошибка пароля</PASSWORD_ERROR>
+	<PATTERN>Шаблон</PATTERN>
+	<PATTERN_NO>Номер шаблона</PATTERN_NO>
+	<PATTERN_TOUR>Цикл шаблона</PATTERN_TOUR>
+	<PELCO_D>Pelco_D</PELCO_D>
+	<PELCO_P>Pelco_P</PELCO_P>
+	<PERMANENT>Постоянный</PERMANENT>
+	<PING>Пинг</PING>
+	<PING_SUCCESSFUL>Пинг завершен</PING_SUCCESSFUL>
+	<PLAY>Воспроизведение</PLAY>
+	<PLAY_FROM>Воспроизводить с</PLAY_FROM>
+	<PLAY_REVERSE>Воспроизводить в обратном направлении</PLAY_REVERSE>
+	<PLAYBACK>Воспроизведение</PLAYBACK>
+	<PLAYBACK_AUDIO>Воспроизведение звука</PLAYBACK_AUDIO>
+	<PLAYBACK_DATE_TIME>Дата/Время Воспр.</PLAYBACK_DATE_TIME>
+	<PLAYBACK_DAYLIGHT_SAVING>Воспр. Переход на Летн. Время</PLAYBACK_DAYLIGHT_SAVING>
+	<PLAYBACK_FROM>Воспр. с</PLAYBACK_FROM>
+	<PLAYBACK_SEARCH>Воспроизведение/Поиск</PLAYBACK_SEARCH>
+	<PLAYBACK_STATUS>Статус Воспроизв.</PLAYBACK_STATUS>
+	<PLAYER>Плеер</PLAYER>
+	<PLEASE_CONFIRM_PASSWORD_AGAIN>Подтвердите пароль</PLEASE_CONFIRM_PASSWORD_AGAIN>
+	<PLEASE_ENTER_THE_CHANNEL_NAME>Введите название канала.</PLEASE_ENTER_THE_CHANNEL_NAME>
+	<PLEASE_ENTER_THE_CURRENT_PASSWORD>Введите текущий пароль.</PLEASE_ENTER_THE_CURRENT_PASSWORD>
+	<PLEASE_ENTER_THE_IP_ADDRESS>Введите IP-адрес. Например, 123.255.255.123.</PLEASE_ENTER_THE_IP_ADDRESS>
+	<PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>Введите название исключенного дня.</PLEASE_ENTER_THE_NAME_OF_THE_EXCEPTION_DAY>
+	<PLEASE_ENTER_THE_PASSWORD>Введите пароль.</PLEASE_ENTER_THE_PASSWORD>
+	<PLEASE_SELECT_CHANNEL>Выберите канал</PLEASE_SELECT_CHANNEL>
+	<PLEASE_SELECT_CHANNEL_AND_EVENT>Выберите канал и событие</PLEASE_SELECT_CHANNEL_AND_EVENT>
+	<PLEASE_SELECT_CHANNELS_TO_SEARCH>Выберите каналы для поиска.</PLEASE_SELECT_CHANNELS_TO_SEARCH>
+	<PLEASE_SELECT_EVENT>Выберите событие</PLEASE_SELECT_EVENT>
+	<PLEASE_WAIT>Подождите.</PLEASE_WAIT>
+	<PLZ_CHOOSE_CAMERA>Выберите камеру!</PLZ_CHOOSE_CAMERA>
+	<PLZ_CHOOSE_DATE>Выберите дату!</PLZ_CHOOSE_DATE>
+	<PLZ_CHOOSE_EVENT>Выберите событие!</PLZ_CHOOSE_EVENT>
+	<PLZ_CHOOSE_FILE>Выберите файл!</PLZ_CHOOSE_FILE>
+	<PLZ_CHOOSE_USER>Выберите одного пользователя!</PLZ_CHOOSE_USER>
+	<PM>PM</PM>
+	<PORT>Порт</PORT>
+	<PORTUGUESE>Португальский</PORTUGUESE>
+	<POS_LIST>Список POS</POS_LIST>
+	<POS_SEARCH>Поиск POS</POS_SEARCH>
+	<POS_STRING>Строка POS</POS_STRING>
+	<POST_EVENT>Пост-событие</POST_EVENT>
+	<POST_EVENT_TIME>Время пост-события</POST_EVENT_TIME>
+	<POWER_LOSS>Потеря Питания</POWER_LOSS>
+	<POWER_ON>Вкл. Питание</POWER_ON>
+	<PRE_ALARM_RECORD>Пред-тревожная Запись</PRE_ALARM_RECORD>
+	<PRE_ALARM_RECORDING>Запись предаварийных сигналов</PRE_ALARM_RECORDING>
+	<PRE_EVENT>Пред-событие</PRE_EVENT>
+	<PRE_PAGE>Отображение предыдущей страницы</PRE_PAGE>
+	<PRESET>Предустановка</PRESET>
+	<PRESET_SETTINGS>Настройка Предуст.</PRESET_SETTINGS>
+	<PREVIEW>Обзор</PREVIEW>
+	<PREVIOUS>Предыдущий</PREVIOUS>
+	<PRIMARY_DNS>Первичный DNS</PRIMARY_DNS>
+	<PRIVATE_SERVER>Выделенный сервер</PRIVATE_SERVER>
+	<PRIVATE_TIME_SERVER>Выделенный сервер времени</PRIVATE_TIME_SERVER>
+	<PROTOCOL>Протокол</PROTOCOL>
+	<PROTOCOL_ERROR>Ошибка протокола</PROTOCOL_ERROR>
+	<PTZ>PTZ</PTZ>
+	<PTZ_CONTROL>Управление PTZ</PTZ_CONTROL>
+	<PTZ_CONTROL_PAD>Пульт управления функцией "панорама/наклон/зум"</PTZ_CONTROL_PAD>
+	<PTZ_ID>ID PTZ</PTZ_ID>
+	<PTZ_PRESET>PTZ предустановка</PTZ_PRESET>
+	<PTZ_PROTOCOL>PTZ протокол</PTZ_PROTOCOL>
+	<PTZ_TEST>PTZ тест</PTZ_TEST>
+	<PUBLIC_SERVER>Общий сервер</PUBLIC_SERVER>
+	<QUALITY>Качество</QUALITY>
+	<QUICK_ARCHIVE>Быстрое архивирование</QUICK_ARCHIVE>
+	<QUICK_ARCHIVE_INTERVAL>Интерв. Быстрого Архив.</QUICK_ARCHIVE_INTERVAL>
+	<QUICK_PLAYBACK>Быстр. Воспроизв.</QUICK_PLAYBACK>
+	<RAID>RAID</RAID>
+	<RAID_STATE>Состояние RAID</RAID_STATE>
+	<RAID_TYPE>Тип RAID</RAID_TYPE>
+	<RAID0>RAID 0</RAID0>
+	<RAID1>RAID 1</RAID1>
+	<RAID1_0>RAID 1+0</RAID1_0>
+	<RATIO>Коэффициент</RATIO>
+	<RD3>3-й</RD3>
+	<RE_DISCOVERY>Повторное обнаружение </RE_DISCOVERY>
+	<READ_DATA>Чтение Данных</READ_DATA>
+	<REBOOT>Перезагрузка</REBOOT>
+	<REBOOT_NOW>Выполнить перезагрузку</REBOOT_NOW>
+	<REC>Запись</REC>
+	<REC_DUAL_STREAM>Запись двойного потока</REC_DUAL_STREAM>
+	<RECEIVER_EMAIL1>Email 1 Получателя</RECEIVER_EMAIL1>
+	<RECEIVER_EMAIL2>Email 2 Получателя</RECEIVER_EMAIL2>
+	<RECEIVER_EMAIL3>Email 3 Получателя</RECEIVER_EMAIL3>
+	<RECODE_MODE>Режим записи</RECODE_MODE>
+	<RECONNECT>Восстановить подключение</RECONNECT>
+	<RECORD>Запись</RECORD>
+	<RECORD_AUDIO>Запись Звука</RECORD_AUDIO>
+	<RECORD_DAYS>Дни записи</RECORD_DAYS>
+	<RECORD_DUAL_STREAM>Запись Двойного Потока</RECORD_DUAL_STREAM>
+	<RECORD_ID>ID Записи</RECORD_ID>
+	<RECORD_MODE>Режим Записи</RECORD_MODE>
+	<RECORD_OVERWRITE>Перезапись</RECORD_OVERWRITE>
+	<RECORD_PLAY>Воспроизводить запись</RECORD_PLAY>
+	<RECORD_QUALITY>Качество Записи</RECORD_QUALITY>
+	<RECORD_SETTING>Настройка Записи</RECORD_SETTING>
+	<RECORD_STATUS_RELAY_OUTPUT>Релейный Вых. Сост. Записи</RECORD_STATUS_RELAY_OUTPUT>
+	<RECORD_TIME_END>Время Записи (Кон)</RECORD_TIME_END>
+	<RECORD_TIME_START>Время Записи (Окон)</RECORD_TIME_START>
+	<RECORD_TYPE>Тип Записи</RECORD_TYPE>
+	<RECORD_WITH>Записать с</RECORD_WITH>
+	<RECORDING_DAYS>Дни записи</RECORDING_DAYS>
+	<RECORDING_WILL_BEDISABLED_FOR_CAMERA1>Запись с камеры 1 отключена</RECORDING_WILL_BEDISABLED_FOR_CAMERA1>
+	<RECURRENT_TYPE>Повторяющийся Тип</RECURRENT_TYPE>
+	<REFRESH>Обновить</REFRESH>
+	<REGISTER_UPDATE>Регистрация/Обновление</REGISTER_UPDATE>
+	<RELAY_OUTPUT>Релейный выход</RELAY_OUTPUT>
+	<REMOTE>Удаленный</REMOTE>
+	<REMOTE_MOBILE>Удал./Моб.</REMOTE_MOBILE>
+	<REMOTE_REBOOT>Удаленная перезагрузка</REMOTE_REBOOT>
+	<REMOTER_ACCESS>Удаленный Доступ </REMOTER_ACCESS>
+	<REMOVE>Удалить</REMOVE>
+	<REQUIRED_SPACE>Требуемый Объем:</REQUIRED_SPACE>
+	<RESOLUTION>Разрешение</RESOLUTION>
+	<RESULT_INTERVAL>Интервал Результата</RESULT_INTERVAL>
+	<RTSP_PORT>RTSP порт</RTSP_PORT>
+	<RTSP_SERVER>RTSP сервер</RTSP_SERVER>
+	<RUSSIAN>Русский</RUSSIAN>
+	<S100MBPS>100 Мб/с</S100MBPS>
+	<S10FPS>10 к/с</S10FPS>
+	<S10MBPS>10 Мб/с</S10MBPS>
+	<S12FPS>12 к/с</S12FPS>
+	<S15FPS>15 к/с</S15FPS>
+	<S1MBPS>1 Мб/с</S1MBPS>
+	<S25FPS>25 к/с</S25FPS>
+	<S2CIF>2CIF</S2CIF>
+	<S2FPS>2 к/с</S2FPS>
+	<S2MBPS>2 Мб/с</S2MBPS>
+	<S30FPS>30 к/с</S30FPS>
+	<S3FPS>3 к/с</S3FPS>
+	<S4CIF>4CIF</S4CIF>
+	<S5FPS>5 к/с</S5FPS>
+	<S5MBPS>5 Мб/с</S5MBPS>
+	<S5MIN>5 мин.</S5MIN>
+	<S60FPS>60 к/с</S60FPS>
+	<S6FPS>6 к/с</S6FPS>
+	<S7FPS>7 к/с</S7FPS>
+	<S8FPS>8 к/с</S8FPS>
+	<SAT>Сб</SAT>
+	<SATURDAY>Суббота</SATURDAY>
+	<SAVE>Сохранить</SAVE>
+	<SAVE_AND_BACK>Сохр.и Назад</SAVE_AND_BACK>
+	<SAVE_SUCCESS>Сохранено</SAVE_SUCCESS>
+	<SAVE_TO_FILE>Сохранить в файл</SAVE_TO_FILE>
+	<SAVE_TO_USB>Сохранить на USB-накопитель</SAVE_TO_USB>
+	<SCHEDULE>Расписание</SCHEDULE>
+	<SCHEDULE_RECORD>Запись по Расписанию</SCHEDULE_RECORD>
+	<SCHEDULE_SETTING>Настройка Расписания</SCHEDULE_SETTING>
+	<SCREEN_MODE>Режим Экрана</SCREEN_MODE>
+	<SEARCH>Поиск</SEARCH>
+	<SEARCH_CAMERA>Поиск по камере</SEARCH_CAMERA>
+	<SEARCH_DATE>Поиск по дате</SEARCH_DATE>
+	<SEARCH_DIRECTION>Поиск по направлению</SEARCH_DIRECTION>
+	<SEARCH_TEXT>Поиск по тексту</SEARCH_TEXT>
+	<SEARCH_TIME>Поиск по времени</SEARCH_TIME>
+	<SEC>сек.</SEC>
+	<SECONDARY_DNS>Вторичный DNS сервер</SECONDARY_DNS>
+	<SECONDS_AGO>секунд назад</SECONDS_AGO>
+	<SECS>сек.</SECS>
+	<SEL_ALL>Выбрать все</SEL_ALL>
+	<SELECT>Выбрать</SELECT>
+	<SELECT_AUTO_ARCHIVE>Выбрать узел автоархивирования</SELECT_AUTO_ARCHIVE>
+	<SELECT_PLAY_DATA>Выбрать данные для воспроизв.</SELECT_PLAY_DATA>
+	<SELECT_STARTING_CHANNEL>Выбрать Начальный Канал</SELECT_STARTING_CHANNEL>
+	<SEND_MAIL>Отправить mail</SEND_MAIL>
+	<SENDER_MAIL>Отправитель Email</SENDER_MAIL>
+	<SENSITIVITY>Чувствительность </SENSITIVITY>
+	<SENSITIVITY_HIGHEST_LOWEST>Чувствительность [10]:Максимальная,  [1]:Минимальная</SENSITIVITY_HIGHEST_LOWEST>
+	<SENTENCE1>Оценить систему обнаружения движения и сигнализации в процентах:</SENTENCE1>
+	<SENTENCE2>согласно текущим настройкам сохраняются данные за дней</SENTENCE2>
+	<SENTENCE3>Уведомление: Результат предназначен только для справки!</SENTENCE3>
+	<SEP>Сен</SEP>
+	<SEQUENCE>Последовательность</SEQUENCE>
+	<SEQUENCE_DWELL_TIME>Интервал последовательности</SEQUENCE_DWELL_TIME>
+	<SERVER_IP1>IP-адрес 1 сервера</SERVER_IP1>
+	<SERVER_IP2>IP-адрес 2 сервера</SERVER_IP2>
+	<SERVER_IP3>IP-адрес 3 сервера</SERVER_IP3>
+	<SET>Устан.</SET>
+	<SET_ALL>Установить Все</SET_ALL>
+	<SET_LEFT_POS>Установить в левое положение</SET_LEFT_POS>
+	<SET_RIGHT_POS>Установить в правое положение</SET_RIGHT_POS>
+	<SET_TO>Установить Для (чч:мм)</SET_TO>
+	<SETTING>Настройка</SETTING>
+	<SHOW_TEXT_DATA>Показывать текстовые данные</SHOW_TEXT_DATA>
+	<SIMPLIFIED_CHINESE>Упрощенный китайский</SIMPLIFIED_CHINESE>
+	<SIZE_ESTIMATION_COMPLETED>Оценка размера завершена.</SIZE_ESTIMATION_COMPLETED>
+	<SMART>Интеллектуальный</SMART>
+	<SMART_LIST>Умный Список</SMART_LIST>
+	<SMART_SEARCH>Умный Поиск</SMART_SEARCH>
+	<SMTP_PORT>SMTP Порт</SMTP_PORT>
+	<SMTP_PORT_NO_SSL>Номер SMTP порта/SSL</SMTP_PORT_NO_SSL>
+	<SMTP_SERVER>SMTP Сервер</SMTP_SERVER>
+	<SN>S/N</SN>
+	<SNAPSHOT_SEARCH>Поиск по Снимку</SNAPSHOT_SEARCH>
+	<SOURCE_IP>IP адрес источника</SOURCE_IP>
+	<SOURCE_IP_ADDRESS>IP адрес источника</SOURCE_IP_ADDRESS>
+	<SPANISH>Испанский</SPANISH>
+	<SPEED>Скорость</SPEED>
+	<ST1>1-й</ST1>
+	<STANDARD>Стандартный</STANDARD>
+	<STANDARD_ARCHIVE>Стандартное архивирование</STANDARD_ARCHIVE>
+	<STANDARD_COPY>Стандартное копирование</STANDARD_COPY>
+	<START>Старт</START>
+	<START_DATE>Дата Начала</START_DATE>
+	<START_DATE_END_DATE>Дата Начала/Дата Окончания</START_DATE_END_DATE>
+	<START_DATE_TIME>Дата/Время начала</START_DATE_TIME>
+	<START_PLAYBACK>Начать воспроизведение</START_PLAYBACK>
+	<START_TIME>Время Начала</START_TIME>
+	<START_TIME_HHMM>Время Начала (чч:мм)</START_TIME_HHMM>
+	<STATIC_IP>Статический IP</STATIC_IP>
+	<STATUS>Статус</STATUS>
+	<STEP>Шаг</STEP>
+	<STOP>Стоп</STOP>
+	<STOP_BIT>Стоповый бит </STOP_BIT>
+	<STOP_RECORDING>Остановка Записи</STOP_RECORDING>
+	<SUB_REC>Запись субтитров</SUB_REC>
+	<SUB_RESOLUTION>Втор. Разрешение</SUB_RESOLUTION>
+	<SUB_STREAM>Вторичный Поток</SUB_STREAM>
+	<SUBJECT>Тема:</SUBJECT>
+	<SUBNET_MASK>Маска Подсети</SUBNET_MASK>
+	<SUCCESS>Завершено</SUCCESS>
+	<SUN>Вос</SUN>
+	<SUNDAY>Воскресенье</SUNDAY>
+	<SUPERIOR>Высшее</SUPERIOR>
+	<SW_UPDATE_IS_IN_PROGRESS>Выполняется обновление ПО.</SW_UPDATE_IS_IN_PROGRESS>
+	<SYSTEM>Система</SYSTEM>
+	<SYSTEM_BEEPER>Системный звук. Сигнал</SYSTEM_BEEPER>
+	<SYSTEM_DISK_TEMP>Температура Системы/Диска.</SYSTEM_DISK_TEMP>
+	<SYSTEM_EVENT>Системное событие</SYSTEM_EVENT>
+	<SYSTEM_INFO>Информация о системе</SYSTEM_INFO>
+	<SYSTEM_INFORMATION>Информация о системе</SYSTEM_INFORMATION>
+	<SYSTEM_LOG>Журнал системы</SYSTEM_LOG>
+	<SYSTEM_LOG_LIST>Список журналов системы</SYSTEM_LOG_LIST>
+	<SYSTEM_LOG_VIEW>Просмотр/Экспорт журналов системы</SYSTEM_LOG_VIEW>
+	<SYSTEM_SETTING>Настройка системы</SYSTEM_SETTING>
+	<SYSTEM_VIDEO_MODE>Видео режим системы</SYSTEM_VIDEO_MODE>
+	<SYSTEM_WILL_BE_RESTARTED>Будет выполнен перезапуск системы</SYSTEM_WILL_BE_RESTARTED>
+	<T10DAY>10 дней</T10DAY>
+	<T10MIN>10 мин.</T10MIN>
+	<T12HOUR>12 часов</T12HOUR>
+	<T14DAY>14 дней</T14DAY>
+	<T15MIN>15 мин.</T15MIN>
+	<T1DAY>1 день</T1DAY>
+	<S1FPS>1 к/с</S1FPS>
+	<T1HOUR>1 час</T1HOUR>
+	<T1MIN>1 мин.</T1MIN>
+	<T1MONTH>1 месяц</T1MONTH>
+	<T1WEEK>1 неделя</T1WEEK>
+	<T20DAY>20 дней</T20DAY>
+	<T20MIN>20 мин.</T20MIN>
+	<T2DAY>2 дня</T2DAY>
+	<T2HOUR>2 часа</T2HOUR>
+	<T30DAY>30 дней</T30DAY>
+	<T30MIN>30 мин.</T30MIN>
+	<T3DAY>3 дня</T3DAY>
+	<T40DAY>40 дней</T40DAY>
+	<T4HOUR>4 часа</T4HOUR>
+	<T50DAY>50 дней</T50DAY>
+	<T5DAY>5 дней</T5DAY>
+	<T60DAY>60 дней</T60DAY>
+	<T60MIN>60 мин.</T60MIN>
+	<T7DAY>7 дней</T7DAY>
+	<T90DAYS>90 дней</T90DAYS>
+	<TARGET_DEVICE>Целевое устройство </TARGET_DEVICE>
+	<TCP_WR_FAILED>Отказ TCP чтение/запись</TCP_WR_FAILED>
+	<TEMP_WARNING_LIMIT>Температура Лимит предупреждения</TEMP_WARNING_LIMIT>
+	<TEMPERATURE_WARNING>Предупреждение о температуре</TEMPERATURE_WARNING>
+	<TEST_SERVER_ADDRESS>Адрес Тестового Сервера</TEST_SERVER_ADDRESS>
+	<TEXT_DATA>Текст. данные</TEXT_DATA>
+	<TEXT_INSERT>Вставка Текста</TEXT_INSERT>
+	<TEXT_POSITION>Положение текста</TEXT_POSITION>
+	<TH4>4-й</TH4>
+	<THE_EXCEPTION_DAYS_LIST_IS_FULL>Список исключенных дней заполнен.</THE_EXCEPTION_DAYS_LIST_IS_FULL>
+	<THE_SERVER_ADDRESS_IS_NULL>Нулевой адрес сервера.</THE_SERVER_ADDRESS_IS_NULL>
+	<THERE_IS_NO_DATA_SELECTED>Данные не выбраны.</THERE_IS_NO_DATA_SELECTED>
+	<THERE_IS_NO_RECORDED_DATA>Данные не записаны</THERE_IS_NO_RECORDED_DATA>
+	<THU>Чет</THU>
+	<THURSDAY>Четверг</THURSDAY>
+	<TIME>Время</TIME>
+	<TIME_FORMAT>Формат Времени</TIME_FORMAT>
+	<TIME_MASK>Маска времени</TIME_MASK>
+	<TIME_SEARCH>Поиск по Времени</TIME_SEARCH>
+	<TIME_SERVER>Сервер времени</TIME_SERVER>
+	<TIME_STAMP>Метка Времени</TIME_STAMP>
+	<TIME_ZONE>Часовой пояс</TIME_ZONE>
+	<TIMEOUT>Тайм-аут</TIMEOUT>
+	<TIMEOUT_DURATION>Длительность тайм-аута</TIMEOUT_DURATION>
+	<TITLE>Название</TITLE>
+	<TO>Кому</TO>
+	<TO_DATE>Кому: Дата</TO_DATE>
+	<TODAY_DELETE>Сегодня удалить старые данные?</TODAY_DELETE>
+	<TOP>Верх</TOP>
+	<TOTAL>Всего</TOTAL>
+	<TOUR>Тур</TOUR>
+	<TRACKING>Трекинг</TRACKING>
+	<TRACKING_DURATION>Длительность слежения</TRACKING_DURATION>
+	<TRACKING_MASK>Маска слежения</TRACKING_MASK>
+	<TRADITIONAL_CHINESE>Традиционный китайский</TRADITIONAL_CHINESE>
+	<TRANS_TIMEOUT>Прозрачн.+Тайм-аут</TRANS_TIMEOUT>
+	<TRANSPARENT>Прозрачный</TRANSPARENT>
+	<TRIGGER_ALARM>Подать аварийный сигнал</TRIGGER_ALARM>
+	<TUE>Вто</TUE>
+	<TUESDAY>Вторник</TUESDAY>
+	<TV_STANDARD>ТВ стандарт</TV_STANDARD>
+	<TYPE>Тип </TYPE>
+	<UNKNOW>неизвестный</UNKNOW>
+	<UNKNOW_HOST>Неизвестный хост</UNKNOW_HOST>
+	<UNKNOWN_ERR>Неизвестная ошибка </UNKNOWN_ERR>
+	<UNLOCK>Разблокировать</UNLOCK>
+	<UNLOCK_ALL>Разблокировать Все</UNLOCK_ALL>
+	<UPDATE>Обновить</UPDATE>
+	<UPDATE_FIRMWARE>Обновить прошивку</UPDATE_FIRMWARE>
+	<UPDATE_SUCCEED>Обновление завершено</UPDATE_SUCCEED>
+	<UPDATE_SUCCESSED>Обновление завершено</UPDATE_SUCCESSED>
+	<UPDATING>Выполняется обновление</UPDATING>
+	<UPGRADE_L>Обновление</UPGRADE_L>
+	<UPGRADE_U>ОБНОВИТЬ</UPGRADE_U>
+	<UPPER_LEFT>Слева вверху</UPPER_LEFT>
+	<UPPER_RIGHT>Справа вверху</UPPER_RIGHT>
+	<USAGE>Использование</USAGE>
+	<USB>USB</USB>
+	<USB_NOT_FOUND>USB-накопитель не обнаружен</USB_NOT_FOUND>
+	<USED_TO>Использовано</USED_TO>
+	<USER>Пользователь</USER>
+	<USER_ALREADY_EXISTS>Пользователь уже существует</USER_ALREADY_EXISTS>
+	<USER_EXIST>Этот пользователь уже существует. Введите другое имя.</USER_EXIST>
+	<USER_GROUP>Группа Польз.</USER_GROUP>
+	<USER_LOGIN>Учетные данные пользователя</USER_LOGIN>
+	<USER_MANAGEMENT>Управл. Польз.</USER_MANAGEMENT>
+	<USER_NUMBER_IS_FULL>Максимальный номер пользователя</USER_NUMBER_IS_FULL>
+	<USER_RIGHT>Права Пользователя</USER_RIGHT>
+	<USER_SETTING>Настройка Пользователя</USER_SETTING>
+	<USERNAME>Имя Польз.</USERNAME>
+	<VERSION>Версия</VERSION>
+	<VIDEO>Видео</VIDEO>
+	<VIDEO_ADJUST>Коррекция видео</VIDEO_ADJUST>
+	<VIDEO_ADJUSTMENT>Настройка видео</VIDEO_ADJUSTMENT>
+	<VIDEO_DETECTED>Обнаружен видеосигнал</VIDEO_DETECTED>
+	<VIDEO_ENCODER>Кодировщик видеосигнала</VIDEO_ENCODER>
+	<VIDEO_FORMAT>Видеоформат</VIDEO_FORMAT>
+	<VIDEO_LOSS>Потеря Видео</VIDEO_LOSS>
+	<VIDEO_LOSS_BEEPER>Звук. Сигнал Потери Видео</VIDEO_LOSS_BEEPER>
+	<VIDEO_ONLY>Только видео</VIDEO_ONLY>
+	<VIDEO_PORT>Порт Видео (RTSP)</VIDEO_PORT>
+	<VIDEO_SIGNALS>Видеосигналы</VIDEO_SIGNALS>
+	<VIEW_LOG>Просм. Журн.</VIEW_LOG>
+	<VIEW_SETTING>Просмотр Настройки</VIEW_SETTING>
+	<WARNING>Предупреждение</WARNING>
+	<WARNING_SENTENCE1>На USB-накопителе(ях) обнаружено несколько прошивок. Для установки одного из них удалите или переименуйте остальные.</WARNING_SENTENCE1>
+	<WARNING_SENTENCE10>Выберите имя пользователя и введите пароль.</WARNING_SENTENCE10>
+	<WARNING_SENTENCE11>Сбросить настройки DVR по умолчанию?</WARNING_SENTENCE11>
+	<WARNING_SENTENCE12>Допустимый файл конфигурации не обнаружен.</WARNING_SENTENCE12>
+	<WARNING_SENTENCE13>Обновление ПО завершено. Будет выполнен перезапуск системы.</WARNING_SENTENCE13>
+	<WARNING_SENTENCE14>Выбрать все каналы, для которых будет применено расписание записи</WARNING_SENTENCE14>
+	<WARNING_SENTENCE15>Выбрать еженедельный период для копирования выбронного расписания</WARNING_SENTENCE15>
+	<WARNING_SENTENCE16>Выполняется отправка тестовых сообщений. Подождите...</WARNING_SENTENCE16>
+	<WARNING_SENTENCE17>Вы пытаетесь загрузить на DVR старую версию встроенного ПО. Установить данное встроенное ПО?</WARNING_SENTENCE17>
+	<WARNING_SENTENCE18>Невозможно удалить учетные данные пользователя!</WARNING_SENTENCE18>
+	<WARNING_SENTENCE19>Все данные будут сброшены. Выполнить?</WARNING_SENTENCE19>
+	<WARNING_SENTENCE2>Вы не можете изменить время, если NTP включен</WARNING_SENTENCE2>
+	<WARNING_SENTENCE20>Все данные расписания будут сброшены! Выполнить?</WARNING_SENTENCE20>
+	<WARNING_SENTENCE21>Экспортировать конфигурацию?</WARNING_SENTENCE21>
+	<WARNING_SENTENCE22>Выполнить экспорт журнала на USB?</WARNING_SENTENCE22>
+	<WARNING_SENTENCE23>Ошибка экспорта. Медиа-файл для экспорта недоступен.</WARNING_SENTENCE23>
+	<WARNING_SENTENCE24>Допустимый файл обновления не обнаружен.</WARNING_SENTENCE24>
+	<WARNING_SENTENCE25>Допустимая USB карта памяти не обнаружена.</WARNING_SENTENCE25>
+	<WARNING_SENTENCE26>Выбранное разрешение не поддерживается монитором. После перезагрузки DVR экран погаснет.  Продолжить?</WARNING_SENTENCE26>
+	<WARNING_SENTENCE27>Импортировать конфигурацию?</WARNING_SENTENCE27>
+	<WARNING_SENTENCE28>При выборе команды "Форматировать" выполняется форматирование жесткого диска. Все сохраненные данные будут удалены. Продолжить?</WARNING_SENTENCE28>
+	<WARNING_SENTENCE29>Ошибка входа в систему. Проверьте, правильно ли введен пароль.</WARNING_SENTENCE29>
+	<WARNING_SENTENCE3>Обнаружен новый жесткий диск. Форматировать новый жесткий диск?</WARNING_SENTENCE3>
+	<WARNING_SENTENCE30>Медиа не подходит для форматирования. Укажите другой тип медиа.</WARNING_SENTENCE30>
+	<WARNING_SENTENCE31>Устройство для экспорта не обнаружено.</WARNING_SENTENCE31>
+	<WARNING_SENTENCE32>Файл обновления DVR содержит ошибки.</WARNING_SENTENCE32>
+	<WARNING_SENTENCE33>Пользователь будет удален. Продолжить?</WARNING_SENTENCE33>
+	<WARNING_SENTENCE34>Видеоформат камеры отличается от видеоформата, установленного в DVR. Подключите камеру к каналу 1, а затем перезагрузите устройство для автообнаружения.</WARNING_SENTENCE34>
+	<WARNING_SENTENCE4>Канал не выбран. Выберите канал для экспорта.</WARNING_SENTENCE4>
+	<WARNING_SENTENCE5>Данных для экспорта не обнаружено.</WARNING_SENTENCE5>
+	<WARNING_SENTENCE6>Не указан email адрес. Укажите минимум один  email</WARNING_SENTENCE6>
+	<WARNING_SENTENCE7>Проверьте подключение к Интернету или параметры настройки сети.</WARNING_SENTENCE7>
+	<WARNING_SENTENCE8>Проверьте имя пользователя и пароль</WARNING_SENTENCE8>
+	<WARNING_SENTENCE9>Введите номер TCP/IP порта. Допустимые номера TCP/IP порта находятся в диапазоне от 1 до 65535.</WARNING_SENTENCE9>
+	<WEB_VERSION>Интернет-версия </WEB_VERSION>
+	<WED>Ср</WED>
+	<WEDNESDAY>Среда</WEDNESDAY>
+	<WEEKDAY_DAYTIME>День недели дневное время</WEEKDAY_DAYTIME>
+	<WEEKDAY_NIGHTTIME>День недели ночное время</WEEKDAY_NIGHTTIME>
+	<WEEKEND>Выходные</WEEKEND>
+	<WEEKEND_END>Конец выходных</WEEKEND_END>
+	<WEEKEND_START>Начало выходных</WEEKEND_START>
+	<WEEKLY>Еженедельно</WEEKLY>
+	<X>X</X>
+	<YES>Да</YES>
+	<ZOOM>Зум</ZOOM>
+	<ZOOM_CONTROL_ON_TRACKING>Управление зумом во время слежения</ZOOM_CONTROL_ON_TRACKING>
+	<ZOOM_IN>Увеличить</ZOOM_IN>
+	<ZOOM_OUT>Уменьшить</ZOOM_OUT>
+    <WARNING_SENTENCE35>""</WARNING_SENTENCE35>
+    <WARNING_SENTENCE36>Отключите контроль учетных записей, если не получается зайти на удаленную активную страницу.</WARNING_SENTENCE36>
+    <WARNING_SENTENCE37>Для просмотра удаленной активной страницы загрузите последнюю версию ПО JAVA. Нажмите "Да" для загрузки ПО Java.</WARNING_SENTENCE37>
+    <WARNING_SENTENCE38>Чтобы использовать функцию FTP для передачи видео в формате MP4, выберите кодек H.264</WARNING_SENTENCE38>
+    <SHOW_DATA_STORE>Данные хранятся   ??? дней ??? Часов</SHOW_DATA_STORE>
+    <PAUSE>Пауза</PAUSE>
+    <DISCONNECT>Разъединить</DISCONNECT>
+    <WELCOME>Добро пожаловать!</WELCOME>
+    <DWELL_TIME_CPL>Интервал</DWELL_TIME_CPL>
+    <VALUE>Значение</VALUE>
+    <MODE>Режим </MODE>
+    <TOUR_NO>Номер цикла</TOUR_NO>
+    <STREAM_TYPE>Тип потока </STREAM_TYPE>
+    <SOUND>Звук</SOUND>
+    <SNAPSHOT>Съемка</SNAPSHOT>
+    <INDEX>указатель</INDEX>
+    <MINIMUM>Минимум</MINIMUM>
+    <WARNING_SENTENCE39>USB-адаптер не обнаружен. Извлеките USB-адаптер и снова подключите, затем нажмите "Да" для продолжения видеозаписи по сети (подождите около 30 с) или "Нет", чтобы прервать видеозапись по сети.</WARNING_SENTENCE39>
+    <WARNING_SENTENCE40>Загрузите последнюю версию ПО JAVA для просмотра удаленной живой страницы. Нажмите "Да" для загрузки ПО Java.</WARNING_SENTENCE40>
+    <WARNING_SENTENCE41>Отключите Управление учетной записью пользователя, если вы не можете зайти на удаленную живую страницу.</WARNING_SENTENCE41>
+    <WARNING_SENTENCE42>Невозможно получить ID сеанса.</WARNING_SENTENCE42>
+    <WARNING_SENTENCE43>Выбранное разрешение не поддерживается монитором. После перезагрузки DVR экран погаснет.  Продолжить?</WARNING_SENTENCE43>
+    <WARNING_SENTENCE44>Выполнить удаленную перезагрузку?</WARNING_SENTENCE44>
+    <WARNING_SENTENCE45>Перезагрузка завершена.</WARNING_SENTENCE45>
+    <WARNING_SENTENCE46>Сбой перезагрузки.</WARNING_SENTENCE46>
+    <WARNING_SENTENCE47>Удаленная перезагрузка запрещена.</WARNING_SENTENCE47>
+    <WARNING_SENTENCE48>Канал выбран. Нажмите "Да" для перезаписи параметров предыдущего канала. Применить?</WARNING_SENTENCE48>
+    <WARNING_SENTENCE49>Проверьте правильность конфигурации IP-адреса для </WARNING_SENTENCE49>
+    <WARNING_SENTENCE50>Камеры не настроены. Искать камеры в локальной сети (ЛВС)?</WARNING_SENTENCE50>
+    <WARNING_SENTENCE51>Перезаписать текущие параметры?</WARNING_SENTENCE51>
+    <WARNING_SENTENCE52>Если предмет потерялся на экране, </WARNING_SENTENCE52>
+    <WARNING_SENTENCE53>Через ??? сек.</WARNING_SENTENCE53>
+    <WARNING_SENTENCE54>И вернуться в начальную точку.</WARNING_SENTENCE54>
+    <WARNING_SENTENCE55>Сохран. текущ. коэф. масштабир.</WARNING_SENTENCE55>
+    <WARNING_SENTENCE56>Функция многоступенчатого зума</WARNING_SENTENCE56>
+    <WARNING_SENTENCE57>Сохранить трекинг</WARNING_SENTENCE57>
+    <WARNING_SENTENCE58>Уменьшить и искать новый объект</WARNING_SENTENCE58>
+    <WARNING_SENTENCE59>Прекратить трекинг и уменьшить</WARNING_SENTENCE59>
+    <WARNING_SENTENCE60>Возобновить с места остановки вручную ??? сек.</WARNING_SENTENCE60>
+    <COMPLETE>Завершить</COMPLETE>
+    <UP>Вверх</UP>
+    <LEFT>Влево</LEFT>
+    <RIGHT>Вправо</RIGHT>
+    <DOWN>Вниз</DOWN>
+    <NORMAL_FRAME_RATE>Обычная скорость передачи кадров</NORMAL_FRAME_RATE>
+    <EVENT_FRAME_RATE>Событийная скорость передачи кадров</EVENT_FRAME_RATE>
+    <BIT_RATE>Скорость цифрового потока</BIT_RATE>
+    <CAMERA_STATUS>Состояние камеры</CAMERA_STATUS>
+    <POE_POWER>Питание по Ethernet</POE_POWER>
+    <RECORDING>Запись</RECORDING>
+    <SHARPNESS>Резкость</SHARPNESS>
+    <WARNING_SENTENCE61>Эта IP-камера уже существует в канале</WARNING_SENTENCE61>
+    <WARNING_SENTENCE62>Перетащите камеры из списка камер в список каналов.</WARNING_SENTENCE62>
+    <WARNING_SENTENCE63>Сущ.записи в спис.каналов будут замен.Нажм. ОК для подтвержд.</WARNING_SENTENCE63>
+    <WARNING_SENTENCE64>Доб.камеру вручную</WARNING_SENTENCE64>
+    <TV_FORMAT>ТВ Формат </TV_FORMAT>
+    <SHUTDOWN>Завершить</SHUTDOWN>
+    <EKB200SETTING>Настройка EKB200</EKB200SETTING>
+    <SET_PRESET>Настроить предустановку</SET_PRESET>
+    <GOTO_PRESET>Перейти к предустановке</GOTO_PRESET>
+    <GOTO_HOME>Перейти на главную стр.</GOTO_HOME>
+    <CLEAR_PRESET>Очистить предвар. установки</CLEAR_PRESET>
+    <RUN_AUTOPAN>Запустить автопанорамирование</RUN_AUTOPAN>
+    <STOP_AUTOPAN>Отмена автопанорамирования</STOP_AUTOPAN>
+    <TOUR_RUN>Запуск Тура</TOUR_RUN>
+    <TOUR_STOP>Остановка Тура</TOUR_STOP>
+    <PATTERN_RUN>Запуск Шаблона</PATTERN_RUN>
+    <PATTERN_STOP>Остановка Шаблона</PATTERN_STOP>
+    <SET_AUTO_TRACKING>Устан. Авто Трекинга</SET_AUTO_TRACKING>
+    <SELECT_TRACKING_OBJECT>Выбор Объекта Слежения</SELECT_TRACKING_OBJECT>
+    <TOGGLE_FULLSCREEN>Развернуть на весь экран</TOGGLE_FULLSCREEN>
+    <IRIS_PLUS>ДИАФ +</IRIS_PLUS>
+    <IRIS_MINUS>ДИАФ -</IRIS_MINUS>
+    <FOCUS_NEAR>Ближний Фокус</FOCUS_NEAR>
+    <FOCUS_FAR>Дальний Фокус</FOCUS_FAR>
+    <KEY_NO>Номер клавиши</KEY_NO>
+    <DEVICE>Устройство</DEVICE>
+    <MAPPING_CAMERA>Отобр. Камера</MAPPING_CAMERA>
+    <YOU_CAN_SAFELY_TURN_OFF_POWER>Вы можете безопасно выключить питание</YOU_CAN_SAFELY_TURN_OFF_POWER>
+    <DEVICE_STATUS>Вы можете безопасно выключить питание</DEVICE_STATUS>
+    <CHECK>Проверить</CHECK>
+    <RECORDING_FORMAT>Формат Записи</RECORDING_FORMAT>
+    <PORT_TYPE>Тип Порта</PORT_TYPE>
+</language>

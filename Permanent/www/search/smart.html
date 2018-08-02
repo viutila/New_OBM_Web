@@ -1,0 +1,1242 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/Calendar.css">
+<link rel="stylesheet" type="text/css" href="../include/css/TimeControl.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ProcessBar.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/HandlePage.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/date.format.js"></script>
+<script type="text/javascript" src="../include/js/Calendar.js"></script>
+<script type="text/javascript" src="../include/js/TimeControl.js"></script>
+<script type="text/javascript" src="../include/js/ProcessBar.js"></script>
+<script type="text/javascript" src="../include/js/cgi.js"></script>
+<script type="text/javascript">
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hl = parent.hl;
+var sm;		//ScreenMask
+var hp;
+var rangeItem = 6;
+var pageItemNo = 15;
+var g_search_flag = 0;
+var cgi;
+var g_archive_path = "";
+var g_archive_ary;
+var g_archive_flag;
+var timeoutFlag = 0;
+
+var g_select_event = null;
+var playStatus = 0;
+var pauseStatus = 0;
+parent.g_setpopup = 0;
+var cal1;	//calendar
+var cal2;	//calendar
+var tc1;	//TimeControl
+var tc2;	//TimeControl
+var pb0;	//ProcessBar
+var pb1;	//ProcessBar
+var pb2;	//ProcessBar
+var setTime;
+var tmpSel = -1;
+
+var playSpeedIdx = 0;
+var filename_0 = "";
+var filename_1, filename_2, filename_3, oavs;
+var ArchivePath = null;
+var playBackArray = new Array(1, 2, 1, 2, 4, 8, 16, 32);
+var MotionGridArray = new Array(parent.g_motion_height);
+
+function init(){
+	cgi = new cgi();
+		
+	setLanguage();
+	selProduct();
+	initSelectDate();
+	initSearchCamera();
+
+	sm = new ScreenMask("m","sm");
+
+	pb0 = new ProcessBar("sd", "pb0", 270, 500, 370, 20, "Search....", 250, 650);
+	pb1 = new ProcessBar("d", "pb1", 250, 500, 370, 20, "Process....", 230, 650);
+	pb2 = new ProcessBar("d", "pb2", 300, 500, 370, 20, "Total", 280, 650);
+
+
+	tmpSel = 0;
+	OpenMotionApplet();
+	refresh();
+}
+function ChangeMotionSel(){
+    //initMotionGridArray();
+}
+function openGrid() {
+    //sm.open();
+    tmpSel = getIdValue("sel_cam");
+    setIdVisibility("mask1", 1);
+    EFDEF_("edit_grid").display("block");
+    parent.g_lock_menu = 1;
+
+    parent.ChangAppletPosition(440, 320, 200, 600);
+    parent.applet.setMotionXMLData(MotionGridArray, MotionGridArray.length);
+    parent.applet.setSingleChannelScreen(tmpSel);
+    
+}
+function initSelectDate() {
+	cal1 = new Calendar('bids','cal1','SysDate1',parent.g_date_fmt_ary[parent.g_date_fmt],10,260,5,285,184,140);
+	cal2 = new Calendar('bids','cal2','SysDate2',parent.g_date_fmt_ary[parent.g_date_fmt],10,558,5,580,184,140);
+	tc1 = new TimeControl("","tc1",parent.g_time_fmt,"hM",80,20);
+	tc2 = new TimeControl("","tc2",parent.g_time_fmt,"hM",80,20);
+	
+	//handle time==================
+	var tmpHx = new HandleXml();
+	tmpHx.setUrl("../cgi-bin/DeviceTime.xml");
+	g_receive_time = tmpHx.getNodeValue("currentTime").toInt();
+
+	cal1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000 - 3600000, true);
+	tc1.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000 - 3600000, true);
+
+	cal2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+	tc2.setTimeSec((g_receive_time + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000, true);
+}
+function initSearchCamera(){
+	var hs = new HandleSelect("sel_cam",0);
+	for (var i = 0; i < parent.g_total_ch_num; i++) {
+		hs.addOpt(i,i + 1,i);
+	}
+}
+function syncBtn2(){
+	var allFlag = 1;
+	var objs = EFDEF_("^chk_sel").obj;
+	for(var i = 0;i < objs.length;i++){
+		if(!getIdChecked(objs[i])){
+			allFlag = 0;
+		}
+	}
+	if(allFlag == 1){
+		//setIdChecked("chk_all2",1);
+	}else{
+		//setIdChecked("chk_all2",0);
+	}
+}
+function selAllChk2(){
+	var tmpCheck;
+	if(getIdChecked("chk_all2")){
+		tmpCheck = 1;
+	}else{
+		tmpCheck = 0;
+	}
+	/*
+	for(var i = (hp.BEGIN_INDEX - 1);i < hp.END_INDEX;i++){
+		setIdChecked("chk_sel_" + i,tmpCheck);
+	}
+	*/
+	EFDEF_("^chk_sel_").checked(tmpCheck);
+}
+function GetXML(){
+	hx.setXml("<data></data>");
+	//setIdVisibility("Search_Event_Search", 0);
+	setIdDisplay("Search_Event_Search", "none");
+	
+	var sTime = getTimeSec(	cal1.getYear(),
+				cal1.getMonth(),
+				cal1.getDay(),
+				tc1.getHr(),
+				tc1.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+	var eTime = getTimeSec(	cal2.getYear(),
+				cal2.getMonth(),
+				cal2.getDay(),
+				tc2.getHr(),
+				tc2.getMin(),
+				0) - parent.g_time_zone_sec - parent.g_dst_time_sec;
+
+	sTime = parent.checkDSTpar(sTime);
+	eTime = parent.checkDSTpar(eTime);
+
+	var tmpGrid = "";
+	//var arrayFromJava = parent.applet.getMotionData();
+	for (var i = 0; i < parent.g_motion_height; i++) {
+	    if (i > 0) {
+	        tmpGrid += ":";
+	    }
+	    tmpGrid += MotionGridArray[i];
+    }
+
+	    var total = 400;
+	var tmpHx = new HandleXml();
+	showMsg("st: " + sTime + "\n" +
+		"et: " + eTime + "\n" +
+		"cam: " + getIdValue("sel_cam").toPow(2) + "\n" +
+		"cond: " + 16 + "\n" +
+		"total: " + total + "\n" + 
+		"grid: " + tmpGrid);
+	var tmpData = cgi.getSearchId(sTime,eTime,getIdValue("sel_cam").toPow(2),16,total,tmpGrid);
+	tmpHx.setXml(tmpData);
+
+	if (tmpHx.getNodeValue("result") == "1") {
+	    //CloseMotionViewer();
+	    PauseMotionApplet();
+		//parent.stopStream(); // add by oliver at 20101228
+		g_search_flag = 1;
+		parent.g_lock_menu = 1;
+		setIdDisplay("div_cancel","block");
+		setIdVisibility("Search_Thumbnail",1);
+		sm.open();
+		setIdVisibility("mask1", 1);
+		pb0.show()
+			.setFinishFn(function(){
+			        sm.close();
+			        setIdVisibility("mask1", 0);
+					pb0.hide();
+					//parent.g_lock_menu = 0;
+					setIdDisplay("div_cancel","none");
+					SearchApply();
+				});
+		cgi.search_id = tmpHx.getNodeValue("search_id");
+		GetXML2();
+	}else{
+		//parent.resetViewFrm(1,318,250,300,350);
+		sm.close();
+		setIdVisibility("mask1", 0);
+		pb0.hide();
+		parent.g_lock_menu = 0;
+		setIdDisplay("div_cancel","none");
+		setIdVisibility("Search_Event_Search", 1);
+		setIdDisplay("Search_Event_Search", "block");
+		alert(hl.get("CANT_FIND_DATA"));
+	}
+}
+function GetXML2(){
+	if(g_search_flag == 1){
+		var tmpData = cgi.getSearchData();
+		var tmpHx = new HandleXml();
+		tmpHx.setXml(tmpData);
+		if(tmpHx.getNodeValue("result") == "1"){
+			var tmpCount = tmpHx.getItemSize("entry");
+			for(var i = 0;i < tmpCount;i++){
+				hx.getNode("data").appendChild(tmpHx.getItem(0,"entry"));
+			}
+			if(tmpHx.getNodeValue("progress").toInt() <= 100){
+				pb0.setValue(tmpHx.getNodeValue("progress").toInt());
+				if(tmpHx.getNodeValue("progress").toInt() < 100){
+					setIdVisibility("Search_Thumbnail",1);
+					createPage(0,15);
+					setTimeout("GetXML2();",2000);
+	        }
+                /*
+				else
+				{
+				    setTime = setTimeout("cancelSearch(100);", 1000); //******** change mini sec from 10000 to 1000 2012/07/24
+				}
+                */
+			}
+		}
+	}
+}
+
+function cancelSearch(){
+	
+	if(setTime)
+		clearTimeout(setTime);
+
+	var args = arguments;
+
+	sm.close();
+	setIdVisibility("mask1", 0);
+	pb0.hide()
+		.setValue(0)
+		.setProcessFlag(0)
+		.setFinishFn(null);
+	setIdDisplay("div_cancel","none");
+	g_search_flag = 0;
+	//parent.g_lock_menu = 0;
+	if (args[0] == 100)
+	{ }
+	else
+	{ parent.g_lock_menu = 0; }
+	cgi.cancelSearch("hx.getNodeChildSize = " + hx.getNodeChildSize("data"));
+	SearchApply();
+	if(hx.getNodeChildSize("data") > 0){
+	    //parent.resetViewFrm(0,0,0,0,0);
+	    parent.g_lock_menu = 1;
+	}else{
+		
+		if(args[0])
+			alert(hl.get("CANT_FIND_DATA"));
+		//parent.setPlayMap(0,getIdValue("sel_cam"));
+		//setIdVisibility("Search_Event_Search", 1);
+		setIdDisplay("Search_Event_Search", "block");
+		setIdVisibility("Search_Thumbnail", 0);
+		listBackbtn();
+	}
+}
+function SearchApply(){
+    sm.close();
+    setIdVisibility("mask1", 0);
+	setIdDisplay("controlBar","block");
+	initPageInfo();
+}
+function setAattr(tmpA,page){
+	EFDEF_(tmpA).className("aUrl")
+		.title(page)
+		.onmouseover(function(){
+				setIdClass(this,"aUrl_hover");
+			})
+		.onmouseout(function(){
+				setIdClass(this,"aUrl");
+			})
+		.onclick(function(){
+				logMove(this.title);
+			});
+}
+function initPageInfo(){
+	hp = new HandlePage(1,pageItemNo,hx.getItemSize("entry"));
+	hp.setPageRange(rangeItem);
+	
+	////setIdInnerHTML("txt_pageno", hp.CURRENT + "/" + hp.TOTAL);
+	setIdInnerHTML("td_search_data",hp.getCurrent() + "/" + hp.getTotal());
+	setIdInnerHTML("txt_listsum",hl.get("TOTAL") + ":" + hp.DATA_COUNTS);
+	
+	ShowLogList();
+}
+function ShowLogList(){
+	g_select_event = null;
+	//setIdChecked("chk_all2",0);
+	setIdInnerHTML("pageControl","");
+	var tmpLi;
+	var tmpA;
+	var tmpUl = EFDEF_id("pageControl");
+	if(hp.BEGIN > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.BEGIN);
+		setIdInnerHTML(tmpA,"&lt;&lt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&lt;&lt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	if(hp.PREV > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.PREV);
+		setIdInnerHTML(tmpA,"&lt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&lt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	//active page
+	for(var i = hp.PAGE_RANGE_START;i <= hp.PAGE_RANGE_END;i++){
+		if(i == hp.CURRENT){
+			tmpLi = document.createElement("li");
+			setIdClass(tmpLi,"current");
+			setIdInnerHTML(tmpLi,hp.CURRENT);
+			tmpUl.appendChild(tmpLi);
+		}else{
+			tmpLi = document.createElement("li");
+			tmpA = document.createElement("a");
+			setAattr(tmpA,i);
+			setIdInnerHTML(tmpA,i);
+			tmpLi.appendChild(tmpA);
+			tmpUl.appendChild(tmpLi);
+		}
+	}
+	if(hp.NEXT > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.NEXT);
+		setIdInnerHTML(tmpA,"&gt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&gt;");
+		tmpUl.appendChild(tmpLi);
+	}
+	if(hp.END > 0){
+		tmpLi = document.createElement("li");
+		tmpA = document.createElement("a");
+		setAattr(tmpA,hp.END);
+		setIdInnerHTML(tmpA,"&gt;&gt;");
+		tmpLi.appendChild(tmpA);
+		tmpUl.appendChild(tmpLi);
+	}else{
+		tmpLi = document.createElement("li");
+		setIdClass(tmpLi,"disabled");
+		setIdInnerHTML(tmpLi,"&gt;&gt;");
+		tmpUl.appendChild(tmpLi);
+	}
+        createPage(hp.BEGIN_INDEX - 1,hp.END_INDEX);
+}
+function createPage(startIdx,endIdx){
+	if(hx.getItemSize("entry") > 0){
+		var st;
+		var et;
+		var cam;
+		var lockFlag;
+		var lockMsg;
+		var type;
+		var blk;
+		var flag;
+		
+		var tmpDate;
+		var tmpCond;
+		var ht = new HandleTable("tab_list");
+		ht.clear(1);
+		if(endIdx > hx.getItemSize("entry")){
+			endIdx = hx.getItemSize("entry");
+		}
+		for(var i = startIdx;i < endIdx;i++){
+		    tmpDate = new Date((parent.checkDSTparShow(hx.getItemValue(i, "st").toInt()) + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000);
+			st = tmpDate.format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt],true);
+
+			tmpDate = new Date((parent.checkDSTparShow(hx.getItemValue(i, "et").toInt()) + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000);
+			et = tmpDate.format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt],true);
+			
+			cam = hx.getItemValue(i,"cam").toInt() + 1;
+
+			lockFlag = hx.getItemValue(i,"lock").toInt();
+			lockMsg = getLockStr(lockFlag);
+
+			tmpCond = hx.getItemValue(i,"type").toInt();
+			type = getTypeStr(tmpCond);
+			
+			ht.insertRow().id("tr_" + i)
+					.onclick(
+						function(){
+							EFDEF_("^tr_").className("rec_list_tr");
+							setIdClass(this,"rec_list_tr_sel");
+							g_select_event = this.id.split("_")[1].toInt();
+						})
+					.onmouseout(
+						function(){
+							if(this.className != "rec_list_tr_sel"){
+								setIdClass(this,"rec_list_tr");
+							}
+						})
+					.onmouseover(
+						function(){
+							if(this.className != "rec_list_tr_sel"){
+								setIdClass(this,"rec_list_tr_over");
+							}
+						});
+				/*ht.insertCell().attr("nowrap","true")
+						.className("rec_list")
+						.innerHTML("<input type='checkbox' id='chk_sel_" + i + "' onclick='syncBtn2();'/>" + (i + 1));*/
+				ht.insertCell().className("rec_list")
+						.innerHTML(cam);
+				ht.insertCell().className("rec_list")
+						.innerHTML(st + " - " + et);
+
+				ht.insertCell().id("td_lock_" + i)
+					.className("rec_list")
+					.innerHTML(lockMsg);
+
+				ht.insertCell().className("rec_list")
+						.innerHTML(type);
+		}
+	}
+}
+function logMove(idx){
+	if(idx != 0){
+		hp = new HandlePage(idx,pageItemNo,hx.getItemSize("entry"));
+		hp.setPageRange(rangeItem);
+		////setIdInnerHTML("txt_pageno", hp.CURRENT + "/" + hp.TOTAL);
+		setIdInnerHTML("td_search_data",hp.getCurrent() + "/" + hp.getTotal());
+		setIdInnerHTML("txt_listsum",hl.get("TOTAL") + ":" + hp.DATA_COUNTS);
+		ShowLogList();
+	}
+}
+function getLockStr(idx) {
+    /*
+ 	var LOCK_P = 1;
+        var LOCK_ALL = 3;
+        var LOCK_DEL = 8;
+        idx = idx & 11;
+        var tmpStr = "&nbsp;";
+        if(idx == 0){
+		tmpStr = "&nbsp;";
+	}else if(idx == LOCK_P){
+		tmpStr = "Partial";
+	}else if(idx == LOCK_ALL){
+		tmpStr = "Locked";
+	}
+    */
+    var tmpStr;
+    if (idx == 0) {
+        tmpStr = "N";
+    } else {
+        tmpStr = "Y";
+    }
+	return tmpStr;
+}
+function getTypeStr(idx){
+	var SEARCH_COND_ALARM = 1;
+        var SEARCH_COND_EVENT = 2;
+        var SEARCH_COND_MOTION = 4;
+        var SEARCH_COND_VLOSS = 8;
+        var SEARCH_COND_SMART = 16;
+        var SEARCH_COND_META = 32;
+        var tmpStr;
+        
+        if(SEARCH_COND_ALARM & idx){
+		tmpStr = hl.get("ALARM");
+	}else if(SEARCH_COND_EVENT & idx){
+		tmpStr = hl.get("SYSTEM_EVENT");
+	}else if(SEARCH_COND_MOTION & idx){
+		tmpStr = hl.get("MOTION");
+	}else if(SEARCH_COND_VLOSS & idx){
+		tmpStr = hl.get("VIDEO_LOSS");
+	}else if(SEARCH_COND_SMART & idx){
+		tmpStr = hl.get("SMART");
+	}else if(SEARCH_COND_META & idx){
+		tmpStr = hl.get("META");
+	}
+	return tmpStr;
+}
+function dealWithData(type){
+	var tmpSel = EFDEF_("^chk_sel_").obj;
+	var no = tmpSel.length;
+	var idx;
+	var actFlag = 0;
+	var delFlag = 0;
+	var unlockFlag = 0;
+	var lockFlag = 0;
+	for(var i = no - 1;i >= 0;i--){
+		if(getIdChecked(tmpSel[i])){
+			idx = tmpSel[i].id.split("_")[2].toInt();
+			if(type == "lock"){
+				if(!lockFlag){
+					alert(hl.get("LOCK_DATA"));
+					lockFlag++;
+				}
+				lock(idx);
+			}else if(type == "unlock"){
+				if(!unlockFlag){
+					alert(hl.get("UNLOCK_DATA"));
+					unlock++;
+				}
+				unlock(idx);
+			}else if(type == "del"){
+				if(hx.getItemValue(idx,"lock").toInt() == 0){				
+					if(!delFlag){
+					var r = confirm(hl.get("ARE_YOU_SURE"));
+						if(r == true && !delFlag)
+						{
+							del(idx);
+							alert(hl.get("DEL_DATA"));
+							delFlag++;
+						}
+					}else{
+						del(idx);
+					}
+				}
+				initPageInfo();
+			}
+			actFlag = 1;
+		}
+	}
+}
+function lock(idx){
+	var tmpHx = new HandleXml();
+	var tmpRs;
+	tmpRs = parent.cgi.logLock(hx.getItemValue(idx,"cam").toPow(2),
+						hx.getItemValue(idx,"st"),
+						hx.getItemValue(idx,"et"),
+						hx.getItemValue(idx,"blk"));
+	tmpHx.setXml(tmpRs);
+	if(tmpHx.getNodeValue("result") == "1"){
+		EFDEF_("td_lock_" + idx).innerHTML();
+		hx.setItemValue(idx,"lock",3);
+		setIdInnerHTML("td_lock_" + idx,"Locked");
+	}else{
+		//alert(hl.get("FAIL"));
+	}
+}
+function unlock(idx){
+	var tmpHx = new HandleXml();
+	var tmpRs;
+	tmpRs = parent.cgi.logUnlock(hx.getItemValue(idx,"cam").toPow(2),
+						hx.getItemValue(idx,"st"),
+						hx.getItemValue(idx,"et"),
+						hx.getItemValue(idx,"blk"));
+	tmpHx.setXml(tmpRs);
+	if(tmpHx.getNodeValue("result") == "1"){
+		EFDEF_("td_lock_" + idx).innerHTML();
+		hx.setItemValue(idx,"lock",0);
+		setIdInnerHTML("td_lock_" + idx,"&nbsp;");
+	}else{
+		//alert(hl.get("FAIL"));
+	}
+}
+function del(idx){
+	var tmpHx = new HandleXml();
+	var tmpRs;
+	tmpRs = parent.cgi.logDelete(hx.getItemValue(idx,"cam").toPow(2),
+						hx.getItemValue(idx,"st"),
+						hx.getItemValue(idx,"et"),
+						hx.getItemValue(idx,"blk"));
+	tmpHx.setXml(tmpRs);
+	if(tmpHx.getNodeValue("result") == "1"){
+		hx.getNode("data").removeChild(hx.getItem(idx,"entry"));
+	}else{
+		//alert(hl.get("FAIL"));
+	}
+}
+function copy(){
+	var tmpSel = EFDEF_("^chk_sel_").obj;
+	var no = tmpSel.length;
+	var count = 0;
+	var idx = "";
+	var tmpAry = new Array();
+	for(var i = 0;i < no;i++){
+		if(getIdChecked(tmpSel[i])){
+			idx = tmpSel[i].id.split("_")[2].toInt();
+			count++;
+			tmpAry.push(idx);
+		}
+	}
+	g_archive_ary = tmpAry;
+	g_archive_flag = 0;
+	if(g_archive_ary.length > 0){
+		setIdDisplay("div_cancel2","block");
+		g_archive_path = "";
+		sm.open();
+		setIdVisibility("mask1", 1);
+		pb1.show();
+		pb2.show();
+		pb2.setValue(0)
+			.setMsg("total...." + g_archive_flag + "/" + g_archive_ary.length)
+			.setFinishFn(function(){
+					cancelCopy();
+					alert(hl.get("SUCCESS"));
+					});
+		startMultiArchive();
+	}
+}
+function startMultiArchive() {
+    if (g_archive_flag < g_archive_ary.length) {
+        parent.g_lock_menu = 1;
+
+        var idx = g_archive_ary[g_archive_flag];
+        var tmpHx = new HandleXml();
+        var tmpCam = hx.getItemValue(idx, "cam").toPow(2);
+        var lastIdx;
+
+        var tmpDate = new Date((hx.getItemValue(idx, "st").toInt() + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000);
+        var st = tmpDate.format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt], true);
+        //st = tmpDate;
+        tmpDate = new Date((hx.getItemValue(idx, "et").toInt() + parent.g_time_zone_sec + parent.g_dst_time_sec) * 1000);
+        var et = tmpDate.format(parent.g_date_fmt_ary[parent.g_date_fmt] + " " + parent.g_time_fmt_ary[parent.g_time_fmt], true);
+
+
+        st = st.replaceAll("/", "-");
+        st = st.replaceAll(":", "-");
+
+        et = et.replaceAll("/", "-");
+        et = et.replaceAll(":", "-");
+
+        var ar_type = 0;
+        var video_type = 0;
+        if (ArchivePath == null) {
+            parent.applet.StandardArchive(parent.g_ip, parent.g_port, tmpCam, hx.getItemValue(idx, "st").toInt(), hx.getItemValue(idx, "et").toInt(), ar_type, video_type, null);
+        }
+        else {
+            ArchivePath = ArchivePath.substr(0, ArchivePath.lastIndexOf("\\") + 1);
+            ArchivePath = ArchivePath + st + "-" + et + ".avr";
+            parent.applet.StandardArchive(parent.g_ip, parent.g_port, tmpCam, hx.getItemValue(idx, "st").toInt(), hx.getItemValue(idx, "et").toInt(), ar_type, video_type, ArchivePath);
+        }
+        
+        pb1.setValue(0);
+        timeoutFlag = setTimeout("getProcessStatus();", 2000);
+    }
+    else {
+        var tmpPercent = g_archive_flag / g_archive_ary.length * 100;
+        pb2.setValue(tmpPercent.toFixed(0));
+        ArchivePath = null;
+    }
+}
+function getProcessStatus() {
+    var tmpStatus = 0;
+    tmpStatus = parent.archive_progress;
+
+    if (tmpStatus == null) {
+        timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        return;
+    }
+
+    if (tmpStatus == "-1") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert("Can't Get Session ID");
+        StopArchive();
+        g_archive_flag++;
+        setTimeout("startMultiArchive();", 1000);
+        return;
+    }
+    else if (tmpStatus == "-2") {
+        //timeoutFlag = setTimeout("getProcessStatus();", 2000);
+        alert(hl.get("CANT_FIND_DATA"));
+        StopArchive();
+        g_archive_flag++;
+        setTimeout("startMultiArchive();", 1000);
+        return;
+    }
+    else if (tmpStatus == "-3") {
+        StopArchive();
+        g_archive_flag++;
+        setTimeout("startMultiArchive();", 1000);
+        return;
+    }
+
+
+    if (tmpStatus >= 100) {
+        tmpStatus = 100;
+        pb1.setValue(tmpStatus);
+        g_archive_flag++;
+        var tmpPercent = g_archive_flag / g_archive_ary.length * 100;
+        pb2.setMsg("total " + g_archive_flag + "/" + g_archive_ary.length);
+        pb2.setValue(tmpPercent.toFixed(0));
+        StopArchive();
+        ArchivePath = parent.applet.GetArchivePath();
+        setTimeout("startMultiArchive();", 1000);
+    } else if (tmpStatus == -1) {
+        cancel();
+        alert(hl.get("FAIL"));
+    } else {
+        timeoutFlag = setTimeout("getProcessStatus();", 100);
+        pb1.setValue(tmpStatus);
+    }
+}
+function cancelCopy(){
+	clearTimeout(timeoutFlag);
+	parent.g_lock_menu = 0;
+	g_archive_path = "";
+	setIdDisplay("div_cancel2","none");
+	sm.close();
+	setIdVisibility("mask1", 0);
+	pb1.hide().setValue(0);
+	pb2.hide().setValue(0);
+	StopArchive();
+}
+function CameraChange(){
+	setPlayMap(0,getIdValue("sel_cam"));
+}
+function play() {
+
+    if (g_select_event !== null) {
+        parent.g_lock_menu = 1;
+        parent.g_cam_status = parent.g_search_cam;
+        parent.g_ch_status = 0;
+        parent.subMenuFrm.location.replace("../search/subMenu2.html");
+
+        initPlayIcon();
+        setIdSrc("lab_play", "../img/play_icon/play_over.png");
+        EFDEF_id("controlBar").style.visibility = "hidden";
+        setIdDisplay("pageBar", "none");
+        setIdDisplay("tab_list", "none");
+        
+
+        setIdInnerHTML("txt_speed_val", "&nbsp;" + cgi.playBackSpeed[cgi.FFSpeedFlag]);
+        parent.g_search_cam = hx.getItemValue(g_select_event, "cam").toInt();
+
+        var tmpCam = 0;
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            tmpCam += i.toPow(2);
+        }
+        //var tmpTime = hx.getItemValue(i, "st").toInt() * 1000;
+        var tmpTime = hx.getItemValue(g_select_event, "st").toInt();
+
+        var blockID = -1;
+        parent.applet.appletRelease();
+        parent.applet.setPlaybackUserRightCtrl(parent.RemoteCtrlPBChnmap);
+        parent.applet.setPlayBackInfo(parent.appletWidth, parent.appletHeight, 1, parent.g_ip, parent.g_port);
+        parent.applet.initApplet();
+        parent.applet.startPlayBack(parent.g_ip, parent.g_port, parent.g_search_cam, tmpTime, blockID);
+        parent.SetPlaybackVisible(1);
+        parent.ChangAppletPosition(parent.appletWidth, parent.appletHeight - 50, 170, 274);
+
+        playStatus = 1;
+        playSpeedIdx = 1;
+        playflag = 1;
+        setTimeout("setIdDisplay('toolbar', 'table')", 2000);
+
+        refresh();
+    }
+}
+function forward() {
+    if (!getIdDisabled("lab_play")) {
+        initPlayIcon();
+        setIdSrc("lab_play", "../img/play_icon/play_over.png");
+        parent.applet.pbForward();
+        setIdInnerHTML("txt_speed_val", "&nbsp;" + cgi.playBackSpeed[cgi.FFSpeedFlag]);
+
+        playStatus = 1;
+        playflag = 1;
+        playSpeedIdx = 1;
+    }
+}
+function back() {
+    if (playStatus == 1) {
+        initPlayIcon();
+        setIdSrc("lab_back", "../img/play_icon/back_over.png");
+        parent.applet.pbBackward();
+        setIdInnerHTML("txt_speed_val", "&nbsp;-" + cgi.playBackSpeed[cgi.FBSpeedFlag]);
+        playflag = 2;
+        playSpeedIdx = 1;
+    }
+}
+function cancel() {
+    //parent.g_lock_menu = 0;
+    if (playStatus == 1) {
+        parent.g_search_cam = null;
+        setIdDisplay("toolbar", "none");
+        setIdDisplay("pageBar", "table");
+        setIdDisplay("tab_list", "block");
+        parent.g_submenu_idx = 2;
+        parent.subMenuFrm.location.replace("../search/subMenu.html");
+        parent.PBCancel01();
+        releasePlayback();
+    }
+    //SetPlayFromVisible(1);
+    playStatus = 0;
+    playflag = 0;
+    EFDEF_id("controlBar").style.visibility = "visible";
+}
+function pause() {
+    if (playStatus == 1) {
+        initPlayIcon();
+        setIdSrc("lab_pause", "../img/play_icon/pause_over.png");
+        parent.applet.pbPause();
+        pauseStatus = 1;
+        playflag = 0;
+    }
+}
+function ff() {
+    if (playStatus == 1) {
+        if (playflag != 1) {
+            playSpeedIdx = 0;
+            playflag = 1;
+        }
+        if (playSpeedIdx == 1) {
+            parent.applet.pbSlowForward(playBackArray[playSpeedIdx]);
+            setIdInnerHTML("txt_speed_val", "&nbsp;" + "1/2");
+        } else {
+            parent.applet.pbFastForward(playBackArray[playSpeedIdx]);
+            setIdInnerHTML("txt_speed_val", "&nbsp;" + playBackArray[playSpeedIdx].toString());
+        }
+
+        if (playSpeedIdx == 7) {
+            playSpeedIdx = 0;
+        } else {
+            playSpeedIdx++;
+        }
+        initPlayIcon();
+        setIdSrc("lab_ff", "../img/play_icon/ff_over.png");
+    }
+}
+function fb() {
+    if (playStatus == 1) {
+        if (playflag != 2) {
+            playSpeedIdx = 0;
+            playflag = 2;
+        }
+        if (playSpeedIdx == 1) {
+            parent.applet.pbSlowBackward(playBackArray[playSpeedIdx]);
+            setIdInnerHTML("txt_speed_val", "&nbsp;-" + "1/2");
+        } else {
+            parent.applet.pbFastBackward(playBackArray[playSpeedIdx]);
+            setIdInnerHTML("txt_speed_val", "&nbsp;-" + playBackArray[playSpeedIdx].toString());
+        }
+
+        if (playSpeedIdx == 7) {
+            playSpeedIdx = 0;
+        }
+        else {
+            playSpeedIdx++;
+        }
+        initPlayIcon();
+        setIdSrc("lab_fb", "../img/play_icon/fb_over.png");
+    }
+}
+function initPlayIcon() {
+    setIdSrc("lab_fb", "../img/play_icon/fb.png");
+    setIdSrc("lab_back", "../img/play_icon/back.png");
+    setIdSrc("lab_cancel", "../img/play_icon/stop.png");
+    setIdSrc("lab_pause", "../img/play_icon/pause.png");
+    setIdSrc("lab_play", "../img/play_icon/play.png");
+    setIdSrc("lab_ff", "../img/play_icon/ff.png");
+}
+function releasePlayback() {
+    if (playStatus == 1) {
+        parent.SetPlaybackVisible(0);
+    }
+}
+function setLanguage(){
+
+	//EFDEF_("^td_").className("txtLeft");
+
+	setIdInnerHTML("td_Start_Date", hl.get("START_DATE"));
+	setIdInnerHTML("td_Start_Time", hl.get("START_TIME"));
+	setIdInnerHTML("td_End_Date", hl.get("END_DATE"));
+	setIdInnerHTML("td_End_Time", hl.get("END_TIME"));
+	setIdInnerHTML("td_camera"	,hl.get("CAMERA"));
+	
+	setIdInnerHTML("txt_lock"	,hl.get("LOCK"));
+	
+	setIdInnerHTML("txt_speed"	,hl.get("SPEED"));
+
+	setIdValue("btn_Search"		,hl.get("SEARCH"));
+	setIdValue("btn_unlock"		,hl.get("UNLOCK"));
+	setIdValue("btn_lock"		,hl.get("LOCK"));
+	setIdValue("btn_delete"		,hl.get("DELETE"));
+	setIdValue("btn_play"		,hl.get("PLAY"));
+	setIdValue("btn_copy"		,hl.get("COPY"));
+	
+	setIdValue("btn_back"		,hl.get("BACK"));
+	setIdValue("btn_back2"		,hl.get("BACK"));
+	setIdValue("btn_cancel"		,hl.get("CANCEL"));
+	setIdValue("btn_cancel2", hl.get("CANCEL"));
+	setIdValue("btn_cancel_editgrid", hl.get("CANCEL"));
+	
+	setIdValue("btn_Setting"	,"Grid " + hl.get("SETTING"));
+	
+	setIdValue("btn_set_all"	,hl.get("SET_ALL"));
+	setIdValue("btn_clear_all", hl.get("CLEAR_ALL"));
+	setIdValue("btn_saveback", hl.get("SAVE_AND_BACK"));
+
+	setIdInnerHTML("txt_ST_ch", hl.get("CH"));
+	setIdInnerHTML("txt_sd_ed", hl.get("START_DATE_END_DATE"));
+	setIdInnerHTML("txt_type", hl.get("TYPE"));
+
+	setIdTitle("lab_fb", hl.get("FAST_REWIND"));
+	setIdTitle("lab_back", hl.get("PLAY_REVERSE"));
+	setIdTitle("lab_cancel", hl.get("CANCEL"));
+	setIdTitle("lab_pause", hl.get("PAUSE"));
+	setIdTitle("lab_play", hl.get("PLAY"));
+	setIdTitle("lab_ff", hl.get("FAST_FORWARD"));
+
+	EFDEF_("^lab_").onmouseover(function () {
+	    setIdCursor(this, "pointer");
+	});
+
+	disableSelection(EFDEF_id("txt_speed_val"));
+	disableSelection(EFDEF_id("txt_speed"));
+	disableSelection(EFDEF_id("td_toolbar"));
+}
+function selProduct(){
+	if(parent.g_machine_type == "1"){
+		cgi.playBackSpeed = new Array(0,1,2,4,8,16);
+	}
+}
+function OpenMotionApplet() {
+    parent.applet.appletRelease();
+
+    var tmpSel = getIdValue("sel_cam");
+    var motion_width = parent.g_motion_width * 20;
+    var motion_height = parent.g_motion_height * 20;
+    initMotionGridArray();
+    parent.applet.setMotionInfo(motion_width, motion_height, parent.g_motion_width, parent.g_motion_height, 1);
+    parent.applet.initApplet();
+    parent.applet.openMotionStream(parent.g_ip, parent.g_port);
+    parent.applet.setUILayout(440, 320, 1);
+}
+function PauseMotionApplet() {
+    parent.applet.appletPause();
+    //parent.applet.appletRelease();
+    parent.firstTimeFlag = 0;
+    parent.EFDEF_id("appletDiv").style.width = "0px";
+    parent.EFDEF_id("appletDiv").style.height = "0px";
+    parent.applet.style.width = 0 + "px";
+    parent.applet.style.height = 0 + "px";
+}
+function motionClearAll() {
+    parent.applet.motionClearAll();
+}
+
+function motionSetAll() {
+    parent.applet.motionSetAll();
+}
+function StopArchive() {
+    clearTimeout(timeoutFlag);
+    parent.archive_progress = -99;
+    parent.applet.CancelArchive();
+    parent.g_lock_menu = 0;
+}
+function cancelEditGrid() {
+    CloseMotionApplet();
+    EFDEF_("edit_grid").display("none");
+    setIdVisibility("mask1", 0);
+    parent.g_lock_menu = 0;
+}
+function CloseMotionApplet() {
+    parent.ChangAppletPosition(0, 0, 200, 600);
+}
+function closeGrid() {
+    var str = "camera" + getIdSelectText("sel_cam");
+    var tmpGrid = "";
+    var arrayFromJava = parent.applet.getMotionData();
+    var motionGrid2 = new Array(MotionGridArray.length);
+    for (i = 0; i < MotionGridArray.length; i++) {
+        MotionGridArray[i] = arrayFromJava[i].toString(16);
+        MotionGridArray[i] = parseInt(MotionGridArray[i], 16);
+    }
+    /*
+    for (var i = 0; i < 16; i++) {
+        if (i > 0) {
+            tmpGrid += ";";
+        }
+        tmpGrid += "00" + arrayFromJava[i].toString(16);
+    }
+    hx.setNodeValue(tmpGrid, str, "grid");
+    */
+    //sm.close();
+    CloseMotionApplet();
+    EFDEF_("edit_grid").display("none");
+    setIdVisibility("mask1", 0);
+    parent.g_lock_menu = 0;
+}
+function initMotionGridArray() {
+    for (var i = 0; i < parent.g_motion_height; i++) {
+        MotionGridArray[i] = 0x00000000; //******0x003fffff
+    }
+}
+function listBackbtn() {
+    parent.g_lock_menu = 0;
+    reloadPage();
+}
+</script>
+</head>
+<body onload="" onunload="releasePlayback(); PauseMotionApplet(); parent.g_setpopup = 1;">
+    <div class="ClientFrame">
+    <div id="Search_Event_Search" align="left">
+		<table border="0" cellspacing="5" cellpadding="0">
+			<tr>
+
+				<td id="td_Start_Date" width="150" class="txtLeft"></td>
+				<td id="cal1" width="150">
+					<input type="text" id="SysDate1" size="12" style="width:100px;" readonly="readonly"/>
+				</td>
+                <td id="td_End_Date" width="150" class="txtLeft"></td>
+				<td id="cal2" width="150">
+					<input type="text" id="SysDate2" size="12" style="width:100px;" readonly="readonly"/>
+				</td>
+			</tr>
+			<tr>
+
+				<td id="td_Start_Time" class="txtLeft"></td>
+				<td>
+					<div id="tc1"></div>
+				</td>
+                <td id="td_End_Time" class="txtLeft"></td>
+				<td>
+					<div id="tc2"></div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				
+			</tr>
+			<tr>
+				<td id="td_camera" class="txtLeft"></td>
+				<td>
+					<select id="sel_cam" class="selcolor" size="1" style="width:80px;" onchange="ChangeMotionSel();"></select>
+				</td>
+			</tr>
+		</table>		
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="200"></td>
+				<td>
+</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td width="280"></td>
+				<td><input type="button" id="btn_Setting" class="btnStyle" value="" style="width:120px;" onclick="openGrid();" /></td>
+			</tr>
+			
+			<tr>
+				<td></td>
+				<td></td>
+				<!--  ******** Search Button ******* -->
+				<td><input type="button" id="btn_Search" class="btnStyle" value="" style="width:120px;" onclick="GetXML();" /></td>
+			</tr>
+		</table>
+	</div>
+    
+    <div id="Search_Thumbnail" class="searchLogFrm">
+		<table height="350" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="60"></td>
+				<td valign="top">
+					<table id="tab_list" border="1" cellspacing="0" cellpadding="0">
+						<tr>
+                            <!--
+							<td align="center" width="60">
+								<input type="checkbox" id="chk_all2" onclick="selAllChk2();"/>
+								ID
+							</td>-->
+							<td id="txt_ST_ch" align="center" width="40"></td>
+							<td id="txt_sd_ed" align="center" width="280"></td>
+							<td id="txt_lock" align="center" width="100"></td>
+							<td id="txt_type" align="center" width="150"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<table id="controlBar" width="710" border="0" cellspacing="0" cellpadding="0" style="display: none;">
+			<tr>
+				<td height="20">&nbsp;</td>
+			</tr>
+			<tr>
+				<td width="60"></td>
+				<td id="td_search_data" class="txtLeft"></td>
+				<td>
+					<span id="txt_pageno" class="thumbTxt"></span>
+				</td>
+				<td class="thumbTxt">
+					<span id="txt_listsum"></span>
+				</td>
+				
+				<td><input type="button" id="btn_unlock" class="btnStyle" value="" style="width:60px; visibility:hidden;" onclick="dealWithData('unlock');"></td>
+				<td><input type="button" id="btn_lock" class="btnStyle" value="" style="width:60px; visibility:hidden;" onclick="dealWithData('lock');"></td>
+				<td><input type="button" id="btn_delete" class="btnStyle" value="" style="width:60px; visibility:hidden;" onclick="dealWithData('del');"></td>
+				<td><input type="button" id="btn_play" class="btnStyle" value="" style="width:60px;" onclick="play();"></td>
+				<td><input type="button" id="btn_copy" class="btnStyle" value="" style="width:60px; visibility:hidden;" onclick="copy();"></td>
+                <td><input type="button" id="btn_back2" class="btnStyle" value="" style="width:60px;" onclick="listBackbtn();"></td>
+			</tr>
+		</table>
+		<table id="pageBar" width="710" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="60"></td>
+				<td align="left" valign="top" colspan="3" width="550">
+					<div class="pageBlack">
+						<ul id="pageControl"></ul>
+					</div>
+				</td>
+				<td width="100">
+					
+				</td>
+			</tr>
+		</table>
+		<table id="toolbar" width="710" border="0" cellspacing="0" cellpadding="0" style="display: none;">
+			<tr>
+				<td style="height: 240px">&nbsp;</td>
+			</tr>
+			<tr>
+				<td id="td_toolbar" align="center" colspan="2">
+                    <img src="../img/play_icon/fb.png" id="lab_fb" onclick="fb();" />
+                    <img src="../img/play_icon/back.png" id="lab_back" onclick="back();" />
+                    <img src="../img/play_icon/stop.png" id="lab_cancel" onclick="cancel();" />
+                    <img src="../img/play_icon/pause.png" id="lab_pause" onclick="pause();" />
+                    <img src="../img/play_icon/play.png" id="lab_play" onclick="forward();" />
+                    <img src="../img/play_icon/ff.png" id="lab_ff" onclick="ff();" />
+				</td>
+				<td style="width:200px">
+					<span id="txt_speed" class="txtLeft"></span>
+					<span id="txt_speed_val" class="txtLeft"></span>
+				</td>
+				<td>
+					<input type="button" id="btn_back" class="btnStyle" value="" style="width:60px;" onclick="cancel();" />
+				</td>
+			</tr>
+		</table>
+	</div>
+    </div>
+
+    <div id="edit_grid" style=" position:absolute; top:100px; left:170px; display: none; z-index:110;">
+        <table border="0" cellspacing="5" cellpadding="0">
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+				<td><input type="button" id="btn_set_all" class="btnStyle" value="" style="width:140px;" onclick="motionSetAll();" /></td>
+			</tr>
+			<tr>
+				<td><input type="button" id="btn_clear_all" class="btnStyle" value="" style="width:140px;" onclick="motionClearAll();" /></td>
+			</tr>
+            <tr>
+				<td align="center">
+					<input type="button" id="btn_saveback" class="btnStyle" value="" style="width:140px;" onclick="closeGrid();"/>
+				</td>
+			</tr>
+            <tr>
+				<td align="center">
+					<input type="button" id="btn_cancel_editgrid" class="btnStyle" value="" style="width:140px;" onclick="cancelEditGrid();"/>
+				</td>
+			</tr>
+        </table>
+
+    </div>
+
+	<div id="sm"></div>
+    <div id="mask1" class="ScreenMask"></div>
+	<div id="pb0"></div>
+	<div id="pb1"></div>
+	<div id="pb2"></div>
+	<div id="div_cancel" style="position: absolute;top: 300px;left: 650px;display: none;z-index: 92;">
+		<input type="button" id="btn_cancel" class="btnStyle" onclick="cancelSearch();"/>
+	</div>
+	<div id="div_cancel2" style="position: absolute;top: 380px;left: 650px;display: none;z-index: 92;">
+		<input type="button" id="btn_cancel2" class="btnStyle" onclick="cancelCopy();"/>
+	</div>
+
+    <script src="../include/js/jquery-1.8.2.js"></script>
+    <script src="../include/js/detect-zoom.js"></script>
+    <script>
+        function refresh() {
+            var width, height, ratio;
+            var motion_width = parent.g_motion_width * 20;
+            var motion_height = parent.g_motion_height * 20;
+            ratio = window.detectZoom.zoom();
+            if (ratio == 0) {
+                ratio = 1;
+            }
+            width = parent.appletWidth * ratio;
+            height = parent.appletHeight * ratio;
+            if (playStatus == 0) {
+                width = motion_width * ratio;
+                height = motion_height * ratio;
+            } else {
+                width = parent.appletWidth * ratio;
+                height = (parent.appletHeight-50) * ratio;
+            }
+            parent.applet.resize(width, height);
+
+            if (parent.g_ch_status == 0) {
+                parent.applet.setUILayout(width, height, 1);
+            } else if (parent.g_ch_status == 2) {
+                parent.applet.setUILayout(width, height, 4);
+            } else if (parent.g_ch_status == 3) {
+                parent.applet.setUILayout(width, height, 9);
+            } else if (parent.g_ch_status == 4) {
+                parent.applet.setUILayout(width, height, 16);
+            } else if (parent.g_ch_status == 5) {
+                parent.applet.setUILayout(width, height, 10);
+            } else if (parent.g_ch_status == 6) {
+                parent.applet.setUILayout(width, height, 8);
+            }
+        }
+        $(document).ready(function () {
+            init();
+            $(window).on('resize', refresh);
+        });
+    </script>
+</body>
+</html>

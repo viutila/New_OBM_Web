@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var hx_Status = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+
+var HD_Cam_Flag;
+
+function init(){
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initFunc();
+    initCameraList();
+    initDeviceList();
+    GetXML();
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    EFDEF_("^td_").className("txtLeft");
+    setIdValue("btn_Save", hl.get("SAVE"));
+    setIdValue("close_div_btn", hl.get("CLOSE"));
+    funcNum = setHx.getNodeChildSize("EFBOX");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (setHx.getNodeChildName("EFBOX", Cnt)) {
+            case "Camera":
+                setIdInnerHTML("td_cam", hl.get("CH"));
+                setIdDisplay("td_cam", "inline");
+                setIdDisplay("sel_cam", "inline");
+                break;
+            case "Device":
+                setIdInnerHTML("td_Device", "Device");
+                setIdDisplay("td_Device", "inline");
+                setIdDisplay("sel_device", "inline");
+                break;
+            case "DeviceIP":
+                setIdInnerHTML("td_DeviceIP", hl.get("IP"));
+                setIdDisplay("td_DeviceIP", "inline");
+                setIdDisplay("txt_DeviceIP", "inline");
+                break;
+            case "Install":
+                setIdInnerHTML("td_Install", hl.get("INSTALL"));
+                setIdDisplay("td_Install", "inline");
+                setIdDisplay("chk_Install", "inline");
+                break;
+            case "Status":
+                setIdInnerHTML("td_Status", hl.get("STATUS"));
+                setIdValue("btn_Status", "Check");
+                setIdDisplay("td_Status", "inline");
+                setIdDisplay("btn_Status", "inline");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }    
+    }
+}
+function initCameraList() {
+    var hs = new HandleSelect("sel_cam", 0);
+    for (var i = 0; i < (parent.g_total_ch_num); i++) {
+		hs.addOpt(i,i + 1,i);
+	}
+}
+function initDeviceList() {
+    var hs = new HandleSelect("sel_device", 0);
+    for (var i = 0; i < 2; i++) {
+        hs.addOpt(i, i + 1, i);
+    }
+}
+function selectCam() {
+    var fucnNum = 0;
+    var Cnt;
+    var str = "camera" + getIdSelectText("sel_cam");
+    funcNum = setHx.getNodeChildSize("EFBOX");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+        switch (setHx.getNodeChildName("EFBOX", Cnt)) {
+            case "Camera":
+                break;
+            case "Device":
+                setIdValue("sel_device", hx.getNodeValue(str, "device"));
+                break;
+            case "DeviceIP":
+                setIdValue("txt_DeviceIP", hx.getNodeValue(str, "ipAddress"));
+                break;
+            case "Install":
+                setIdChecked("chk_Install", hx.getNodeValue(str, "install"));
+                break;
+            case "Status":
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+function syncData(){
+	var fucnNum = 0;
+	var Cnt;
+	var str = "camera" + getIdSelectText("sel_cam");
+	funcNum = setHx.getNodeChildSize("EFBOX");
+	var modifiedFlag = 0;
+	
+	for (Cnt = 0; Cnt < funcNum; Cnt++) {
+	    switch (setHx.getNodeChildName("EFBOX", Cnt)) {
+	        case "Camera":
+	            break;
+	        case "Device":
+	            hx.setNodeValue(getIdValue("sel_device"), str, "device");
+	            break;
+	        case "DeviceIP":
+	            hx.setNodeValue(getIdValue("txt_DeviceIP"), str, "ipAddress");
+	            break;
+	        case "Install":
+	            hx.setNodeValue(getIdChecked("chk_Install"), str, "install");
+	            break;
+	        case "Status":
+	            
+	            break;
+	        case "#text":   //******* for chrome
+	            funcNum++;
+	            break;
+	    }
+	}
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/POS.xml");
+    selectCam();
+}
+function GetStatusXML(){
+    hx_Status.setUrl("../cgi-bin/POS_Check.cgi");
+}
+function SetXML(){
+	syncData();
+	var hx2 = new HandleXml();
+	var newxml;
+	if (window.ActiveXObject) {
+	    newxml = hx.getXml().xml.replace(/\t/g, "");
+	}
+	else {
+	    newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+	}
+	ajax.postData("../cgi-bin/POS.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+function initStatusTable() {
+    var ht = new HandleTable("tbl_status");
+    var str;
+    ht.clear();
+    ht.insertRow();
+    ht.insertCell().innerHTML("ID").className("txtCenter").color("#000000");
+    ht.insertCell().innerHTML(hl.get("STATUS")).className("txtCenter").color("#000000");
+    for (var i = 0; i < (parent.g_total_ch_num); i++) {
+        str = "camera" + (i + 1);
+        ht.insertRow();
+        ht.insertCell().width(100).id("td_cam_" + i.toFill(2)).innerHTML("Dev " + (i + 1).toString()).className("txtCenter");
+        if (hx_Status.getNodeValue(str) == "0") {
+            ht.insertCell().width(100).className("txtCenter").innerHTML("X");
+        } else if (hx_Status.getNodeValue(str) == "1") {
+            ht.insertCell().width(80).className("txtCenter").innerHTML("O");
+        }
+    }
+}
+function closeStatusDiv() {
+    setIdDisplay("div_status", "none");
+    setIdVisibility("mask1", 0);
+}
+function OpenStatusDiv() {
+    GetStatusXML();
+    initStatusTable();
+    setIdDisplay("div_status", "block");
+    setIdVisibility("mask1", 1);
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+        <div style="width:800px" align="left">
+		    <table border="0" cellspacing="5" cellpadding="0">
+			    <tr>
+				    <td id="td_cam" width="200"></td>
+				    <td width="160">
+					    <select id="sel_cam" style="width:100px; display:none;" onChange="selectCam();"></select>
+				    </td>
+			    </tr>
+                <tr>
+				    <td id="td_Device" width="200"></td>
+				    <td width="160">
+					    <select id="sel_device" style="width:100px; display:none;" onChange=""></select>
+				    </td>
+			    </tr>
+                <tr>
+                    <td id="td_DeviceIP" width="200" style="display:none"></td>
+				    <td>
+					    <input type="text" id="txt_DeviceIP" maxlength="16" style="width:220px;display:none;" onblur="CheckUnicodeTitle(this);"/>
+				    </td>
+                </tr>
+                <tr>
+                    <td id="td_Install" style="display:none"></td>
+				    <td>
+					    <input type="checkbox" id="chk_Install" style="display:none" onclick=""/>
+				    </td>
+                </tr>
+                <tr>
+                    <td id="td_Status" style="display:none"></td>
+				    <td>
+					    <input type="button" id="btn_Status" class="btnStyle" style="display:none" onclick="OpenStatusDiv();" />
+				    </td>
+                </tr>
+            </table>
+	    </div>
+    </div>
+
+
+    <div id="div_status" style="z-index:91;position:absolute;background-color:#c8c8c8;display:none;top:80px;left:250px;">
+        <table id="tbl_status" style="border: solid 1px #FFFFFF;">
+        </table>
+        
+        <div style="text-align:center">
+            <input type="button" id="close_div_btn" class="btnStyle" value="" style="width:120px;" onclick="closeStatusDiv();"/>
+        </div>
+    </div>
+
+
+    <div class="applyFrm">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width:120px;" onclick="SetXML();"/>
+	</div>
+	<div id="sm"></div>
+    <div id="mask1" class="ScreenMask"></div>
+</body>
+</html>

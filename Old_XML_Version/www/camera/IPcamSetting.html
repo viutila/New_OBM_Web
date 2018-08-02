@@ -1,0 +1,1696 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css"/>
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<link rel="stylesheet" type="text/css" href="../include/css/IPCamTab.css"/>
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript" src="../include/js/MultipleCheckbox.js"></script>
+<script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="../include/js/jquery-ui.custom.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var camerahx = new HandleXml();
+var presethx = new HandleXml();
+var autopanhx = new HandleXml();
+var tourhx = new HandleXml();
+var trackhx = new HandleXml();
+var devicehx = new HandleXml();
+var sm;
+var mc_apply;
+var g_cam_ary = new Array();
+var nowpage;
+var ptzpage = "preset";
+var tiltPanFlag = 0;
+var enableFlag = 0;
+var chnAccesCtrl = parent.RemoteCtrlPTZChnmap.toInt().toString(2);
+var viewWidth;
+var viewHeight;
+var HallWay_Device_Ary = new Array();
+var m_preset_num = 192;
+var m_pattern_num = 4;
+var m_preset_page = 1;
+function init() {
+    initTab();
+    sm = new ScreenMask("m", "sm");
+    mc_apply = new MultipleCheckbox("d", "mc_apply", hl.get("CAMERA"), 300, 320, hl);
+    //initPresetTable();
+    initTourTable();
+    setLanguage();
+    initHallwayImage();
+    initPTZ();
+    GetXML(camerahx, "IPCam.xml");
+    GetDeviceXML();
+    setCameraPage();
+    viewHeight=360;
+    viewWidth=480;
+    parent.ChangAppletPosition(viewWidth, viewHeight, 260, 400);
+    enableFlag = chnAccesCtrl.substr(parent.g_total_ch_num - 1, 1);
+    nowpage = "li_camera";
+    refresh();
+}
+function initTab() {
+   
+    var _showTab = 0;
+    var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
+    $($defaultLi.find('a').attr('href')).siblings().hide();
+    $('ul.tabs li').click(function () {
+        var $this = $(this);
+        var id = $this.attr('id');
+        _clickTab = $this.find('a').attr('href');
+        $this.addClass('active').siblings('.active').removeClass('active');
+        $(_clickTab).stop(false, true).fadeIn().siblings().hide();
+        if (nowpage == id)
+            return false;
+
+        if (id == "li_camera") {
+            nowpage = id;
+            setIdDisplay("div_ptz", "none");
+            setIdDisplay("div_camera", "inline");
+            viewHeight = 360;
+            viewWidth = 480;
+            parent.ChangAppletPosition(viewWidth, viewHeight, 260, 400);
+            refresh();
+        } else {
+            nowpage = id;
+            setIdInnerHTML("td_camera", "camera " + getIdSelectText("sel_channel_num").toInt());
+            setIdDisplay("div_ptz", "inline");
+            setIdDisplay("div_camera", "none");
+            GetXML(presethx, "IPCamPTZPreset.xml");
+            GetXML(autopanhx, "IPCamPTZAutoPan.xml");
+            //setPreset();
+            m_preset_page = 1;
+            goPage(m_preset_page);
+            setAutoPan();
+            viewHeight = 190;
+            viewWidth = 260;
+            parent.ChangAppletPosition(viewWidth, viewHeight, 280, 455);
+            refresh();
+            ptzpage = "preset";
+        }
+        return false;
+    }).find('a').focus(function () {
+        this.blur();
+    });
+
+
+}
+function GetXML(hx, xmlname) {
+    hx.setUrl("../cgi-bin/"+xmlname);
+}
+function GetDeviceXML() {
+    devicehx.setUrl("../IPDevice.xml");
+    var lenght = devicehx.getItemSize("HallWay");
+    for (cnt = 0; cnt < lenght; cnt++) {
+        HallWay_Device_Ary.push(devicehx.getItemValue(cnt, "HallWay"));
+    }
+}
+function SetXML(xml, xmlname) {
+    var hx2 = new HandleXml();
+    var newxml;
+
+    if (window.ActiveXObject) {
+        newxml = xml.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(xml.getXml()).replace(/\t/g, "");
+    }
+    ajax.postData("../cgi-bin/" + xmlname, newxml);
+
+
+
+
+    hx2.setXml(ajax.data);
+    if (hx2.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+        return true;
+    } else {
+        alert(hl.get("FAIL"));
+        return false;
+    }
+}
+function openPreset() {
+    if (ptzpage == "preset")
+        return;
+    hiddenDiv();
+    GetXML(presethx, "IPCamPTZPreset.xml");
+    GetXML(autopanhx, "IPCamPTZAutoPan.xml");
+    m_preset_page = 1;
+    goPage(m_preset_page);
+    //setPreset();
+    setAutoPan();
+    setIdDisplay("div_preset","inline");
+    ptzpage = "preset";
+}
+
+function openTrack() {
+    if (ptzpage == "track")
+        return;
+    hiddenDiv();
+    GetXML(trackhx, "IPCamPTZAutoTracking.xml");
+    setTracking();
+    setIdDisplay("div_track", "inline");
+    ptzpage = "track";
+}
+
+function openPattern() {
+    if (ptzpage == "pattern")
+        return;
+    hiddenDiv();
+    GetXML(tourhx, "IPCamPTZTour.xml");
+    setIdDisplay("div_pattern", "inline");
+    changTour();
+    ptzpage = "pattern";
+}
+function hiddenDiv() {
+    setIdDisplay("div_preset","none");
+    setIdDisplay("div_track", "none");
+    setIdDisplay("div_pattern", "none");
+}
+function initPresetTable() {
+    var ht;
+    ht = new HandleTable("tbl_preset", 0, 1, 0);
+    for (var cnt = 1; cnt <= m_preset_num; cnt++) {
+        if (cnt % 2)
+            ht.insertRow().id("tbl_preset_tr_" + cnt).bgColor("#CCCCCC").onmouseover(
+					function () {
+					    var id = this.id.split("_")[3];
+					    setIdBgColor(this, "#CCFFFF");
+					    setIdClass("txt_title_" + id, "sel_noborder");
+					})
+                    .onmouseout(
+					function () {
+					    var id = this.id.split("_")[3];
+					    setIdBgColor(this, "#CCCCCC");
+					    setIdClass("txt_title_" + id, "noborder_odd");
+					});
+        else
+            ht.insertRow().id("tbl_preset_tr_" + cnt).onmouseover(
+					function () {
+					    var id = this.id.split("_")[3];
+					    setIdBgColor(this, "#CCFFFF");
+					    setIdClass("txt_title_" + id, "sel_noborder");
+					})
+                    .onmouseout(
+					function () {
+					    var id = this.id.split("_")[3];
+					    setIdBgColor(this, "");
+					    setIdClass("txt_title_" + id, "noborder");
+					});
+        ht.insertCell().width(61)
+                .className("txtLeft")
+				.innerHTML(cnt);
+        if (cnt % 2) {
+            ht.insertCell().width(370)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_title_" + cnt + "' class='noborder_odd' style='width:330px' maxlength='32' onblur='checkTitle(this,1);'>"
+                );
+            ht.insertCell().width(130)
+                .textAlign("center")
+                .innerHTML("<input type='button' id='btn_preset_set_" + cnt + "' class='btnStyle' value='" + hl.get("SET") + "' onclick='savePresetXml();'/>&nbsp&nbsp" +
+                           "<input type='button' id='btn_preset_clear_" + cnt + "' class='btnStyle' value='" + hl.get("CLEAR") + "' onclick='PTZpresetDelete(" + cnt + ")'/>&nbsp&nbsp" +
+                           "<input type='button' id='btn_preset_go_" + cnt + "' class='btnStyle' value='" + hl.get("GO") + "' onclick='PTZpresetGo("+cnt+")'/>");
+        } else {
+            ht.insertCell().width(370)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_title_" + cnt + "' class='noborder' style='width:330px' maxlength='32' onblur='CheckUnicodeTitle(this);'>" 
+                           );
+            ht.insertCell().width(130)
+				.textAlign("center")
+                .innerHTML("<input type='button' id='btn_preset_set_" + cnt + "' class='btnStyle' value='" + hl.get("SET") + "' onclick='savePresetXml();'/>&nbsp&nbsp" +
+                           "<input type='button' id='btn_preset_clear_" + cnt + "' class='btnStyle' value='" + hl.get("CLEAR") + "' onclick='PTZpresetDelete(" + cnt + ")'/>&nbsp&nbsp" +
+                           "<input type='button' id='btn_preset_go_" + cnt + "' class='btnStyle' value='" + hl.get("GO") + "' onclick='PTZpresetGo(" + cnt + ")'/>"
+                           );       
+        }
+    }
+   
+}
+
+function initTourTable() { 
+    var ht;
+    var cnt;
+    ht = new HandleTable("tbl_tour", 0, 1, 0);
+    for (cnt = 1; cnt <= 16; cnt++) {
+        if (cnt % 2) {
+            ht.insertRow().className("oddcolor");
+            ht.insertCell().width(163)
+				.textAlign("left")
+                .innerHTML("<select id='sel_tour_mode_" + cnt + "' style='width:150px'></select>");
+            ht.insertCell().width(127)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_value_" + cnt + "' class='noborder_odd' maxlength='3' style='width:120px' onblur='checkTourValue(\"txt_value_"+cnt+"\");'/>");
+            ht.insertCell().width(147)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_dwell_" + cnt + "' class='noborder_odd' maxlength='2' style='width:130px' onblur='CheckCharKeyin(\"txt_dwell_" + cnt + "\",0,1,99);'/>");
+            ht.insertCell().width(130)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_speed_" + cnt + "' class='noborder_odd' maxlength='3' style='width:120px' onblur='CheckCharKeyin(\"txt_speed_" + cnt + "\",0,1,255);'/>");
+        } else {
+            ht.insertRow();
+            ht.insertCell().width(163)
+				.textAlign("left")
+                .innerHTML("<select id='sel_tour_mode_" + cnt + "' style='width:150px'/>");
+            ht.insertCell().width(127)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_value_" + cnt + "' class='noborder' maxlength='3' style='width:120px' onblur='checkTourValue(\"txt_value_" + cnt + "\");'/>");
+            ht.insertCell().width(147)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_dwell_" + cnt + "' class='noborder' maxlength='2'  style='width:130px' onblur='CheckCharKeyin(\"txt_dwell_" + cnt + "\",0,1,99);'/>");
+            ht.insertCell().width(130)
+				.textAlign("left")
+                .innerHTML("<input type='text' id='txt_speed_" + cnt + "' class='noborder' maxlength='3' style='width:120px' onblur='CheckCharKeyin(\"txt_speed_" + cnt + "\",0,1,255);'/>");
+
+        }
+        var hs = new HandleSelect("sel_tour_mode_"+cnt, 0);
+        hs.addOpt(0, hl.get("OFF"), 0)
+          .addOpt(1, hl.get("PRESET"), 1)
+          .addOpt(2, hl.get("PATTERN"), 2);
+        
+    }
+    var hs = new HandleSelect("sel_pattern_no", 0);
+    for(cnt = 0; cnt < m_pattern_num; cnt++){
+        hs.addOpt(cnt, cnt+1, cnt+1);
+    }
+    var hs = new HandleSelect("sel_tour_no", 0);
+    for (cnt = 0; cnt < 16; cnt++) {
+        hs.addOpt(cnt, cnt + 1, cnt + 1);
+    }
+
+
+}
+function setLanguage() {
+
+    setIdInnerHTML("td_record_mode", hl.get("RECORD_MODE"));
+    setIdInnerHTML("td_connected_channel", hl.get("CONNECTED_CHANNEL"));
+    setIdInnerHTML("td_mask_channel", hl.get("MASK_CHANNEL"));
+    setIdInnerHTML("td_channel_num", hl.get("CHANNEL_NUMBER"));
+    setIdInnerHTML("td_title", hl.get("DEVICE_TITLE"));
+    setIdInnerHTML("td_record_dual_stream", hl.get("RECORD_DUAL_STREAM"));
+    setIdInnerHTML("td_ratio", hl.get("RATIO"));
+    setIdInnerHTML("td_hallway_mode", hl.get("HALLWAY_MODE"));
+    setIdInnerHTML("td_ptz_control_pad", hl.get("PTZ_CONTROL_PAD"));
+    setIdInnerHTML("leg_preset", hl.get("PRESET"));
+    setIdInnerHTML("td_preset_no", hl.get("PRESET") + " " + hl.get("NUMBER"));
+
+    setIdInnerHTML("span_prev", hl.get("PREVIOUS"));
+    setIdInnerHTML("span_next", hl.get("NEXT"));
+    setIdInnerHTML("span_page", hl.get("PAGE")+":");
+    setIdInnerHTML("td_preset_title", hl.get("TITLE"));
+
+    setIdInnerHTML("leg_auto_pan", hl.get("AUTOPAN"));
+    setIdInnerHTML("td_preset_speed", hl.get("SPEED"));
+    setIdInnerHTML("td_dwell_left", hl.get("DWELL_TIME_L"));
+    setIdInnerHTML("td_dwell_right", hl.get("DWELL_TIME_R"));
+
+    setIdInnerHTML("leg_pattern", hl.get("PATTERN"));
+    setIdInnerHTML("td_pattern_no", hl.get("PATTERN_NO"));
+    setIdInnerHTML("leg_tour", hl.get("TOUR"));
+    setIdInnerHTML("td_tour_no", hl.get("TOUR_NO"));
+    setIdInnerHTML("td_top_mode", hl.get("MODE"));
+    setIdInnerHTML("td_top_value", hl.get("VALUE"));
+    setIdInnerHTML("td_top_dwell_time", hl.get("DWELL_TIME_CPL"));
+    setIdInnerHTML("td_top_speed", hl.get("SPEED"));
+
+
+    setIdInnerHTML("leg_tracking", hl.get("TRACKING"));
+    setIdInnerHTML("td_start_auto_track", hl.get("AUTO_TRACK_START_POINT"));
+    setIdInnerHTML("td_limit", hl.get("PAN_TILT_LIMIT"));
+    setIdInnerHTML("td_track_mask", hl.get("TRACKING_MASK"));
+    setIdInnerHTML("td_time_mask", hl.get("TIME_MASK"));
+    setIdInnerHTML("td_zoom_control", hl.get("ZOOM_CONTROL_ON_TRACKING"));
+    setIdInnerHTML("td_track_duration", hl.get("TRACKING_DURATION"));
+
+    setIdInnerHTML("td_track_sec", hl.get("SECS"));
+    setIdInnerHTML("td_section_1", hl.get("WARNING_SENTENCE52"));
+    
+    var str1 = hl.get("WARNING_SENTENCE53");
+    var idx1 = str1.indexOf("???");
+    var str2 = str1.substr(0, idx1);
+    var str3 = str1.substr(idx1 + 3);
+    var str4 = hl.get("WARNING_SENTENCE60");
+    var idx2 = str4.indexOf("???");
+    var str5 = str4.substr(0, idx2);
+    setIdInnerHTML("td_in", str2);
+    setIdInnerHTML("td_section_2", str3 + " " + hl.get("WARNING_SENTENCE54"));
+    setIdInnerHTML("td_manual_stop", str5);
+    setIdInnerHTML("td_manual_stop_sec", str3);
+
+    setIdValue("btn_setting_apply_to", hl.get("APPLY_TO"));
+    setIdValue("btn_setting_save", hl.get("SAVE"));
+    setIdValue("btn_setting_cancel", hl.get("CANCEL"));
+    setIdValue("btn_preset_apply", hl.get("APPLY"));
+    setIdValue("btn_preset_cancel", hl.get("CANCEL"));
+    setIdValue("btn_preset_set", hl.get("SET"));
+    setIdValue("btn_preset_clear", hl.get("CLEAR"));
+    setIdValue("btn_preset_ok", hl.get("GO"));
+
+    setIdValue("btn_set_right", hl.get("SET_RIGHT_POS"));
+    setIdValue("btn_set_left", hl.get("SET_LEFT_POS"));
+    setIdValue("btn_autopan_save", hl.get("SAVE"));
+    setIdValue("btn_autopan_cancel", hl.get("CANCEL"));
+
+    setIdValue("btn_pattern_clear", hl.get("CLEAR"));
+
+    setIdValue("btn_pattern_set", hl.get("SET"));
+    setIdValue("btn_pattern_go", hl.get("GO"));
+
+    setIdValue("btn_tour_apply", hl.get("APPLY"));
+    setIdValue("btn_tour_clear", hl.get("CLEAR"));
+    setIdValue("btn_tour_default", hl.get("DEFAULT"));
+    setIdValue("btn_tour_go", hl.get("GO"));
+
+
+    setIdValue("btn_tour_save", hl.get("SAVE"));
+    setIdValue("btn_tour_cancel", hl.get("CANCEL"));
+
+    setIdValue("btn_track_set", hl.get("SET"));
+    setIdValue("btn_track_clear", hl.get("CLEAR"));
+    setIdValue("btn_track_go", hl.get("GO"));
+
+    //setIdValue("btn_left", hl.get("GO"));
+    setIdValue("btn_clear", hl.get("CLEAR"));
+    //setIdValue("btn_right", hl.get("GO"));
+    //setIdValue("btn_down", hl.get("CLEAR"));
+    setIdValue("btn_up", hl.get("UP"));
+    setIdValue("btn_left", hl.get("LEFT"));
+    setIdValue("btn_right", hl.get("RIGHT"));
+    setIdValue("btn_down", hl.get("DOWN"));
+
+
+    setIdValue("btn_track_save", hl.get("SAVE"));
+    setIdValue("btn_track_cancel", hl.get("CANCEL"));
+
+
+
+    setIdInnerHTML("href_camera", hl.get("CAMERA"));
+    setIdInnerHTML("href_ptz", hl.get("PTZ"));
+    setIdInnerHTML("td_speed", hl.get("SPEED"));
+    setIdValue("btn_preset", hl.get("PRESET"));
+    setIdValue("btn_tracking", hl.get("TRACKING"));
+    setIdValue("btn_pattern", hl.get("PATTERN_TOUR"));
+
+    setIdInnerHTML("td_endless_mode", hl.get("ENSLESS_MODE"));
+
+    var hs = new HandleSelect("sel_channel_num", 0);
+    for (var i = 0; i < parent.g_total_ch_num; i++) {
+        g_cam_ary.push(i+1);
+        hs.addOpt(i, i + 1 , i);//value 從0開始為第1channel
+    }
+
+    var record = parent.SetHx.getNodeValue("CameraSetting", "RecordDualStream").split(",");
+    var hs = new HandleSelect("sel_record_dual_stream", 0);
+    for (var i = 0; i < record.length; i++) {
+        hs.addOpt(i, hl.get(record[i].toUpperCase()), i);
+    }
+   
+    var ratio = parent.SetHx.getNodeValue("CameraSetting", "Ratio").split(",");
+    var hs = new HandleSelect("sel_ratio", 0);
+    for (var i = 0; i < ratio.length; i++) {
+        hs.addOpt(i, ratio[i], ratio[i]);
+    }
+
+    var mode = parent.SetHx.getNodeValue("CameraSetting", "RecordMode").split(",");
+    var tArray = parent.transLangArray(mode);
+    var hs = new HandleSelect("sel_record_mode", 0);
+    for (var i = 0; i < mode.length; i++) {
+        hs.addOpt(i, hl.get(tArray[i]), mode[i]);
+    }
+
+    
+    var hs = new HandleSelect("sel_endless_mode", 0);
+    hs.addOpt(0, hl.get("OFF"), 0)
+    .addOpt(1, hl.get("ON"), 1);
+ 
+   
+
+    var hs = new HandleSelect("sel_zoom_control", 0);
+    hs.addOpt(0, hl.get("WARNING_SENTENCE55"), 0)
+        .addOpt(1, hl.get("WARNING_SENTENCE56"), 1);
+
+    var hs = new HandleSelect("sel_object_lost", 0);
+    hs.addOpt(0, hl.get("WARNING_SENTENCE57"), 0)
+        .addOpt(1, hl.get("WARNING_SENTENCE58"), 1)
+        .addOpt(2, hl.get("WARNING_SENTENCE59"), 2);
+
+    var hs = new HandleSelect("sel_ptz_speed", 0);
+    hs.addOpt(0, hl.get("HIGH"), 8)
+        .addOpt(1, hl.get("STANDARD"), 6)
+        .addOpt(2, hl.get("LOW"), 4)
+        .addOpt(3, hl.get("MINIMUM"), 2);
+    setIdValue("sel_ptz_speed", 2);
+    parent.cgi.step=2;
+}
+/***************** Camera *********************/
+function openApplyEdit() {
+    parent.ChangAppletPosition(0, 0, 260, 400);
+    mc_apply.setAry(g_cam_ary);
+    mc_apply.setCols(4)
+		.setSelectedText(getIdSelectText("sel_channel_num").toInt())
+		.createList()
+		.setFuncOk(applyToAll)
+		.setFuncCancel(closeApplyEdit);
+    sm.open();
+    mc_apply.open();
+}
+function applyToAll() {
+    syncData();
+    var fromNode = "camera" + getIdSelectText("sel_channel_num").toFill(2);
+    var toNode = "";
+    for (var i = 0; i < mc_apply.aryChecked.length; i++) {
+        if (mc_apply.aryChecked[i]) {
+            toNode = "camera" + (i + 1).toFill(2);
+            camerahx.setNodeValue(1, toNode, "modified");
+            //camerahx.setNodeValue(camerahx.getNodeValue(fromNode, "title"), toNode, "title");
+            camerahx.setNodeValue(camerahx.getNodeValue(fromNode, "recordDual"), toNode, "recordDual");
+            camerahx.setNodeValue(camerahx.getNodeValue(fromNode, "recordMode"), toNode, "recordMode");
+                //.setNodeValue(camerahx.getNodeValue(fromNode, "ratio"), toNode, "ratio")
+            camerahx.setNodeValue(camerahx.getNodeValue(fromNode, "connectChannel"), toNode, "connectChannel");
+            camerahx.setNodeValue(camerahx.getNodeValue(fromNode, "maskChannel"), toNode, "maskChannel");
+        }
+    }
+    SetXML(camerahx,"IPCam.xml");
+    closeApplyEdit();
+    setTimeout('parent.setNVRMaskValue()', 1000);
+}
+function closeApplyEdit() {
+    //parent.resetViewFrm(1,400,300,190,570);
+    parent.ChangAppletPosition(viewWidth, viewHeight, 260, 400);
+    sm.close();
+    mc_apply.close();
+}
+function syncData() {
+    var cam = getIdSelectText("sel_channel_num").toInt();
+    var str = "camera" + cam.toFill(2);
+    var flag = 0;
+    if (getIdValue("txt_device_title") != camerahx.getNodeValue(str, "title"))
+        flag = 1;
+    if (getIdValue("sel_record_dual_stream") != camerahx.getNodeValue(str, "recordDual"))
+        flag = 1;
+    if (getIdValue("sel_record_mode") != camerahx.getNodeValue(str, "recordMode"))
+        flag = 1;
+    if (getIdChecked("chk_connected_channel") != camerahx.getNodeValue(str, "connectChannel"))
+        flag = 1;
+    if (getIdChecked("chk_mask_channel") != camerahx.getNodeValue(str, "maskChannel"))
+        flag = 1;
+
+    if (flag == 1)
+        camerahx.setNodeValue(1, str, "modified");
+    camerahx.setNodeValue(getIdValue("txt_device_title"), str, "title");
+    camerahx.setNodeValue(getIdValue("sel_record_dual_stream"), str, "recordDual");
+    camerahx.setNodeValue(getIdValue("sel_record_mode"), str, "recordMode");
+    //camerahx.setNodeValue(getIdValue("sel_ratio"), str, "ratio");//20130426 julia remove
+    camerahx.setNodeValue(getIdChecked("chk_connected_channel"), str, "connectChannel");
+    camerahx.setNodeValue(getIdChecked("chk_mask_channel"), str, "maskChannel");
+
+}
+function saveCamera() {
+    syncData();
+    SetXML(camerahx, "IPCam.xml");
+    setTimeout('parent.setNVRMaskValue()', 1000);
+}
+function setCameraPage() {
+    var cam = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    if (parent.firstTimeFlag == 0) {    //******* John add 20130607
+        parent.firstTimeFlag = 1;
+        parent.openLiveStreamAppletLivePage();
+    }
+    parent.setSingleChannelScreen(getIdValue("sel_channel_num").toInt());
+    var device = camerahx.getNodeValue(cam, "model");
+    var ch_idx_now = getIdValue("sel_channel_num").toInt();
+    setIdDisplay("tr_Hallway","none");
+    for (cnt = 0; cnt < HallWay_Device_Ary.length; cnt++) {
+        if (device == HallWay_Device_Ary[cnt]) {
+            setIdDisplay("tr_Hallway", "table-row");
+            var hallArray = new Array(parent.g_total_ch_num);
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = parseInt(camerahx.getNodeValue(cam, "hallwayMode"));
+                    //ch_angle_now = parseInt(camerahx.getNodeValue(cam, "hallwayMode"));
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            parent.setViewRotateAngle(hallArray);
+        }
+    }
+    setIdChecked("chk_connected_channel", camerahx.getNodeValue(cam, "connectChannel"));
+    setIdChecked("chk_mask_channel", camerahx.getNodeValue(cam, "maskChannel"));
+    setIdValue("txt_device_title", camerahx.getNodeValue(cam, "title"));
+    setIdValue("sel_record_dual_stream", camerahx.getNodeValue(cam, "recordDual"));
+    setIdValue("sel_record_mode", camerahx.getNodeValue(cam, "recordMode"));
+    //setIdValue("sel_ratio", camerahx.getNodeValue(cam, "ratio"));
+}
+
+/*************  Preset ****************************/
+function setPreset() {
+    var str;
+    var Node = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    for (var cnt = 1; cnt <= m_preset_num; cnt++) {
+        str = "title" + cnt.toFill(3);
+        setIdValue("txt_title_" + cnt,presethx.getNodeValue(Node, str));
+    }
+
+}
+function setAutoPan() {
+    var Node = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    setIdValue("sel_endless_mode", autopanhx.getNodeValue(Node, "endless"));
+    setIdValue("txt_autopan_speed", autopanhx.getNodeValue(Node, "speed"));
+    setIdValue("txt_dwell_left", autopanhx.getNodeValue(Node, "dwellTimeL"));
+    setIdValue("txt_dwell_right", autopanhx.getNodeValue(Node, "dwellTimeR"));
+
+}
+function checkTitle(id) {
+    var value = getIdValue(id);
+    if (value == "")
+        return;
+    else
+        CheckCharKeyin(id, 1);
+
+}
+function savePresetXml() {
+    var str;
+    var Node = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    var presetno = getIdValue("sel_preset");
+    presethx.setNodeValue(1,Node,"modified");
+    presethx.setNodeValue(getIdValue("txt_preset_title"), Node, "title" + presetno.toFill(3));
+    if (SetXML(presethx, "IPCamPTZPreset.xml")) {
+        goPage(m_preset_page);
+        setIdValue("sel_preset", presetno);
+        showTitle();
+        return true;
+    } else
+        return false;
+}
+
+function saveAutoPanXml() {
+    var str = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2)
+    autopanhx.setNodeValue(1, str, "modified")
+        .setNodeValue(getIdValue("sel_endless_mode"), str, "endless")
+        .setNodeValue(getIdValue("txt_autopan_speed"), str, "speed")
+        .setNodeValue(getIdValue("txt_dwell_left"), str, "dwellTimeL")
+        .setNodeValue(getIdValue("txt_dwell_right"), str, "dwellTimeR");
+
+    SetXML(autopanhx, "IPCamPTZAutoPan.xml");
+
+}
+function goPage(no) {
+    var str;
+    var Node = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    var presetno = no * 10;
+    var startno = (no - 1) * 10 + 1;
+    var cnt,i;
+    if (presetno > m_preset_num)
+        presetno = m_preset_num;
+
+    var hs = new HandleSelect("sel_preset", 0);
+    for (cnt = startno, i = 0; cnt <= presetno; cnt++, i++) {
+        str = "title" + cnt.toFill(3);
+        hs.addOpt(i,cnt+". "+presethx.getNodeValue(Node, str),cnt);
+    }
+    for (cnt = 1; cnt <= 20; cnt++) {
+        setIdFontSize("u_page_" + cnt, 16);
+    }
+    setIdFontSize("u_page_"+no,20);
+    m_preset_page = no;
+    showTitle();
+}
+
+function goPrevious() {
+    m_preset_page--;
+    if (m_preset_page == 0)
+        m_preset_page = 20;
+    goPage(m_preset_page);
+}
+
+function goNext() {
+    m_preset_page++;
+    if (m_preset_page > 20)
+        m_preset_page = 1;
+    goPage(m_preset_page);
+
+}
+
+function showTitle() {
+    var Node = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    var presetno = getIdValue("sel_preset");
+    setIdValue("txt_preset_title", presethx.getNodeValue(Node, "title" + presetno.toFill(3)));
+
+}
+/*********************Tracking**************************************************/
+function setTracking() {
+    var str = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+
+    setIdChecked("chk_start_auto_track", trackhx.getNodeValue(str, "enableAutoTrackFlag"));
+    setIdChecked("chk_limit", trackhx.getNodeValue(str, "enablePanTiltLimitsFlag"));
+    setIdValue("sel_zoom_control", trackhx.getNodeValue(str, "zoomCtlIndex"));
+    setIdValue("txt_track_duration", trackhx.getNodeValue(str, "trackDuration"));
+    setIdValue("sel_object_lost", trackhx.getNodeValue(str, "objLostIndex"));
+    setIdValue("txt_lost_sec", trackhx.getNodeValue(str, "objLostResume"));
+    setIdValue("txt_manual_stop", trackhx.getNodeValue(str, "resume"));
+
+}
+
+function setTrackXml() {
+    var str = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+
+    trackhx.setNodeValue(1, str, "modified");
+    trackhx.setNodeValue(getIdChecked("chk_start_auto_track"), str, "enableAutoTrackFlag");
+    trackhx.setNodeValue(getIdChecked("chk_limit"), str, "enablePanTiltLimitsFlag");
+    trackhx.setNodeValue(getIdValue("sel_zoom_control"), str, "zoomCtlIndex");
+    trackhx.setNodeValue(getIdValue("txt_track_duration"), str, "trackDuration");
+    trackhx.setNodeValue(getIdValue("sel_object_lost"), str, "objLostIndex");
+    trackhx.setNodeValue(getIdValue("txt_lost_sec"), str, "objLostResume");
+    trackhx.setNodeValue(getIdValue("txt_manual_stop"), str, "resume");
+
+    SetXML(trackhx, "IPCamPTZAutoTracking.xml");
+}
+
+function AutoTrackResult(result) {
+    if (result.toInt())
+        alert(hl.get("SUCCESS"));
+    else
+        alert(hl.get("FAIL"));
+
+}
+
+
+/******************* Pattern *************************************/
+function changTour() {
+    var camera = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    var tourno = "Tour"+getIdValue("sel_tour_no").toInt().toFill(2);
+    for (var cnt = 1; cnt <= 16; cnt++) {
+        setIdValue("sel_tour_mode_"+cnt, tourhx.getNodeValue(camera, tourno, "tourPosInfo" + cnt.toFill(2), "PositionType"));
+        setIdValue("txt_value_" + cnt, tourhx.getNodeValue(camera, tourno, "tourPosInfo" + cnt.toFill(2), "PositionNum"));
+        setIdValue("txt_dwell_" + cnt, (tourhx.getNodeValue(camera, tourno, "tourPosInfo" + cnt.toFill(2), "Dwell"))/1000);//要除以1000 才是一秒
+        setIdValue("txt_speed_" + cnt, tourhx.getNodeValue(camera, tourno, "tourPosInfo" + cnt.toFill(2), "Speed"));
+    }
+}
+function changeSpeed() {
+    var speed = getIdValue("sel_ptz_speed");
+    parent.cgi.step = speed;
+}
+
+function checkTourValue(id) {
+    var no = id.split("_")[2];
+    var mode = getIdValue("sel_tour_mode_" + no);
+    if (mode == 0)
+        return;
+    else if (mode == 1)//preset
+        CheckCharKeyin(id, 0, 1, m_preset_num);
+    else //patten
+        CheckCharKeyin(id, 0, 1, m_pattern_num);
+}
+function saveTourXml() {
+    var camera = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+    var tourno = "Tour" + getIdValue("sel_tour_no").toInt().toFill(2);
+    tourhx.setNodeValue(1,camera,"modified");
+    for (var cnt = 1; cnt <= 16; cnt++) {
+        tourhx.setNodeValue(getIdValue("sel_tour_mode_" + cnt),camera, tourno, "tourPosInfo" + cnt.toFill(2), "PositionType");
+        tourhx.setNodeValue(getIdValue("txt_value_" + cnt), camera, tourno, "tourPosInfo" + cnt.toFill(2), "PositionNum");
+        tourhx.setNodeValue((getIdValue("txt_dwell_" + cnt).toInt())*1000, camera, tourno, "tourPosInfo" + cnt.toFill(2), "Dwell");//要乘以1000 存回
+        tourhx.setNodeValue(getIdValue("txt_speed_" + cnt), camera, tourno, "tourPosInfo" + cnt.toFill(2), "Speed");
+    }
+    SetXML(tourhx,"IPCamPTZTour.xml");
+}
+function setTourDefault() {
+    for (var cnt = 1; cnt <= 16; cnt++) {
+        setIdValue("sel_tour_mode_" + cnt, 1);
+        setIdValue("txt_value_" + cnt,cnt );
+        setIdValue("txt_dwell_" + cnt,7);
+        setIdValue("txt_speed_" + cnt, 100);
+    }
+}
+function clearTour() {
+    for (var cnt = 1; cnt <= 16; cnt++) {
+        setIdValue("sel_tour_mode_" + cnt, 0);
+        setIdValue("txt_value_" + cnt, "");
+        setIdValue("txt_dwell_" + cnt, "");
+        setIdValue("txt_speed_" + cnt, "");
+    }
+}
+
+function changPatternMode() {
+    if (getIdValue("btn_pattern_set") == hl.get("SET")) {
+        PTZpatternStart();
+        setIdValue("btn_pattern_set", hl.get("COMPLETE")); //multi lang 
+    } else {
+        PTZpatternCompleted();
+        setIdValue("btn_pattern_set", hl.get("SET"));
+    }
+
+}
+//****************** PTZ button setting******************************//
+
+function initHallwayImage() {
+    EFDEF_("hallway_left")
+        .onmousedown(function () {
+
+        })
+        .onmouseup(function () {
+
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_hallway", "../img/IPcamPtz/turnleftover.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_hallway", "../img/IPcamPtz/turn.png");
+	    })
+        .onclick(function () {
+            var cam = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+            var hallArray = new Array(parent.g_total_ch_num);
+            var ch_idx_now = getIdValue("sel_channel_num").toInt();
+
+            var ch_angle_now = parseInt(camerahx.getNodeValue(cam, "hallwayMode"));
+            var ch_angle_result;
+            if (ch_angle_now == 270) {
+                ch_angle_result = 0;
+            } else {
+                ch_angle_result = ch_angle_now + 90;
+            }
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = ch_angle_result;
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            camerahx.setNodeValue(ch_angle_result, cam, "hallwayMode");
+            parent.setViewRotateAngle(hallArray);
+        });
+
+    EFDEF_("hallway_right")
+        .onmousedown(function () {
+
+        })
+        .onmouseup(function () {
+
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_hallway","../img/IPcamPtz/turnrightover.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_hallway", "../img/IPcamPtz/turn.png");
+	    })
+        .onclick(function () {
+            var cam = "camera" + getIdSelectText("sel_channel_num").toInt().toFill(2);
+            var hallArray = new Array(parent.g_total_ch_num);
+            var ch_idx_now = getIdValue("sel_channel_num").toInt();
+
+            var ch_angle_now = parseInt(camerahx.getNodeValue(cam, "hallwayMode"));
+            var ch_angle_result;
+            if (ch_angle_now == 0) {
+                ch_angle_result = 270;
+            } else {
+                ch_angle_result = ch_angle_now - 90;
+            }
+            for (var i = 0; i < hallArray.length; i++) {
+                if (i == ch_idx_now) {
+                    hallArray[i] = ch_angle_result;
+                } else {
+                    hallArray[i] = 0;
+                }
+            }
+            camerahx.setNodeValue(ch_angle_result, cam, "hallwayMode");
+            parent.setViewRotateAngle(hallArray);
+        });
+}
+function initPTZ() {
+    //------------------left up-----------------------------------
+    EFDEF_("leftup_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZleftup();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-5.png");
+        })
+		.onmouseout(function () {
+		    stopMove();
+		    setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+		});
+	//------------------left-----------------------------------
+    EFDEF_("left_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZleft();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-4.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	        stopMove();
+	    });
+   //-----------------left down----------------------------------
+    EFDEF_("leftdown_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-7-1.png");
+            tiltPanFlag = 1;
+            PTZleftdown();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-7.png");
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-7.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	        stopMove();
+	    });
+	//------------------down-----------------------------------
+    EFDEF_("down_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-2-1.png");
+            tiltPanFlag = 1;
+            PTZdown();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-2.png");
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-2.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+	//------------------right down-----------------------------------
+    EFDEF_("rightdown_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-8-1.png");
+            tiltPanFlag = 1;
+            PTZrightdown();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-8.png");
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-8.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+    //------------------right----------------------------------
+    EFDEF_("right_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-3-1.png");
+            tiltPanFlag = 1;
+            PTZright();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-3.png");
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-3.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+	//------------------right up-----------------------------------
+    EFDEF_("rightup_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-6-1.png");
+            tiltPanFlag = 1;
+            PTZrightup();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-6.png");
+            PTZstop();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-6.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+	//------------------up-----------------------------------
+    EFDEF_("up_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-1-1.png");
+            tiltPanFlag = 1;
+            PTZup();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-1.png");
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-1.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+	//------------------stop-----------------------------------
+    EFDEF_("stop_PTZ")
+        .onmousedown(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-9-1.png");
+            tiltPanFlag = 1;
+            stopMove();
+        })
+        .onmouseup(function () {
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-9.png");
+            tiltPanFlag = 1;
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ-9.png");
+        })
+	    .onmouseout(function () {
+	        setIdSrc("img_PTZ", "../img/IPcamPtz/PTZ.png");
+	    });
+	//------------------zoom in-----------------------------------
+    EFDEF_("img_zoomin")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZzoomin();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_zoomin", "../img/IPcamPtz/zoominover.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_zoomin", "../img/IPcamPtz/zoomin.png");
+	    });
+	//------------------zoom out-----------------------------------
+	EFDEF_("img_zoomout")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZzoomout();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_zoomout", "../img/IPcamPtz/zoomoutover.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_zoomout", "../img/IPcamPtz/zoomout.png");
+	    });
+	//------------------flower-----------------------------------
+    EFDEF_("img_flower")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZfocusNear();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_flower", "../img/IPcamPtz/flower_p.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_flower", "../img/IPcamPtz/flower.png");
+	    });
+	//------------------mountain-----------------------------------
+	 EFDEF_("img_mountain")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZfocusFar();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_mountain", "../img/IPcamPtz/mountain_p.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_mountain", "../img/IPcamPtz/mountain.png");
+	    });
+	//------------------Iris - -----------------------------------
+	EFDEF_("img_iris_close")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZirisClose();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_iris_close", "../img/IPcamPtz/iris-_p.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_iris_close", "../img/IPcamPtz/iris-.png");
+	    });
+	//------------------Iris + -----------------------------------
+	EFDEF_("img_iris_open")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZirisOpen();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            setIdSrc("img_iris_open", "../img/IPcamPtz/iris+_p.png");
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        setIdSrc("img_iris_open", "../img/IPcamPtz/iris+.png");
+	    });
+
+}
+function PTZup() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(11, parent.cgi.step);
+	}
+}
+
+function PTZdown() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(12, parent.cgi.step);
+	}
+
+}
+
+function PTZleft() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(13, parent.cgi.step);
+	}
+}
+
+function PTZright() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(14, parent.cgi.step);
+	}
+}
+function PTZleftup() {
+	//var testString = "user01";
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(42, parent.cgi.step);
+	}
+}
+function PTZleftdown() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(43, parent.cgi.step);
+	}
+}
+function PTZrightup() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(44, parent.cgi.step);
+	}
+}
+function PTZrightdown() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(45, parent.cgi.step);
+	}
+}
+
+function PTZstop() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(10, parent.cgi.step);
+	}
+}
+
+function PTZzoomin() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(15, parent.cgi.step);
+	}
+}
+function PTZzoomout() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(16, parent.cgi.step);
+	}
+}
+
+function PTZfocusNear() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(17, parent.cgi.step);
+	}
+}
+
+function PTZfocusFar() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(18, parent.cgi.step);
+	}
+}
+
+function PTZirisOpen() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(19, parent.cgi.step);
+	}
+}
+
+function PTZirisClose() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(20, parent.cgi.step);
+	}
+}
+
+function PTZautopan() {
+	if (enableFlag == 1) {
+	    var userDecode = parent.applet.doPTZControl(21, parent.cgi.step);
+	}
+}
+
+function stopMove() {
+    if (tiltPanFlag == 1) {
+        PTZstop();
+        tiltPanFlag = 0;
+    }
+}
+/*********** Preset *******************/
+function PTZPresetSet() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(27, getIdValue("sel_preset"));
+    }
+}
+function PTZpresetGo() {
+    var num = getIdValue("sel_preset");
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(26, num);
+    }
+}
+function PTZpresetDelete() {
+    var num = getIdValue("sel_preset");
+    setIdValue("txt_preset_title", "");
+    if(savePresetXml()){
+        if (enableFlag == 1) {
+            var userDecode = parent.applet.doPTZControl(28, num);
+        }
+    }
+}
+
+/***** Pattern ******/
+function PTZpatternStart() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(49, getIdValue("sel_pattern_no"));
+    }
+}
+function PTZpatternCompleted() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(50, getIdValue("sel_pattern_no"));
+    }
+}
+function PTZpatternClear() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(51, getIdValue("sel_pattern_no"));
+    }
+}
+function PTZpatternGo() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(52, getIdValue("sel_pattern_no"));
+    }
+}
+/****Auto pan****/
+function PTZautopanLeftPos() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(47,0);
+    }
+}
+function PTZautopanRightPos() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(48,0);
+    }
+}
+/*******Auto Tracking********/
+
+//Auto tracking start point
+function PTZautotrackPointSet() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(54, 0);
+    }
+}
+function PTZautotrackPointClear() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(55, 0);
+    }
+}
+function PTZautotrackPointGo() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(56, 0);
+    }
+}
+
+//Pan Title Limits
+function PTZautotrackLimitUp() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(57, 0);
+    }
+}
+function PTZautotrackLimitDown() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(58, 0);
+    }
+}
+function PTZautotrackLimitLeft() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(59, 0);
+    }
+}
+
+function PTZautotrackLimitRight() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(60, 0);
+    }
+}
+function PTZautotrackLimitClear() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(61, 0);
+    }
+}
+/****** Tour *******/
+function PTZtour() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(24, getIdValue("sel_tour_no"));
+    }
+}
+</script>
+</head>
+<body onload="" onunload="parent.g_setpopup = 1;parent.SetAppletVisible(0);">
+	<div class="IPCamClientFrame">
+	    <div id="abgne_tab">
+            <ul class="tabs">
+            <li id="li_camera"><a href="#div_camera"id="href_camera"></a></li>
+            <li id="li_ptz"><a href="#div_ptz" id="href_ptz"></a></li>
+            </ul>
+            <div class="tab_container">
+            <!----------------   Camera Page     ---------------------->
+                <div id="div_camera" style="width:1000px;height:600px;" class="tab_content">
+                    <div id="div_connected_check" style="position:absolute; top:440px;left:30px;">
+                    <table><tr>
+                        <td><input type="checkbox" id="chk_connected_channel"/></td><td id="td_connected_channel" class="txtLeft">Connected Channel</td>
+                        <td width="20px"></td>
+                        <td><input type="checkbox" id="chk_mask_channel"/></td><td id="td_mask_channel" class="txtLeft">Mask Channel</td>                
+                    </tr></table>
+                    </div>
+                    <div id="div_camera_setting" style="position:absolute; left:525px;">
+                        <table>
+                            <tr>
+                                <td id="td_channel_num" class="txtLeft" style="height:60px">Channel Number</td>
+                                <td><select id="sel_channel_num" style="width:50px" onchange="setCameraPage();"></select></td>
+                            </tr>
+                            <tr>
+                                <td id="td_title" class="txtLeft" style="height:60px">Device Title</td>
+                                <td><input type="text" id="txt_device_title" style="width:220px;background-color: #696969;color: #FFFFFF;"/></td>
+                            </tr>
+                            <tr>
+                                <td id="td_record_dual_stream" class="txtLeft" style="height:60px">Record Dual Stream</td>
+                                <td><select id="sel_record_dual_stream" style="width:100px"></select></td>
+                            </tr>
+                            <tr>
+                                <td id="td_record_mode" class="txtLeft" style="height:60px">Record Mode</td>
+                                <td><select id="sel_record_mode" style="width:120px"></select></td>
+                            </tr>
+                            <tr id="tr_ratio" style="display:none">
+                                <td id="td_ratio" class="txtLeft" style="height:60px">Ratio</td>
+                                <td><select id="sel_ratio"></select></td>
+                            </tr>
+                            <tr id="tr_Hallway" style="display:none">
+                                <td id="td_hallway_mode" class="txtLeft" style="height:60px">Hollway Mode</td>
+                                <td><img src="../img/IPcamPtz/turn.png" id="img_hallway" usemap="#hallwaymap" alt=""  border="0"/>
+                                      <map id="hallwaymap" name="hallwaymap">
+                                          <area id="hallway_right" shape="poly" coords="1,15, 5,0, 33,0, 33,31, 5,31, 1,15" alt="left" />
+                                          <area id="hallway_left" shape="poly" coords="34,0, 62,0, 67,15, 62,31, 34,31, 34,0"  alt="right" />
+                                      </map>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="div_setting_btn" style="position:absolute; right:50px;top:580px;">
+                    <input type="button" class="btnStyle" id="btn_setting_apply_to" value="Apply To" onclick="openApplyEdit();"/>&nbsp&nbsp
+                    <input type="button" class="btnStyle" id="btn_setting_save" value="Save" onclick="saveCamera();"/>&nbsp&nbsp
+                    <input type="button" class="btnStyle" id="btn_setting_cancel" value="Cancel" onclick=""/>
+                    </div>
+                </div>
+                <!----------------   PTZ Page      ---------------------->
+                <div id="div_ptz" style="width:1000px;height:600px;display:none" class="tab_content">
+                    <div id="div_ptz_view" style="position:absolute; left:15px; top: 40px">
+                    <table border="1" cellspacing="0" style="border-bottom-style:none; border-left-style:none;border-right:none;border-top:none;">
+                    <tr>
+                        <td id="td_camera" colspan="2" class="txtLeft">Camera 1</td>
+                    </tr>
+                    <tr>
+                        <td style="width:370px; height:200px;" colspan="2">&nbsp</td>
+                    </tr>
+                    <tr>
+                        <td id="td_ptz_control_pad" colspan="2" class="txtLeft">PTZ Control pad</td>
+                    </tr>
+                     <tr>
+                        <td style="width:370px; height:260px;" colspan="2" align="center">
+                            <table>
+                            <tr>
+                            <td colspan="4"><img id="img_PTZ" src="../img/IPcamPtz/PTZ.png" alt="PTZ" usemap="#ptzmap" border="0"/>
+                                <map id="ptzmap" name="ptzmap">
+                                   <area id="leftup_PTZ" shape="poly" coords="24,55,47,47,56,25,48,16,37,12,21,23,10,42,15,52" />
+                                   <area id="left_PTZ" shape="poly" coords="19,90,8,74,17,58,47,48,45,73,48,100" />
+                                   <area id="leftdown_PTZ" shape="poly" coords="30,125,49,134,55,129,53,118,49,101,25,91,17,95,13,104" />
+                                   <area id="down_PTZ" shape="poly" coords="57,125,45,93,75,101,101,93,89,125,73,135" />
+                                   <area id="rightdown_PTZ" shape="poly" coords="99,135,123,121,135,101,122,90,112,94,102,99,93,112,91,126" />
+                                   <area id="right_PTZ" shape="poly" coords="96,100,102,74,96,44,130,58,139,75,126,90" />
+                                   <area id="rightup_PTZ" shape="poly" coords="98,46,126,55,131,51,139,46,125,25,104,10,97,15,91,24" />
+                                   <area id="up_PTZ" shape="poly" coords="48,52,56,22,74,11,90,22,100,52,75,43" />
+                                   <area id="stop_PTZ" shape="circle" coords="74,73,27" />
+                                </map>
+                            
+                            </td>
+                            </tr>
+                            <tr>
+                                <td><img id="img_zoomout" src="../img/IPcamPtz/zoomout.png" alt="zoomout"/></td>
+                                <td><img id="img_flower" src="../img/IPcamPtz/flower.png" alt=""/></td>
+                                <td><img id="img_mountain" src="../img/IPcamPtz/mountain.png" alt=""/></td>
+                                <td><img id="img_zoomin" src="../img/IPcamPtz/zoomin.png" alt="zoomin"/></td>
+                            </tr>
+                            <tr>
+                            <td>&nbsp</td>
+                            <td><img id="img_iris_close" src="../img/IPcamPtz/iris-.png" alt="Iris-"/></td>
+                            <td><img id="img_iris_open" src="../img/IPcamPtz/iris+.png" alt="Iris+"/></td>
+                            <td>&nbsp</td>
+                            </tr>
+                            </table>
+                        
+                        </td>
+                    </tr>
+                    <tr>
+                    <td id="td_speed" style="height:40px; border-bottom-style:none;border-left-style:none; border-right-style:none;" class="txtLeft">Speed</td>
+                    <td style="height:40px; border-bottom-style:none;border-left-style:none; border-right-style:none;"><select id="sel_ptz_speed" onchange="changeSpeed();"></select></td>
+                    </tr>
+                    </table>                   
+                    </div>
+                    <div id="div_control_btn" style="position:absolute; left:420px; top: 40px; width:450px;" align="left">
+                    <input type="button"  class="btnStyle" id="btn_preset" value="Preset" onclick="openPreset();"/>&nbsp&nbsp&nbsp
+                    <input type="button"  class="btnStyle" id="btn_tracking" value="Tracking" onclick="openTrack();"/>&nbsp&nbsp&nbsp
+                    <input type="button"  class="btnStyle" id="btn_pattern" value="Pattern Tour" onclick="openPattern();"/>
+                    </div>
+                    <!----------------    Preset    ---------------------->
+                    <div id="div_preset" style="position:absolute; left:420px; top:80px;">
+                        <fieldset style="width:600px; height:250px;">
+                        <legend id="leg_preset" style="text-align:left;">Preset</legend>
+                        <table >
+                        <tr><td colspan="3" style="height:40px"></td></tr>
+                        <tr>
+                            <td id="td_preset_no" class="txtLeft">Preset No.</td>
+                            <td class="txtLeft">:</td>
+                            <td>
+                              <u id="span_prev" style="font-size:18px; color:#0000ff;cursor:hand;" onclick="goPrevious()">Prev</u>
+                              <select id="sel_preset" style="width:300px" onchange="showTitle();"></select>
+                              <u id ="span_next" style="font-size:18px; color:#0000ff;cursor:hand;"onclick="goNext()">Next</u>
+                            </td>
+                   
+                        </tr>
+                        <tr><td colspan="3" style="height:10px"></td></tr>
+                        <tr>
+                        <td colspan="3" style="font-size:16px" align="center">
+                            <span id ="span_page" class="txtCenter">Page:</span>
+                           	<u id="u_page_1" style="font-size:16px; color:#0000ff;cursor:hand;" onclick="goPage(1)">1</u>
+							<u id="u_page_2" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(2)">2</u>
+							<u id="u_page_3" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(3)">3</u>
+							<u id="u_page_4" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(4)">4</u>
+							<u id="u_page_5" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(5)">5</u>
+							<u id="u_page_6" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(6)">6</u>
+							<u id="u_page_7" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(7)">7</u>
+							<u id="u_page_8" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(8)">8</u>
+							<u id="u_page_9" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(9)">9</u>
+							<u id="u_page_10" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(10)">10</u>
+							<u id="u_page_11" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(11)">11</u>
+							<u id="u_page_12" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(12)">12</u>
+							<u id="u_page_13" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(13)">13</u>
+							<u id="u_page_14" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(14)">14</u>
+							<u id="u_page_15" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(15)">15</u>
+							<u id="u_page_16" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(16)">16</u>
+							<u id="u_page_17" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(17)">17</u>
+							<u id="u_page_18" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(18)">18</u>
+							<u id="u_page_19" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(19)">19</u>
+							<u id="u_page_20" style="font-size:16px; color:#0000ff;cursor:hand;"onclick="goPage(20)">20</u>
+                        </td>
+                        </tr>
+                        <tr><td colspan="3" style="height:10px"></td></tr>
+                        <tr>
+                        <td colspan="3" >
+                        <table>
+                        <tr>
+                            <td id="td_preset_title" class="txtCenter">Title</td>
+                            <td class="txtCenter">:</td>
+                            <td><input id="txt_preset_title"  maxlength="32" style="width:330px;background-color: #696969;color: #FFFFFF" onkeydown=""/></td>
+                            <td>
+                                <input type="button" class="btnStyle" id="btn_preset_apply" style="width:50px;" value="Apply" onclick="savePresetXml();"/>&nbsp&nbsp&nbsp
+                                <input type="button" class="btnStyle" id="btn_preset_cancel" style="width:50px;" value="Cancel" onclick="showTitle();"/>&nbsp&nbsp&nbsp  
+                            </td>
+                        </tr>
+                        </table>
+                        </td>
+                        </tr>
+                        <tr><td colspan="3" style="height:10px"></td></tr>
+                        <tr>
+                        <td colspan="3" align="right">
+                            <input type="button" class="btnStyle" id="btn_preset_set" style="width:50px;" value="Set" onclick="PTZPresetSet();"/>&nbsp&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_preset_clear" style="width:50px;" value="Clear" onclick="PTZpresetDelete();"/>&nbsp&nbsp&nbsp   
+                            <input type="button" class="btnStyle" id="btn_preset_ok" style="width:50px;" value="Go" onclick="PTZpresetGo();"/>&nbsp&nbsp&nbsp         
+                        </td>
+                        </tr>
+                       
+                        
+                        </table>
+                        </fieldset>
+
+                        <fieldset style="width:600px; height:235px;">
+                        <legend id="leg_auto_pan" style="text-align:left;">Auto Pan</legend>
+                        <table style="width:580px">
+                        <tr><td colspan="4" style="height:20px"></td></tr>
+                        <tr>
+						<td id="td_endless_mode" style="height:40px;" class="txtLeft">Endless Mode</td>
+						<td><select id="sel_endless_mode"></select></td>
+                        <td id="td_preset_speed" class="txtLeft">Speed</td>
+                        <td><input type="text" id="txt_autopan_speed" maxlength="3" style="width:50px;background-color: #696969;color: #FFFFFF;" value="1" onblur="CheckCharKeyin(this,0,1,255);"/></td>
+                        </tr>
+                        <tr>
+                        <td colspan="2" style="height:40px;" align="center"><input type="button" class="btnStyle" id="btn_set_right"  value="Set Right Pos" onclick="PTZautopanRightPos();"/></td>
+                        <td id="td_dwell_left" class="txtLeft">Dwell Time L</td>
+                        <td ><input type="text" id="txt_dwell_left" maxlength="2" style="width:50px;background-color: #696969;color: #FFFFFF;" value="1" onblur="CheckCharKeyin(this,0,1,99);"/></td>
+                        </tr>
+                        <tr>
+                        <td colspan="2" style="height:40px;" align="center"><input type="button" class="btnStyle" id="btn_set_left" value="Set Left Pos" onclick="PTZautopanLeftPos();"/></td>
+                        <td id="td_dwell_right" class="txtLeft">Dwell Time R</td>
+                        <td><input type="text" id="txt_dwell_right" maxlength="2" style="width:50px;background-color: #696969;color: #FFFFFF;" value="1" onblur="CheckCharKeyin(this,0,1,99);"/></td>
+                        </tr>
+                        <tr><td colspan="4" style="height:20px"></td></tr>
+                        </table>
+                        <div align="right" > 
+                            <input type="button" class="btnStyle" id="btn_autopan_save" value="Save" onclick="saveAutoPanXml();"/>&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_autopan_cancel" value="Cancel" onclick="setAutoPan();"/>&nbsp&nbsp
+                        </div>
+                        </fieldset>
+                        
+                    </div><!--END preset--->
+                    <!----------------     Pattern Tour     ---------------------->
+                    <div id="div_pattern" style="position:absolute; left:420px; top:80px;display:none">
+                        <fieldset style="width:600px; height:70px;">
+                        <legend id="leg_pattern" style="text-align:left;">Pattern</legend>
+                        <table style="width:100%" cellspacing="8">
+                            <tr>
+                                <td id="td_pattern_no" class="txtLeft">Pattern No.</td>
+                                <td><select id="sel_pattern_no"></select></td>
+                                <td>
+                                    <input type="button" class="btnStyle" id="btn_pattern_set" value="Set"  onclick="changPatternMode();"/>&nbsp&nbsp&nbsp
+                                    <input type="button" class="btnStyle" id="btn_pattern_clear" value="Clear" onclick="PTZpatternClear();"/>&nbsp&nbsp&nbsp
+                                    <input type="button" class="btnStyle" id="btn_pattern_go" value="Go" onclick="PTZpatternGo();"/>
+                               </td>
+                            </tr>
+                        </table>
+                        </fieldset>
+                        <fieldset style="width:600px; height:410px;">
+                        <legend id="leg_tour" style="text-align:left;">Tour</legend>
+                        <table style="width:100%;">
+                            <tr>
+                                <td id="td_tour_no" style="height:40px;" class="txtLeft">Tour No.</td>
+                                <td><select id="sel_tour_no" onchange="changTour();"></select></td>
+                                <td><input type="button" id="btn_tour_apply" class="btnStyle"  style="width:50px" value="Apply" onclick="saveTourXml();"/></td>
+                                <td><input type="button" id="btn_tour_clear" class="btnStyle" style="width:50px;" value="Clear" onclick="clearTour();"/></td>
+                                <td><input type="button" id="btn_tour_default" class="btnStyle" style="width:50px;" value="Default" onclick="setTourDefault();"/></td>
+                                <td><input type="button" id="btn_tour_go" class="btnStyle" style="width:50px;" value="Go" onclick="PTZtour();"/></td>
+                            </tr>
+                        </table>
+                        <div>
+                            <table style="width:100%">
+                            <tr>
+                            <td id="td_top_mode" style="width:160px;background-color: #CCCCCC;" class="txtLeft">Mode</td>
+                            <td id="td_top_value" style="width:120px;background-color: #CCCCCC;" class="txtLeft">Value</td>
+                            <td id="td_top_dwell_time" style="width:140px;background-color: #CCCCCC;" class="txtLeft">Dwell Time</td>
+                            <td id="td_top_speed" style="width:140px;background-color: #CCCCCC;" class="txtLeft">Speed</td>
+                            </tr>
+                            <tr>
+                            <td colspan="4"><div style="overflow:auto;width:100%; height:320px"><table id="tbl_tour"></table></div></td>
+                            </tr>
+                            </table>
+                        </div>
+                        <div style="width:580px;display:none"  align="right"> 
+                            <input type="button" class="btnStyle" id="btn_tour_save" value="Save" onclick=""/>&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_tour_cancel" value="Cancel" onclick=""/>&nbsp&nbsp
+                        </div>
+                        </fieldset>
+                        
+                        
+                    </div><!---END pattern tour----->
+                    <!----------------     Tracking      ---------------------->
+                    <div id="div_track" style="position:absolute; left:420px; top:90px;display:none">
+                    <fieldset>
+                    <legend id="leg_tracking" style="text-align:left;">Tracking</legend>
+                    <table cellspacing="5" >
+                    <tr>
+                        <td style="width:30px;height:60px"><input type="checkbox" id="chk_start_auto_track"/></td>
+                        <td id="td_start_auto_track" class="txtLeft">Auto Tracking Start Point</td>
+                        <td colspan="2">
+                            <input type="button" class="btnStyle" id="btn_track_set" value="Set" onclick="PTZautotrackPointSet();"/>&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_track_clear" value="Clear" onclick="PTZautotrackPointClear();"/>&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_track_go" value="Go" onclick="PTZautotrackPointGo();"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:30px;height:60px"><input type="checkbox" id="chk_limit"/></td>
+                        <td id="td_limit" class="txtLeft">Pan/Tilt Limits</td>
+                        <td colspan="2">
+                        <table>
+                        <tr>
+                        <td></td>
+                        <td ><input type="button"  class="btnStyle" id="btn_up" value="Up" style="width:50px" onclick="PTZautotrackLimitUp();"/></td>
+                        <td></td>
+                        </tr>
+                        <tr>
+                        <td><input type="button" class="btnStyle"  id="btn_left" value="Left" style="width:50px" onclick="PTZautotrackLimitLeft();"/></td>
+                        <td><input type="button" class="btnStyle"  id="btn_clear" value="Clear" style="width:50px" onclick="PTZautotrackLimitClear();"/></td>
+                        <td><input type="button" class="btnStyle"  id="btn_right" value="Right" style="width:50px" onclick="PTZautotrackLimitRight();"/></td>
+                        </tr>
+                        <tr>
+                        <td></td>
+                        <td ><input type="button" class="btnStyle"  id="btn_down" value="Down" style="width:50px" onclick="PTZautotrackLimitDown();"/></td>
+                        <td></td>
+                        </tr>
+                        </table>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td style="width:30px;height:60px"><input type="checkbox" id="chk_track_mask"/></td>
+                        <td id="td_track_mask" class="txtLeft">Tracking Mask</td>
+                        <td colspan="2">
+                            <input type="button" class="btnStyle" id="btn_trackmask_set" value="Set" onclick=""/>&nbsp&nbsp
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td style="width:30px;height:60px"><input type="checkbox" id="chk_time_mask"/></td>
+                        <td id="td_time_mask" class="txtLeft">Time Mask</td>
+                        <td colspan="2">
+                            <select id="sel_time_mask"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="td_zoom_control" class="txtLeft" style="height:60px">Zoom Control On Tracking</td>
+                        <td colspan="2"><select id="sel_zoom_control" style="width:auto;"></select></td> 
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="td_track_duration" class="txtLeft" style="height:40px">Tracking Duration</td>
+                        <td>
+                            <input type="text" id="txt_track_duration" maxlength="3" style="width:80px" class="textInput" onblur="CheckCharKeyin(this,0,0,600);"/>
+                        </td>
+                        <td id="td_track_sec" class="txtLeft">sec.</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" >
+                            <table>
+                                <tr>
+                                    <td id="td_section_1" class="txtLeft" style="height:50px">When the object is lost on the screen,</td>
+                                    <td><select id="sel_object_lost" style="width:auto"></select></td>
+                                </tr> 
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                        <table >
+                            <tr>
+                                <td id="td_in" class="txtCenter" style="height:50px;width:60px">in</td>
+                                <td style="width:70px"><input type="text" id="txt_lost_sec" style="width:70px" class="textInput"/></td>
+                                <td id="td_section_2" class="txtLeft">sec. and back to start point</td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="td_manual_stop" class="txtLeft" style="height:50px">Resume from Manual Stop</td>
+                        <td>
+                            <input type="text" id="txt_manual_stop" style="width:80px"  class="textInput"/>
+                        </td>
+                        <td id="td_manual_stop_sec" class="txtLeft">sec.</td>
+                    </tr>
+                    </table> 
+                    <div style="width:600px;" align="right">
+                            <input type="button" class="btnStyle" id="btn_track_save" value="Save" onclick="setTrackXml();"/>&nbsp&nbsp
+                            <input type="button" class="btnStyle" id="btn_track_cancel" value="Cancel" onclick="setTracking();"/>&nbsp&nbsp
+                    </div>
+                    </fieldset>
+                   
+                    </div>
+                </div><!--END PTZ--->
+            </div><!--END tab_container--->
+        </div><!--END tab--->
+    </div>
+    <div id="sm"></div>
+    <div id="mc_apply"></div>
+    <script type="text/javascript" src="../include/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="../include/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../include/js/detect-zoom.js"></script>
+    <script type="text/javascript">
+        function refresh() {
+            var width, height, ratio;
+            ratio = window.detectZoom.zoom();
+            if (ratio == 0) {
+                ratio = 1;
+            }
+            width = parent.appletWidth * ratio;
+            height = parent.appletHeight * ratio;
+            width = viewWidth * window.detectZoom.zoom();
+            height = viewHeight * window.detectZoom.zoom();
+            parent.applet.resize(width, height);
+            parent.applet.setUILayout(width, height, 1);
+            parent.applet.setSingleChannelScreen(getIdValue("sel_channel_num"));
+        }
+        $(document).ready(function () {
+            init();
+            //applet.setUILayout(appletWidth, appletHeight, 16);
+            $(window).on('resize', refresh);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<link rel="stylesheet" type="text/css" href="../include/css/MultipleCheckbox.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/cgi.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var listHx = new HandleXml();
+var sm;
+var mc_apply;
+var modify_id;
+var cgi = new cgi();
+var timeFlag;
+
+function init() {
+   
+    GetXML();
+    initTable();
+    setLanguage();
+}
+
+function refreshTable() {
+    timeFlag=setTimeout(function(){
+        GetXML();
+        initTable();},15000);
+}
+function GetXML() {
+    listHx.setUrl("../cgi-bin/ENVRIPCamList.xml");
+    hx.setUrl("../cgi-bin/IPCam.xml");
+
+}
+function initTable() {
+
+    var ht = new HandleTable("tbl_list");
+    ht.clear();
+    var str = "";
+    var name,rate,voltage,recordstatus,connectstatus,bitrate,bitrate;
+    var dataCnt = 0;
+    var recStr, ConnStr;
+    for (var cnt = 1; cnt <= parent.g_ipcam_num; cnt++) {
+        str = "camera" + cnt;
+
+        ht.insertRow().id("tbl_tr_" + cnt).onmouseover(
+					function () {
+					    setIdBgColor(this, "#F5FFFA");
+					})
+				.onmouseout(
+					function () {
+					    var id = this.id.split("_")[2];
+                        if(id % 2)
+                            setIdBgColor(this, "#CCCCCC");
+                        else
+                            setIdBgColor(this, "");
+					});
+        if (cnt % 2)
+            setIdBgColor("tbl_tr_" + cnt, "#CCCCCC");
+
+        rate = listHx.getNodeValue(str, "fps");
+        bitrate = listHx.getNodeValue(str, "bitrate");
+        voltage = listHx.getNodeValue(str, "power").toInt();
+        name = listHx.getNodeValue(str, "name");
+        recordstatus = listHx.getNodeValue(str, "recordStatus").toInt();
+        if (recordstatus)
+            recStr = hl.get("RECORDING"); //multi-lang
+        else
+            recStr = hl.get("NO_RECORDING");
+        connectstatus = listHx.getNodeValue(str, "connectStatus").toInt();
+        if (connectstatus == 1)//1
+            ConnStr = hl.get("CONNECT");
+        else if (connectstatus == 2)
+            ConnStr = "Need Authorization";//multi-lang
+        else {
+            ConnStr = hl.get("DISCONNECT");
+            name = "---";
+            rate = "---";
+            bitrate = "---";
+            voltage = "---";
+            recStr = "----------";
+
+        }
+        
+
+        ht.insertCell().fontSize("16px").textAlign("center")
+					.width(90)
+					.innerHTML("CH" + cnt.toFill(2));
+        ht.insertCell().id("td_camera_name_" + cnt).fontSize("16px").textAlign("center")
+					.width(210)
+					.innerHTML(name);
+        ht.insertCell().id("td_camera_frame_rate_" + cnt).fontSize("16px").textAlign("center")
+					.width(90)
+					.innerHTML(rate + "fps");
+        ht.insertCell().id("td_camera_bit_rate_" + cnt).fontSize("16px").textAlign("center")
+					.width(90)
+					.innerHTML(bitrate);
+        ht.insertCell().id("td_camera_pow_voltage_" + cnt).fontSize("16px").textAlign("center")
+					.width(90)
+					.innerHTML(voltage+"V");       
+        ht.insertCell().id("td_camera_connect_status" + cnt).fontSize("16px").textAlign("center")
+					.width(160)
+					.innerHTML(ConnStr);
+        ht.insertCell().id("td_camera_rec_status_" + cnt).fontSize("16px").textAlign("center")
+					.width(140)
+					.innerHTML(recStr);
+        ht.insertCell().width(60)
+					.innerHTML("<input type='button' value='M' class='advMButton' onclick='modify(" + cnt + ")'/>");
+    
+    }
+
+    refreshTable();
+}
+
+function SetXML() {
+    var str = "camera" + modify_id;
+    hx.setNodeValue(getIdValue("txt_id"), str, "username");
+    hx.setNodeValue(getIdValue("txt_password"), str, "password");
+    hx.setNodeValue(1,str,"modified");
+
+    var temphx = new HandleXml();
+    var newxml = hx.getXml().xml.replace(/\t/g, "");
+    ajax.postData("../cgi-bin/IPCam.xml", newxml);
+
+    temphx.setXml(ajax.data);
+    if (temphx.getNodeValue("result") == "1") {
+        alert(hl.get("SUCCESS"));
+        Cancel();
+    } else {
+        alert(hl.get("FAIL"));
+        Cancel();
+    }
+}
+
+function modify(id) {
+    modify_id = id;
+    clearTimeout(timeFlag);
+    setIdDisplay("mask", "inline");
+    setIdDisplay("div_modify","inline");
+    initModify(id);
+ 
+}
+function initModify(id) {
+    var str = "camera" + id;
+    setIdInnerHTML("leg_cmaera", "CH"+id.toFill(2));
+    setIdInnerHTML("txt_brand", hx.getNodeValue(str, "brand"));
+    setIdInnerHTML("txt_model", hx.getNodeValue(str, "model"));
+    setIdValue("txt_id", hx.getNodeValue(str, "username"));
+    setIdValue("txt_password", hx.getNodeValue(str, "password"));
+}
+function Cancel() {
+    GetXML();
+    initTable();
+    setIdDisplay("mask","none");
+    setIdDisplay("div_modify", "none");
+}
+function setLanguage() {
+    var cnt;
+    var lenght;
+    var str;
+
+
+    setIdInnerHTML("td_Camera_List", hl.get("CAMERA_LIST"));
+   
+    setIdInnerHTML("td_list_channel", hl.get("CHANNEL"));
+    setIdInnerHTML("td_list_name", hl.get("NAME"));
+    setIdInnerHTML("td_list_frame_rate", hl.get("FRAME_RATE"));
+    setIdInnerHTML("td_list_pow_voltage", hl.get("POE_POWER")); //multi-lang
+    setIdInnerHTML("td_list_bit_rate", hl.get("BIT_RATE")); //multi-lang
+    setIdInnerHTML("td_list_rec_status", hl.get("RECORD")); //multi-lang
+    setIdInnerHTML("td_list_connect_status", hl.get("STATUS")); 
+    setIdInnerHTML("td_list_modify", hl.get("MODIFY"));
+
+    setIdInnerHTML("td_id", hl.get("ID"));
+    setIdInnerHTML("td_password", hl.get("PASSWORD"));
+    setIdInnerHTML("td_brand", hl.get("BRAND"));
+    setIdInnerHTML("td_model", hl.get("MODEL"));
+  
+    
+    setIdValue("btn_ok", hl.get("OK"));
+    setIdValue("btn_cancel", hl.get("CANCEL"));
+
+}
+
+
+
+//-->
+</script>
+</head>
+<body onload="init();" >
+	<div class="ClientFrame">
+    <div id="div_list">
+    <table>
+    <tr><td id="td_Camera_List" style="font-size:26px; height:40px;color: #65A097;" align="left">Camera List</td></tr>
+    <tr>
+        <td>
+            <div>
+            <table>
+            <tr>
+            <td id="td_list_channel" style="font-size:20px;width:90px;color: #65A097">Channel</td>
+            <td id="td_list_name" style="font-size:20px;width:210px;color: #65A097">Name</td>
+            <td id="td_list_frame_rate" style="font-size:20px;width:90px;color: #65A097">Frame Rate</td>
+            <td id="td_list_bit_rate" style="font-size:20px;width:90px;color: #65A097">Bit Rate</td>
+            <td id="td_list_pow_voltage" style="font-size:20px;width:90px;color: #65A097">PoE Power</td>           
+            <td id="td_list_connect_status" style="font-size:20px;width:160px;color: #65A097">Status</td>
+             <td id="td_list_rec_status" style="font-size:20px;width:140px;color: #65A097">Record</td>
+            <td id="td_list_modify" style="font-size:20px;width:60px;color: #65A097">Modify</td>
+            </tr>
+            </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="width:1000px; height:600px; overflow:auto;">
+            <table id="tbl_list"> 
+            </table>
+            </div>
+        </td>
+    </tr>
+    </table>  
+    </div> 
+    </div>
+    <div id="div_modify" style="display:none; z-index:101; position:absolute; top:250px; left:250px; background-color:#FFFFFF;height:200px" align="center">
+    <fieldset class="fieldsetStyle" style="height:180px">
+    <legend id="leg_cmaera" class="legStyle"></legend>
+    <table border="1" style="position:relative; top:20px;" >
+    <tr>
+    <td id="td_id" class="txtCenter" style="width:140px">ID</td>
+    <td class="txtCenter" ><input  type="text" id="txt_id" style="width:150px"/></td>
+    <td id="td_password" style="width:140px" class="txtCenter">Password</td>
+    <td width="150px"><input type="password" id="txt_password" style="width:200px"/></td>
+    </tr>
+    <tr>
+    <td id="td_brand" class="txtCenter">Brand</td>
+    <td id="txt_brand" class="txtCenter"></td>
+    <td id="td_model" class="txtCenter">Model</td>
+    <td id="txt_model" class="txtCenter"></td>
+    </tr>
+    <tr>
+    <td colspan="4">
+        <input type="button" id="btn_ok" class="btnStyle" value="Ok" onclick="SetXML();"/>&nbsp&nbsp&nbsp
+		<input type="button" id="btn_cancel" class="btnStyle" value="Cancel" onclick="Cancel();"/>
+    </td>
+    </tr>
+    </table>
+    </fieldset>
+    </div>
+    
+    <div id="mask" style="position:absolute;height:770px;width:1220px; z-index:99;  background-color:#FFFFFF; filter:alpha(opacity=50);-moz-opacity:0.5;display:none;"></div>
+	<div id="mc_apply"></div>
+</body>
+</html>

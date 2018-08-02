@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+var ekbAction = new Array();
+var ekbValue = new Array();
+
+function init() {
+    ekbInfo = parent.applet.getEKB200Action();
+    ekbValue = parent.applet.getEKB200Value();
+    initTable();
+    initActionSel();
+    setActionSelValue();
+    initActionValueDisplay();
+    setActionTxtValue();
+    setLanguage();
+}
+function initFunc() {
+
+}
+function GetXML(){
+
+}
+function SetXML() {
+    var flag = 0;
+    for (var i = 0; i < 12; i++) {
+        ekbInfo[i] = parseInt(getIdValue("sel_action_" + i));
+        if (ekbInfo[i] == 3) {
+            ekbValue[i] = 1;
+        } else {
+            ekbValue[i] = parseInt(getIdValue("txt_Value_" + i));
+        }
+
+        //********** limit value range for some action value
+        /*
+        if (ekbInfo[i] == 1) {  //******* Set Preset
+            if ((ekbValue[i] > 192) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+
+        if (ekbInfo[i] == 2) {  //******* Go Preset
+            if ((ekbValue[i] > 192) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+
+        if (ekbInfo[i] == 4) {  //******* Clear Preset
+            if ((ekbValue[i] > 192) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+
+        if (ekbInfo[i] == 5) {  //******* Run Autopan
+            if ((ekbValue[i] > 2) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+
+        if (ekbInfo[i] == 7) {  //******* Tour Run
+            if ((ekbValue[i] > 16) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+
+        if (ekbInfo[i] == 9) {  //******* Pattern Run
+            if ((ekbValue[i] > 4) || (ekbValue[i] < 1)) {
+                flag = 1;
+            }
+        }
+        */
+    }
+    if (flag) {
+        alert("Invalid Value");
+    } else {
+        var rst = parent.applet.setEKB200Info(ekbInfo, ekbValue);
+        if (rst == 1) {
+            alert(hl.get("SUCCESS"));
+        } else {
+            alert(hl.get("FAIL"));
+        }
+    }
+}
+function initTable() {
+    var ht = new HandleTable("tbl_list");
+    ht.clear();
+    ht.insertRow();
+    ht.insertCell().className("txtCenter")
+					.width(100)
+					.innerHTML(hl.get("KEY_NO"));
+    ht.insertCell().className("txtCenter")
+					.width(210)
+					.innerHTML(hl.get("ACTION"));
+    ht.insertCell().className("txtCenter")
+					.width(50)
+					.innerHTML(hl.get("VALUE"));
+    for (var cnt = 0; cnt < 12; cnt++) {
+        ht.insertRow().id("tbl_tr_" + cnt);
+
+        ht.insertCell().className("txtCenter")
+					.innerHTML(cnt+1);
+        ht.insertCell().id("td_action_" + cnt).className("txtCenter")
+					.innerHTML("<select id=sel_action_" + cnt + " style='width:200px;' onchange='changeActionSel("+cnt+")'></select>");
+        ht.insertCell().id("td_value_" + cnt).className("txtCenter")
+					.innerHTML("<input type='text' id=txt_Value_" + cnt + " style='width: 40px' maxlength='3' onblur='CheckCharKeyin(this,0,0,255);CheckNull(this);' />")
+                    .display("none");
+    }
+
+    for (var cnt = 12; cnt <= 15; cnt++) {
+        ht.insertRow().id("tbl_tr_" + cnt);
+
+        ht.insertCell().className("txtCenter")
+					.innerHTML(cnt+1);
+        ht.insertCell().id("td_action_" + cnt).className("txtCenter")
+					.innerHTML("<input type='text' id=txt_Action_" + cnt + " style='width: 200px' readonly='readonly' />");
+    }
+    
+}
+function initActionSel(){
+	var hs;
+	for(var j = 0;j < 12;j++){
+	    hs = new HandleSelect("sel_action_" + j, 0);
+	    hs.addOpt(0, "", 0);
+		hs.addOpt(1, hl.get("SET_PRESET"), 1);
+		hs.addOpt(2, hl.get("GOTO_PRESET"), 2);
+		hs.addOpt(3, hl.get("GOTO_HOME"), 3);
+		hs.addOpt(4, hl.get("CLEAR_PRESET"), 4);
+		hs.addOpt(5, hl.get("RUN_AUTOPAN"), 5);
+		hs.addOpt(6, hl.get("STOP_AUTOPAN"), 6);
+		hs.addOpt(7, hl.get("TOUR_RUN"), 7);
+		hs.addOpt(8, hl.get("TOUR_STOP"), 8);
+		hs.addOpt(9, hl.get("PATTERN_RUN"), 9);
+		hs.addOpt(10, hl.get("PATTERN_STOP"), 10);
+		hs.addOpt(11, hl.get("SET_AUTO_TRACKING"), 11);
+		hs.addOpt(12, hl.get("SELECT_TRACKING_OBJECT"), 12);
+		hs.addOpt(13, hl.get("TOGGLE_FULLSCREEN"), 13);
+	}
+}
+function setActionSelValue() {
+    for (var j = 0; j < 12; j++) {
+        setSelectIndex("sel_action_" + j, ekbInfo[j]);
+        setIdValue("txt_Value_" + j, ekbValue[j]);
+    }
+}
+function setActionTxtValue() {
+    setIdValue("txt_Action_12",hl.get("IRIS_PLUS"));
+    setIdValue("txt_Action_13",hl.get("IRIS_MINUS"));
+    setIdValue("txt_Action_14",hl.get("FOCUS_NEAR"));
+    setIdValue("txt_Action_15",hl.get("FOCUS_FAR"));
+}
+function changeActionSel(idx) {
+    //alert(idx);
+    var value = getIdValue("sel_action_" + idx);
+    if (value == "1" || value == "2" || value == "4" || value == "5" || value == "7" || value == "9") {
+        setIdDisplay("td_value_" + idx, "inline");
+    } else {
+        setIdDisplay("td_value_" + idx, "none");
+    }
+}
+function initActionValueDisplay() {
+    for (var i = 0; i < 12; i++) {
+        changeActionSel(i);
+    }
+}
+function CheckNull(obj) {
+    if (obj.value.trim() == "") {
+        alert(hl.get("INVALID_NUMBER"));
+        EFDEF_id(obj.id).focus();
+        EFDEF_id(obj.id).select();
+        return false;
+    }
+}
+function setLanguage() {
+    setIdValue("btn_Save", hl.get("SAVE"));
+}
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table id="tbl_list" border="0" cellspacing="0" cellpadding="0"></table>
+    </div>
+    <div class="applyFrm" style="top: 710px; left: 920px;">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width: 120px;" onclick="SetXML();" />
+	</div>
+</body>
+</html>

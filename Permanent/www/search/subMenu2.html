@@ -1,0 +1,516 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/subMenu.css" />
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+    var hl = parent.hl;
+    var selIndex = 0;
+    var ajax = new AjaxClass();
+    var hx, hx_Get_Status = new HandleXml();
+
+    var camActive;
+    var camCovert;
+
+    var multiIdx = 1;
+    var curMask;
+    var SoundTimeout, GetXMLTimeout, initCamStatusTimeout, chgRecordStateTimeout, TimerFlag;
+
+    //************ For Camera Status
+    var install_Status;
+    var recordMain_Status;
+    var recordSub_Status;
+    var alarmIn__Status;
+    var motion_Status;
+    var videoLoss_Status;
+    var total_cam_Num = parent.g_total_ch_num;
+    var CamStatusTimeout;
+    var changeView = 1;
+    var liveAudio = 0;
+    var DSHArray = new Array(); //Device Status Array
+
+    function init() {
+        setLanguage();
+        //changeView = parent.LoginHx.getNodeValue("iconChangeView");
+        liveAudio = parent.LoginHx.getNodeValue("iconPbAudio");
+        initCameraBtn();
+        initBtnStatus();
+        if (total_cam_Num == 32) {
+        	chgCamSelStatus(total_cam_Num + 3);
+        } else if (total_cam_Num == 16) {
+            chgCamSelStatus(total_cam_Num + 3);
+        } else if (total_cam_Num == 8) {
+            chgCamSelStatus(total_cam_Num + 1);
+        } else if (total_cam_Num == 4) {
+            chgCamSelStatus(total_cam_Num);
+        }
+        if ((parent.g_ch_status != 4) && (parent.g_ch_status != 3) && (parent.g_ch_status != 2)) {
+            chgCamSelStatus(parent.g_search_cam);
+        }
+        
+        if (changeView == 0) {
+            for (var i = 20; i < 26; i++) {
+                setIdDisplay("img_ch_" + i, "none");
+            }
+        }
+        if (parent.g_dual_switch == 0) {
+            setIdSrc("img_dual", "../img/status/dual_n.png");
+        }
+        TimerFlag = 0;
+        GetXML();
+        //CamStatusTimeout = setInterval("GetCamStatus()", 1000);
+    }
+    function GetCamStatus() {
+        hx_Get_Status.setUrl("../xml/Status.xml");
+
+        install_Status = hx_Get_Status.getNodeValue("install").toInt().toString(2);
+        recordMain_Status = hx_Get_Status.getNodeValue("recordMain").toInt().toString(2);
+        recordSub_Status = hx_Get_Status.getNodeValue("recordSub").toInt().toString(2);
+        alarmIn__Status = hx_Get_Status.getNodeValue("alarmIn").toInt().toString(2);
+        motion_Status = hx_Get_Status.getNodeValue("motion").toInt().toString(2);
+        videoLoss_Status = hx_Get_Status.getNodeValue("videoLoss").toInt().toString(2);
+
+        if (install_Status.length < total_cam_Num) {
+            install_Status = install_Status.toFill(total_cam_Num);
+        }
+        if (recordMain_Status.length < total_cam_Num) {
+            recordMain_Status = recordMain_Status.toFill(total_cam_Num);
+        }
+        if (recordSub_Status.length < total_cam_Num) {
+            recordSub_Status = recordSub_Status.toFill(total_cam_Num);
+        }
+        if (alarmIn__Status.length < total_cam_Num) {
+            alarmIn__Status = alarmIn__Status.toFill(total_cam_Num);
+        }
+        if (motion_Status.length < total_cam_Num) {
+            motion_Status = motion_Status.toFill(total_cam_Num);
+        }
+        if (videoLoss_Status.length < total_cam_Num) {
+            videoLoss_Status = videoLoss_Status.toFill(total_cam_Num);
+        }
+
+        for (var i = 0; i < total_cam_Num; i++) {
+            if (install_Status.substr(total_cam_Num - 1 - i, 1) == "0") {
+                setIdSrc("img_rcd_" + i, "../img/status/disable-status.png");
+            } else if (install_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                setIdSrc("img_rcd_" + i, "../img/status/normal.png");
+
+                if (recordMain_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                    setIdSrc("img_rcd_" + i, "../img/status/normal-rec.png");
+
+                    if (alarmIn__Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/alarm-rec.png");
+                    }
+                    if (motion_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/motion-rec.png");
+                    }
+                    if (videoLoss_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/videoloss-rec.png");
+                    }
+                }
+
+                if (recordSub_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                    setIdSrc("img_rcd_" + i, "../img/status/normal-sub.png");
+
+                    if (alarmIn__Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/alarm-rec.png");
+                    }
+                    if (motion_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/motion-sub.png");
+                    }
+                    if (videoLoss_Status.substr(total_cam_Num - 1 - i, 1) == "1") {
+                        setIdSrc("img_rcd_" + i, "../img/status/videoloss-rec.png");
+                    }
+                }
+            }
+        }
+    }
+    function GetXML() {
+        if (parent.connectStatus == 1) {
+        }
+    }
+    function initCameraBtn() {
+        var ht = new HandleTable("tab_CameraBtn");
+	    var chnum = total_cam_Num;
+	    
+		var columnCount = 2;
+		if (chnum>16){
+			columnCount = 4;
+		}
+		var halfchnum = chnum / columnCount;
+		for (var i = 0; i < halfchnum; i++) {
+	            ht.insertRow();
+			for (var j = 0; j<columnCount; j++){
+				ht.insertCell().id("img_ch_" + (i + halfchnum*j))
+						.width(30)
+						.height(45)
+						.fontSize(13)
+						.textAlign("center")
+						.innerHTML(i + 1 + halfchnum*j)
+						.onclick(
+							function () {
+	
+							    var tmpNo = this.id.split("_")[2].toInt();
+							    chgCamSelStatus(tmpNo);
+							    multiIdx = 1;
+							    parent.g_ch_status = 0;
+							    parent.g_cam_status = tmpNo;
+							    parent.setSingleChannelScreen(tmpNo);
+							})
+	                    .onmouseover(function () { setIdCursor(this, "pointer"); });
+	                       
+				ht.insertCell().bgPosition("center", "center")
+					.bgRepeat("no")
+					.width(30)
+					.height(45)
+	                .innerHTML("<img id='img_rcd_" + (i + halfchnum*j) + "' src='../img/status/disable-status.png'/>");
+			}
+	            
+		}
+
+        ht = new HandleTable("tab_CameraBtn3");
+
+        ht.insertRow(0);
+        ht.insertCell().attr("colSpan", "2")
+		        .innerHTML("<img id='img_dual' src='../img/status/dual_a.png' alt='STREAM TYPE' onclick='chgDualStatus(this);' style='cursor: pointer;'/>");
+        if (liveAudio == 1) {
+            ht.insertCell().attr("colSpan", "2")
+					.innerHTML("<img id='img_audio' src='../img/status/audio_n.png' alt='SOUND' onclick='chgSoundStatus(this);' style='cursor: pointer;'/>");
+        }
+        /*ht.insertCell().attr("colSpan", "2")
+					.innerHTML("<img id='img_mic' src='../img/status/mic_n.png' alt='" + hl.get("AUDIO_BROADCAST") + "' onclick='chgAudioStatus(this);' style='cursor: pointer;'/>");*/
+        ht.insertCell().attr("colSpan", "2")
+					.innerHTML("<img id='img_snapshot' src='../img/status/snapshot.png' alt='Snapshot' onclick='parent.saveFile();' style='cursor: pointer;'/>")
+                    .onmousedown(
+                        function () {
+                            setIdSrc("img_snapshot", "../img/status/snapshotover.png");
+                        }
+                    )
+                    .onmouseup(
+                        function () {
+                            setIdSrc("img_snapshot", "../img/status/snapshot.png");
+                        }
+                    );
+
+        ht = new HandleTable("tab_CameraBtn2");
+
+        ht.insertRow(0);
+        ht.insertCell()//.attr("colSpan", "2")
+				.innerHTML("<img id='img_ch_" + (total_cam_Num) + "' src='../img/status/ex1_n.png' alt='4UP' style='cursor: pointer;'/>")
+				.onclick(
+					function () {
+					    disableAllStatus();
+					    parent.changeViewMode(4);
+					    chgCamSelStatus(total_cam_Num);
+					    parent.g_ch_status = 2;
+					});
+
+        if (chnum > 4) {
+            ht.insertCell()//.attr("colSpan", "2")
+		        .innerHTML("<img id='img_ch_" + (total_cam_Num + 1) + "' src='../img/status/ex2_n.png' alt='9UP' style='cursor: pointer;'/>")
+		        .onclick(
+			            function () {
+			                disableAllStatus();
+			                parent.changeViewMode(9);
+			                chgCamSelStatus(total_cam_Num + 1);
+			                parent.g_ch_status = 3;
+			            });
+
+			ht.insertCell()//.attr("colSpan", "2")
+	            .innerHTML("<img id='img_ch_" + (total_cam_Num + 2) + "' src='../img/status/ex5_n.png' alt='7+1' style='cursor: pointer;'/>")
+	            .onclick(
+		            function () {
+		                disableAllStatus();
+		                parent.changeViewMode(8);
+		                chgCamSelStatus(total_cam_Num + 2);
+		                parent.g_ch_status = 6;
+		            });
+        }
+        if (chnum > 9) {
+            ht.insertCell()//.attr("colSpan", "2")
+					.innerHTML("<img id='img_ch_" + (total_cam_Num + 3) + "' src='../img/status/ex3_n.png' alt='16UP' style='cursor: pointer;'/>")
+					.onclick(
+						function () {
+						    disableAllStatus();
+						    parent.changeViewMode(16);
+						    chgCamSelStatus(total_cam_Num + 3);
+						    parent.g_ch_status = 4;
+						});
+
+            ht.insertCell()//.attr("colSpan", "2")
+					.innerHTML("<img id='img_ch_" + (total_cam_Num + 4) + "' src='../img/status/ex4_n.png' alt='8+2' style='cursor: pointer;'/>")
+					.onclick(
+						function () {
+						    disableAllStatus();
+						    parent.changeViewMode(10);
+						    chgCamSelStatus(total_cam_Num + 4);
+						    parent.g_ch_status = 5;
+						});
+        }
+        if (chnum>16){
+			ht = new HandleTable("tab_CameraBtn4");
+			ht.insertRow();
+			ht.insertCell()//.attr("colSpan", "2")
+					.innerHTML("<img id='img_ch_" + (total_cam_Num + 5) + "' src='../img/status/ex4_n.png' alt='25UP' style='cursor: pointer;'/>")
+					.onclick(
+						function () {
+						    parent.changeViewMode(25);
+						    chgCamSelStatus(total_cam_Num + 5);
+						    parent.g_ch_status = 25;
+						});
+						
+			ht.insertCell()//.attr("colSpan", "2")
+					.innerHTML("<img id='img_ch_" + (total_cam_Num + 6) + "' src='../img/status/ex4_n.png' alt='32UP' style='cursor: pointer;'/>")
+					.onclick(
+						function () {
+						    parent.changeViewMode(32);
+						    chgCamSelStatus(total_cam_Num + 6);
+						    parent.g_ch_status = 32;
+						});
+			
+			ht.insertCell()//.attr("colSpan", "2")
+					.innerHTML("<img id='img_ch_" + (total_cam_Num + 7) + "' src='../img/status/ex4_n.png' alt='36UP' style='cursor: pointer;'/>")
+					.onclick(
+						function () {
+						    parent.changeViewMode(36);
+						    chgCamSelStatus(total_cam_Num + 7);
+						    parent.g_ch_status = 36;
+						});
+		}
+    }
+    function chgAudioStatus(obj) {  //******** Two Way Audio
+        if (obj.src.indexOf("_a.png") > -1) {
+            setIdSrc(obj, "../img/status/mic_n.png");
+        } else {
+            setIdSrc(obj, "../img/status/mic_a.png");
+        }
+    }
+    function chgSoundStatus(obj) {  //******** Audio
+        if (obj.src.indexOf("_a.png") > -1) {
+            setIdSrc(obj, "../img/status/audio_n.png");
+            parent.audioOnOff();
+
+        } else {
+            setIdSrc(obj, "../img/status/audio_a.png");
+            parent.audioOnOff();
+        }
+    }
+    function chgCamStatus(ch, status) {
+        var tmpObj = EFDEF_("img_rcd_" + ch);
+        if (tmpObj != null && tmpObj != undefined) {
+            /*
+            var tmpActive = "";
+            if (getIdBgImg("img_rcd_" + ch).indexOf("_a.png") > -1) {
+                tmpActive = "a";
+            } else {
+                tmpActive = "n";
+            }
+            */
+            if (status & 1) {
+                //alarm
+                //setIdSrc("img_rcd_" + ch, "../img/status/alarm-rec.png");
+                setIdSrc("img_rcd_" + ch, "../img/status/alarm-sub.png");
+
+            } else if (status & 4) {
+            //} else if (status & 2) {
+                //motion
+                //setIdSrc("img_rcd_" + ch, "../img/status/motion-rec.png");
+                setIdSrc("img_rcd_" + ch, "../img/status/motion-sub.png");
+                        
+            } else if (status & 8) {
+                //video loss
+                //setIdSrc("img_rcd_" + ch, "../img/status/videoloss-rec.png");
+                setIdSrc("img_rcd_" + ch, "../img/status/videoloss-sub.png");
+            } else {
+                //setIdSrc("img_rcd_" + ch, "../img/status/normal-rec.png");
+                setIdSrc("img_rcd_" + ch, "../img/status/normal-sub.png");
+            }
+        }
+    }
+    function initBtnStatus() {
+        var tmpObjs = EFDEF_id("^img_ch_");
+        for (var i = 0; i < tmpObjs.length; i++) {
+            if (i > parent.g_total_ch_num - 1) {
+                setIdSrc("img_ch_" + i, getIdSrc("img_ch_" + i).replace("_a.png", "_n.png"));
+            } else {
+                setIdFontSize("img_ch_" + i, 14);
+            }
+        }
+    }
+    function chgCamSelStatus(idx) {
+        initBtnStatus();
+
+        if (idx > parent.g_total_ch_num - 1) {
+            setIdSrc("img_ch_" + idx, getIdSrc("img_ch_" + idx).replace("_n.png", "_a.png"));
+        } else {
+            setIdBgImg("img_ch_" + idx, getIdBgImg("img_ch_" + idx).replace("_n.png", "_a.png"));
+            setIdFontSize("img_ch_" + idx, 17);
+        }
+    }
+    function subMenuOver(obj) {
+        if (obj.className != "subCameratxt_a") {
+            setIdClass(obj, 'subCameratxt_o');
+        }
+    }
+    function subMenuOut(obj) {
+        if (obj.className != "subCameratxt_a") {
+            setIdClass(obj, 'subCameratxt_n');
+        }
+    }
+    function setLanguage() {
+        setIdInnerHTML("td_Normal", hl.get("NORMAL"));
+        setIdInnerHTML("td_Motion", hl.get("MOTION"));
+        //setIdInnerHTML("td_Vloss", hl.get("VIDEO_LOSS"));
+        if (parent.g_model_name_int == 0) {
+            setIdInnerHTML("td_Vloss", hl.get("VIDEO_LOSS"));
+        } else {
+            setIdInnerHTML("td_Vloss", hl.get("DISCONNECT"));
+        }
+        setIdInnerHTML("td_Alarm", hl.get("ALARM"));
+        setIdInnerHTML("td_Disabled", hl.get("DISABLE"));
+
+        setIdInnerHTML("td_DualRec", hl.get("SUB_REC"));
+        setIdInnerHTML("td_Rec", hl.get("REC"));
+        setClass();
+    }
+    function setClass() {  //20120308  fixed bugzilla  9907  9908  by julia
+
+        switch (parent.g_lang) {
+            case 17: //Greek
+                classname = "cameraststus_12";
+                break;
+            case 5:  //Japanese
+                classname = "cameraststus_14";
+                break;
+            default:
+                classname = "cameraststus_16";
+                break;
+        }
+        setIdClass("td_Normal", classname);
+        setIdClass("td_Motion", classname);
+        setIdClass("td_Vloss", classname);
+        setIdClass("td_Alarm", classname);
+        setIdClass("td_Disabled", classname);
+        setIdClass("td_DualRec", classname);
+        setIdClass("td_Rec", classname);
+    }
+    function chgDualStatus(obj) {
+        if (obj.src.indexOf("_a.png") > -1) {
+            parent.g_dual_switch = 0;
+            setIdSrc(obj, "../img/status/dual_n.png");
+            parent.changeMainSub();
+        } else {
+            parent.g_dual_switch = 1;
+            setIdSrc(obj, "../img/status/dual_a.png");
+            parent.changeMainSub();
+        }
+    }
+    function chgRecordState() {
+        var hxrd = new HandleXml();
+        hxrd.setUrl("../Login_Info.cgi");
+        var rd = hxrd.getNodeValue("recording");
+        if (!rd) {
+            return;
+        }
+        var sec_rd = hxrd.getNodeValue("sec_recording");
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            var sDisplay = "block";
+            if ((0x01 << i) & sec_rd) {
+                /*if (parent.g_ipcam_num > 0 && parent.g_product == 6) {
+                setIdSrc("img_rcd_" + i, "../img/status/status_rcd_sec_a.jpg");
+                setIdWidth("img_rcd_" + i, 24);
+                setIdHeight("img_rcd_" + i, 24);
+                //EFDEF_("img_rcd_" + i).bgImage("../img/status/20status_rcd_sec_a.jpg");
+                } else*/
+                setIdSrc("img_rcd_" + i, "../img/status/status_rcd_sec_a.jpg");
+                //EFDEF_("img_rcd_" + i).bgImage("../img/status/status_rcd_sec_a.jpg");
+            } else if ((0x01 << i) & rd) {
+                setIdSrc("img_rcd_" + i, "../img/status/status_rcd_a.png");
+            } else
+                sDisplay = "none";
+            setIdDisplay("img_rcd_" + i, sDisplay);
+        }
+
+        chgRecordStateTimeout = setTimeout("chgRecordState()", 3000);
+    }
+    function disableAllStatus() {
+        for (var i = 0; i < parent.g_total_ch_num; i++) {
+            setIdSrc("img_rcd_" + i, "../img/status/disable-status.png");
+        }
+    }
+</script>
+</head>
+<body onload="init();">
+	<table border="0" cellspacing="2" cellpadding="0" align="center">
+        <tr>
+            <td height="46"></td>
+        </tr>
+		<tr>
+			<td id="td_CameraBtn2" height="50" valign="top" align="center">
+				<table id="tab_CameraBtn2" border="0" cellspacing="4" cellpadding="0" align="center"></table>
+			</td>
+		</tr>
+		<tr>
+			<td id="td_CameraBtn4" height="50" valign="top" align="center">
+				<table id="tab_CameraBtn4" border="0" cellspacing="4" cellpadding="0" align="center"></table>
+			</td>
+		</tr>
+        <tr>
+            <td id="td_CameraBtn3" align="center" valign="top">
+				<table id="tab_CameraBtn3" border="0" cellspacing="5" cellpadding="0" align="center"></table>
+			</td>
+        </tr>
+        <tr>
+            <td style="height:30px; vertical-align:middle; text-align:center;">
+                <img src="../img/line.png"/>
+            </td>
+        </tr>
+        <tr>
+            <td id="td_CameraBtn" align="center" valign="top">
+				<table id="tab_CameraBtn" border="0" cellspacing="0" cellpadding="0" align="center"></table>
+			</td>
+        </tr>
+        <tr>
+            <td style="height:10px; vertical-align:middle; text-align:center;">
+                <img src="../img/line.png"/>
+            </td>
+        </tr>
+		<tr>
+			<td height="100" valign="top" id="td_CameraStatus" align="center">
+				    <table border="0" cellspacing="0" cellpadding="5" align="center">
+					    <tr>
+						    <td align="center"><img src="../img/status/sub_rec.png" id="img_status_0"/></td>
+						    <td id="td_DualRec" class="cameraststus"></td>
+
+                            <td align="center"><img src="../img/status/normal-rec.png" id="img_status_1"/></td>
+				            <td id="td_Rec" class="cameraststus"></td>
+					    </tr>
+					    <tr>
+						    <td align="center"><img src="../img/status/normal.png" id="img_status_2"/></td>
+						    <td id="td_Normal" class="cameraststus"></td>
+
+                            <td align="center"><img src="../img/status/motion.png" id="img_status_3"/></td>
+					        <td id="td_Motion" class="cameraststus"></td>
+					    </tr>
+					    <tr>
+						    <td align="center"><img src="../img/status/alarm.png" id="img_status_4"/></td>
+                            <td id="td_Alarm" class="cameraststus"></td>
+
+                            <td align="center"><img src="../img/status/disabled.png" id="img_status_5"/></td>
+                            <td id="td_Disabled" class="cameraststus"></td>
+					    </tr>
+					    <tr>
+						    <td align="center"><img src="../img/status/videoloss.png" id="img_status_6"/></td>
+						    <td id="td_Vloss" class="cameraststus"></td>
+					    </tr>
+				    </table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

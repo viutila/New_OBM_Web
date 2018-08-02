@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/subMenu.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var setHx = new HandleXml();
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+	setLanguage();
+	EFDEF_("^td_").className("menutxt_n")
+			.onmouseover(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_o";
+					}
+				})
+			.onmouseout(
+				function(){
+					if(this.className != "menutxt_a"){
+						this.className = "menutxt_n";
+					}
+				})
+			.onclick(
+				function(){
+					subMenuSelect(this.id.split("_")[1].toInt());
+				});
+	
+	setIdClass("td_0", "menutxt_a");
+}
+
+function subMenuSelect(idx){
+	if(parent.g_lock_menu == 0){
+		EFDEF_("^td_").className("menutxt_n");
+		setIdClass("td_" + idx,"menutxt_a");
+
+		switch(idx){
+			case 0:
+			    parent.ifrm_View.location.replace("./record.html");
+				break;
+            case 1:
+                parent.ifrm_View.location.replace("./play.html");
+                break;
+            case 2:
+                parent.ifrm_View.location.replace("../archive/QuickArchiveConfig.html");
+                break;
+		}
+	}
+}
+function setLanguage() {
+    setIdInnerHTML("td_0", hl.get("RECORD"));
+
+	if (setHx.getNode("PLAYBACK")) {
+	    setIdDisplay("td_1", "block");
+	    setIdInnerHTML("td_1", hl.get("PLAYBACK"));
+	}
+	if (parent.g_model_name_int == 2) {
+	    setIdDisplay("td_2", "block");
+	    setIdInnerHTML("td_2", hl.get("QUICK_ARCHIVE"));
+    
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<div id="td_0" style="margin-top: 45px"></div>
+	<div id="td_1" style="display:none"></div>
+    <div id="td_2" style="display:none"></div>
+</body>
+</html>

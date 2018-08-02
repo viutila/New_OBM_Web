@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/style.css">
+<link rel="stylesheet" type="text/css" href="../include/css/ScreenMask.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript" src="../include/js/ScreenMask.js"></script>
+<script type="text/javascript">
+<!--
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var hx = new HandleXml();
+var setHx = new HandleXml();
+var sm;
+
+var sel_flag = null;
+var type_flag = null;
+var add_flag = 0;
+var change_pass_flag = 0;
+
+function init() {
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    initTable();
+    initFunc();
+	GetXML();
+	setLanguage()
+}
+function initFunc() {
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    funcNum = setHx.getNodeChildSize("USERGROUP");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERGROUP", Cnt)) {
+
+            case "OwnLevel":
+                setIdDisplay("tr_01", "table-row");
+                break;
+            case "ClearLog":
+                setIdDisplay("tr_02", "table-row");
+                break;
+            case "FirmwareUpgrade":
+                setIdDisplay("tr_03", "table-row");
+                break;
+            case "DiskSetting":
+                setIdDisplay("tr_04", "table-row");
+                break;
+            case "RecordSetting":
+                setIdDisplay("tr_05", "table-row");
+                break;
+            case "LiveAudio":
+                setIdDisplay("tr_06", "table-row");
+                break;
+            case "PlaybackAudio":
+                setIdDisplay("tr_07", "table-row");
+                break;
+            case "ArchivalFunction":
+                setIdDisplay("tr_08", "table-row");
+                break;
+            case "SystemLogView":
+                setIdDisplay("tr_09", "table-row");
+                break;
+            case "UserManagement":
+                setIdDisplay("tr_10", "table-row");
+                break;
+            case "DateTimeSetting":
+                setIdDisplay("tr_11", "table-row");
+                break;
+            case "DisplaySetting":
+                setIdDisplay("tr_12", "table-row");
+                break;
+            case "NetworkSetting":
+                setIdDisplay("tr_13", "table-row");
+                break;
+            case "ScheduleSetting":
+                setIdDisplay("tr_14", "table-row");
+                break;
+            case "AlarmEventSetting":
+                setIdDisplay("tr_15", "table-row");
+                break;
+            case "CameraSetting":
+                setIdDisplay("tr_16", "table-row");
+                break;
+            case "PlaybackSearch":
+                setIdDisplay("tr_17", "table-row");
+                break;
+            case "OSDDisplayMode":
+                setIdDisplay("tr_18", "table-row");
+                break;
+            case "PTZ":
+                setIdDisplay("tr_19", "table-row");
+                break;
+            case "ChangOwnPassword":
+                setIdDisplay("tr_20", "table-row");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+function GetXML(){
+    hx.setUrl("../cgi-bin/UserGroup.xml");
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    funcNum = setHx.getNodeChildSize("USERGROUP");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERGROUP", Cnt)) {
+
+            case "OwnLevel":
+                setIdChecked("chk_Admin_01", hx.getNodeValue("Admin", "btnUserManageOwn"));
+                setIdChecked("chk_Manager_01", hx.getNodeValue("Manager", "btnUserManageOwn"));
+                setIdChecked("chk_Operator_01", hx.getNodeValue("Operator", "btnUserManageOwn"));
+                break;
+            case "ClearLog":
+                setIdChecked("chk_Admin_02", hx.getNodeValue("Admin", "btnClearLogs"));
+                setIdChecked("chk_Manager_02", hx.getNodeValue("Manager", "btnClearLogs"));
+                setIdChecked("chk_Operator_02", hx.getNodeValue("Operator", "btnClearLogs"));
+                break;
+            case "FirmwareUpgrade":
+                setIdChecked("chk_Admin_03", hx.getNodeValue("Admin", "pageMisc"));
+                setIdChecked("chk_Manager_03", hx.getNodeValue("Manager", "pageMisc"));
+                setIdChecked("chk_Operator_03", hx.getNodeValue("Operator", "pageMisc"));
+                break;
+            case "DiskSetting":
+                setIdChecked("chk_Admin_04", hx.getNodeValue("Admin", "pageDisk"));
+                setIdChecked("chk_Manager_04", hx.getNodeValue("Manager", "pageDisk"));
+                setIdChecked("chk_Operator_04", hx.getNodeValue("Operator", "pageDisk"));
+                break;
+            case "RecordSetting":
+                setIdChecked("chk_Admin_05", hx.getNodeValue("Admin", "pageRecord"));
+                setIdChecked("chk_Manager_05", hx.getNodeValue("Manager", "pageRecord"));
+                setIdChecked("chk_Operator_05", hx.getNodeValue("Operator", "pageRecord"));
+                break;
+            case "LiveAudio":
+                setIdChecked("chk_Admin_06", hx.getNodeValue("Admin", "iconLiveAudio"));
+                setIdChecked("chk_Manager_06", hx.getNodeValue("Manager", "iconLiveAudio"));
+                setIdChecked("chk_Operator_06", hx.getNodeValue("Operator", "iconLiveAudio"));
+                break;
+            case "PlaybackAudio":
+                setIdChecked("chk_Admin_07", hx.getNodeValue("Admin", "iconPbAudio"));
+                setIdChecked("chk_Manager_07", hx.getNodeValue("Manager", "iconPbAudio"));
+                setIdChecked("chk_Operator_07", hx.getNodeValue("Operator", "iconPbAudio"));
+                break;
+            case "ArchivalFunction":
+                setIdChecked("chk_Admin_08", hx.getNodeValue("Admin", "iconArchive"));
+                setIdChecked("chk_Manager_08", hx.getNodeValue("Manager", "iconArchive"));
+                setIdChecked("chk_Operator_08", hx.getNodeValue("Operator", "iconArchive"));
+                break;
+            case "SystemLogView":
+                setIdChecked("chk_Admin_09", hx.getNodeValue("Admin", "btnSysLogViewExport"));
+                setIdChecked("chk_Manager_09", hx.getNodeValue("Manager", "btnSysLogViewExport"));
+                setIdChecked("chk_Operator_09", hx.getNodeValue("Operator", "btnSysLogViewExport"));
+                break;
+            case "UserManagement":
+                setIdChecked("chk_Admin_10", hx.getNodeValue("Admin", "pageUserManage"));
+                setIdChecked("chk_Manager_10", hx.getNodeValue("Manager", "pageUserManage"));
+                setIdChecked("chk_Operator_10", hx.getNodeValue("Operator", "pageUserManage"));
+                break;
+            case "DateTimeSetting":
+                setIdChecked("chk_Admin_11", hx.getNodeValue("Admin", "pageDateTime"));
+                setIdChecked("chk_Manager_11", hx.getNodeValue("Manager", "pageDateTime"));
+                setIdChecked("chk_Operator_11", hx.getNodeValue("Operator", "pageDateTime"));
+                break;
+            case "DisplaySetting":
+                setIdChecked("chk_Admin_12", hx.getNodeValue("Admin", "pageDisplay"));
+                setIdChecked("chk_Manager_12", hx.getNodeValue("Manager", "pageDisplay"));
+                setIdChecked("chk_Operator_12", hx.getNodeValue("Operator", "pageDisplay"));
+                break;
+            case "NetworkSetting":
+                setIdChecked("chk_Admin_13", hx.getNodeValue("Admin", "pageNetwork"));
+                setIdChecked("chk_Manager_13", hx.getNodeValue("Manager", "pageNetwork"));
+                setIdChecked("chk_Operator_13", hx.getNodeValue("Operator", "pageNetwork"));
+                break;
+            case "ScheduleSetting":
+                setIdChecked("chk_Admin_14", hx.getNodeValue("Admin", "pageSchedule"));
+                setIdChecked("chk_Manager_14", hx.getNodeValue("Manager", "pageSchedule"));
+                setIdChecked("chk_Operator_14", hx.getNodeValue("Operator", "pageSchedule"));
+                break;
+            case "AlarmEventSetting":
+                setIdChecked("chk_Admin_15", hx.getNodeValue("Admin", "pageAlarmEvent"));
+                setIdChecked("chk_Manager_15", hx.getNodeValue("Manager", "pageAlarmEvent"));
+                setIdChecked("chk_Operator_15", hx.getNodeValue("Operator", "pageAlarmEvent"));
+                break;
+            case "CameraSetting":
+                setIdChecked("chk_Admin_16", hx.getNodeValue("Admin", "pageCamera"));
+                setIdChecked("chk_Manager_16", hx.getNodeValue("Manager", "pageCamera"));
+                setIdChecked("chk_Operator_16", hx.getNodeValue("Operator", "pageCamera"));
+                break;
+            case "PlaybackSearch":
+                setIdChecked("chk_Admin_17", hx.getNodeValue("Admin", "iconPbSearch"));
+                setIdChecked("chk_Manager_17", hx.getNodeValue("Manager", "iconPbSearch"));
+                setIdChecked("chk_Operator_17", hx.getNodeValue("Operator", "iconPbSearch"));
+                break;
+            case "OSDDisplayMode":
+                setIdChecked("chk_Admin_18", hx.getNodeValue("Admin", "iconDispMode"));
+                setIdChecked("chk_Manager_18", hx.getNodeValue("Manager", "iconDispMode"));
+                setIdChecked("chk_Operator_18", hx.getNodeValue("Operator", "iconDispMode"));
+                break;
+            case "PTZ":
+                setIdChecked("chk_Admin_19", hx.getNodeValue("Admin", "iconPTZ"));
+                setIdChecked("chk_Manager_19", hx.getNodeValue("Manager", "iconPTZ"));
+                setIdChecked("chk_Operator_19", hx.getNodeValue("Operator", "iconPTZ"));
+                break;
+            case "ChangOwnPassword":
+                setIdChecked("chk_Admin_20", hx.getNodeValue("Admin", "btnEditOwnPass"));
+                setIdChecked("chk_Manager_20", hx.getNodeValue("Manager", "btnEditOwnPass"));
+                setIdChecked("chk_Operator_20", hx.getNodeValue("Operator", "btnEditOwnPass"));
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+}
+
+function SetXML(){
+    var hx2 = new HandleXml();
+    var funcNum = 0;
+    var Cnt = 0;
+    var i = 0;
+    funcNum = setHx.getNodeChildSize("USERGROUP");
+    for (Cnt = 0; Cnt < funcNum; Cnt++) {
+
+        switch (setHx.getNodeChildName("USERGROUP", Cnt)) {
+            case "OwnLevel":
+                hx.setNodeValue(getIdChecked("chk_Admin_01"), "Admin", "btnUserManageOwn");
+                hx.setNodeValue(getIdChecked("chk_Manager_01"), "Manager", "btnUserManageOwn");
+                hx.setNodeValue(getIdChecked("chk_Operator_01"), "Operator", "btnUserManageOwn");
+                break;
+            case "ClearLog":
+                hx.setNodeValue(getIdChecked("chk_Admin_02"), "Admin", "btnClearLogs");
+                hx.setNodeValue(getIdChecked("chk_Manager_02"), "Manager", "btnClearLogs");
+                hx.setNodeValue(getIdChecked("chk_Operator_02"), "Operator", "btnClearLogs");
+                break;
+            case "FirmwareUpgrade":
+                hx.setNodeValue(getIdChecked("chk_Admin_03"), "Admin", "pageMisc");
+                hx.setNodeValue(getIdChecked("chk_Manager_03"), "Manager", "pageMisc");
+                hx.setNodeValue(getIdChecked("chk_Operator_03"), "Operator", "pageMisc");
+                break;
+            case "DiskSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_04"), "Admin", "pageDisk");
+                hx.setNodeValue(getIdChecked("chk_Manager_04"), "Manager", "pageDisk");
+                hx.setNodeValue(getIdChecked("chk_Operator_04"), "Operator", "pageDisk");
+                break;
+            case "RecordSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_05"), "Admin", "pageRecord");
+                hx.setNodeValue(getIdChecked("chk_Manager_05"), "Manager", "pageRecord");
+                hx.setNodeValue(getIdChecked("chk_Operator_05"), "Operator", "pageRecord");
+                break;
+            case "LiveAudio":
+                hx.setNodeValue(getIdChecked("chk_Admin_06"), "Admin", "iconLiveAudio");
+                hx.setNodeValue(getIdChecked("chk_Manager_06"), "Manager", "iconLiveAudio");
+                hx.setNodeValue(getIdChecked("chk_Operator_06"), "Operator", "iconLiveAudio");
+                break;
+            case "PlaybackAudio":
+                hx.setNodeValue(getIdChecked("chk_Admin_07"), "Admin", "iconPbAudio");
+                hx.setNodeValue(getIdChecked("chk_Manager_07"), "Manager", "iconPbAudio");
+                hx.setNodeValue(getIdChecked("chk_Operator_07"), "Operator", "iconPbAudio");
+                break;
+            case "ArchivalFunction":
+                hx.setNodeValue(getIdChecked("chk_Admin_08"), "Admin", "iconArchive");
+                hx.setNodeValue(getIdChecked("chk_Manager_08"), "Manager", "iconArchive");
+                hx.setNodeValue(getIdChecked("chk_Operator_08"), "Operator", "iconArchive");
+                break;
+            case "SystemLogView":
+                hx.setNodeValue(getIdChecked("chk_Admin_09"), "Admin", "btnSysLogViewExport");
+                hx.setNodeValue(getIdChecked("chk_Manager_09"), "Manager", "btnSysLogViewExport");
+                hx.setNodeValue(getIdChecked("chk_Operator_09"), "Operator", "btnSysLogViewExport");
+                break;
+            case "UserManagement":
+                hx.setNodeValue(getIdChecked("chk_Admin_10"), "Admin", "pageUserManage");
+                hx.setNodeValue(getIdChecked("chk_Manager_10"), "Manager", "pageUserManage");
+                hx.setNodeValue(getIdChecked("chk_Operator_10"), "Operator", "pageUserManage");
+                break;
+            case "DateTimeSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_11"), "Admin", "pageDateTime");
+                hx.setNodeValue(getIdChecked("chk_Manager_11"), "Manager", "pageDateTime");
+                hx.setNodeValue(getIdChecked("chk_Operator_11"), "Operator", "pageDateTime");
+                break;
+            case "DisplaySetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_12"), "Admin", "pageDisplay");
+                hx.setNodeValue(getIdChecked("chk_Manager_12"), "Manager", "pageDisplay");
+                hx.setNodeValue(getIdChecked("chk_Operator_12"), "Operator", "pageDisplay");
+                break;
+            case "NetworkSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_13"), "Admin", "pageNetwork");
+                hx.setNodeValue(getIdChecked("chk_Manager_13"), "Manager", "pageNetwork");
+                hx.setNodeValue(getIdChecked("chk_Operator_13"), "Operator", "pageNetwork");
+                break;
+            case "ScheduleSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_14"), "Admin", "pageSchedule");
+                hx.setNodeValue(getIdChecked("chk_Manager_14"), "Manager", "pageSchedule");
+                hx.setNodeValue(getIdChecked("chk_Operator_14"), "Operator", "pageSchedule");
+                break;
+            case "AlarmEventSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_15"), "Admin", "pageAlarmEvent");
+                hx.setNodeValue(getIdChecked("chk_Manager_15"), "Manager", "pageAlarmEvent");
+                hx.setNodeValue(getIdChecked("chk_Operator_15"), "Operator", "pageAlarmEvent");
+                break;
+            case "CameraSetting":
+                hx.setNodeValue(getIdChecked("chk_Admin_16"), "Admin", "pageCamera");
+                hx.setNodeValue(getIdChecked("chk_Manager_16"), "Manager", "pageCamera");
+                hx.setNodeValue(getIdChecked("chk_Operator_16"), "Operator", "pageCamera");
+                break;
+            case "PlaybackSearch":
+                hx.setNodeValue(getIdChecked("chk_Admin_17"), "Admin", "iconPbSearch");
+                hx.setNodeValue(getIdChecked("chk_Manager_17"), "Manager", "iconPbSearch");
+                hx.setNodeValue(getIdChecked("chk_Operator_17"), "Operator", "iconPbSearch");
+                break;
+            case "OSDDisplayMode":
+                hx.setNodeValue(getIdChecked("chk_Admin_18"), "Admin", "iconDispMode");
+                hx.setNodeValue(getIdChecked("chk_Manager_18"), "Manager", "iconDispMode");
+                hx.setNodeValue(getIdChecked("chk_Operator_18"), "Operator", "iconDispMode");
+                break;
+            case "PTZ":
+                hx.setNodeValue(getIdChecked("chk_Admin_19"), "Admin", "iconPTZ");
+                hx.setNodeValue(getIdChecked("chk_Manager_19"), "Manager", "iconPTZ");
+                hx.setNodeValue(getIdChecked("chk_Operator_19"), "Operator", "iconPTZ");
+                break;
+            case "ChangOwnPassword":
+                hx.setNodeValue(getIdChecked("chk_Admin_20"), "Admin", "btnEditOwnPass");
+                hx.setNodeValue(getIdChecked("chk_Manager_20"), "Manager", "btnEditOwnPass");
+                hx.setNodeValue(getIdChecked("chk_Operator_20"), "Operator", "btnEditOwnPass");
+                break;
+            case "#text":   //******* for chrome
+                funcNum++;
+                break;
+        }
+    }
+    var newxml;
+    if (window.ActiveXObject) {
+        newxml = hx.getXml().xml.replace(/\t/g, "");
+    }
+    else {
+        newxml = (new XMLSerializer()).serializeToString(hx.getXml()).replace(/\t/g, "");
+    }
+	ajax.postData("../cgi-bin/UserGroup.xml", newxml);
+
+	hx2.setXml(ajax.data);
+	if(hx2.getNodeValue("result") == "1"){
+		alert(hl.get("SUCCESS"));
+	}else{
+		alert(hl.get("FAIL"));
+	}
+	parent.showMsg(hx.getXml().xml,"xml");
+}
+
+function initTable(){
+    var ht = new HandleTable("tbl_list");
+    for (var i = 1; i < 21; i++) {
+        ht.insertRow().id("tr_" + i.toFill(2)).display("none");
+        ht.insertCell().width(500).id("td_" + i.toFill(2));
+        ht.insertCell().width(100).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_Admin_" + i.toFill(2) + "' disabled='disabled' />");
+        ht.insertCell().width(100).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_Manager_" + i.toFill(2) + "'/>");
+        ht.insertCell().width(100).className("txtCenter")
+				.innerHTML("<input type='checkbox' id='chk_Operator_" + i.toFill(2) + "'/>");
+    }
+    EFDEF_("^td_").className("txtLeft");
+}
+
+function setLanguage() {
+    setIdInnerHTML("td_Admin", hl.get("ADMIN"));
+    setIdInnerHTML("td_Manager", hl.get("MANAGER"));
+    setIdInnerHTML("td_Operator", hl.get("OPERATOR"));
+
+    setIdInnerHTML("td_01", hl.get("MANAGER_USER_LEVEL"));
+    setIdInnerHTML("td_02", hl.get("CLEAR_LOG"));
+    setIdInnerHTML("td_03", hl.get("FRIMWARE_UPGRADE_CONFIGURATION_UPLOAD"));
+    setIdInnerHTML("td_04", hl.get("DISK_SETTING"));
+    setIdInnerHTML("td_05", hl.get("RECORD_SETTING"));
+
+    setIdInnerHTML("td_06", hl.get("LIVE_AUDIO"));
+    setIdInnerHTML("td_07", hl.get("PLAYBACK_AUDIO"));
+    setIdInnerHTML("td_08", hl.get("ARCHIVAL_FUNCTION"));
+    setIdInnerHTML("td_09", hl.get("SYSTEM_LOG_VIEW"));
+    setIdInnerHTML("td_10", hl.get("USER_MANAGEMENT"));
+    setIdInnerHTML("td_11", hl.get("DATE_SETTING"));
+    setIdInnerHTML("td_12", hl.get("DISPLAY_SETTING"));
+    setIdInnerHTML("td_13", hl.get("NETWORK_SETTING"));
+    setIdInnerHTML("td_14", hl.get("SCHEDULE_SETTING"));
+    setIdInnerHTML("td_15", hl.get("ALARM_EVENT_SETTING"));
+
+    setIdInnerHTML("td_16", hl.get("CAMERA_SETTING"));
+    setIdInnerHTML("td_17", hl.get("PLAYBACK_SEARCH"));
+    setIdInnerHTML("td_18", hl.get("OSD_DISPLAY_MODE"));
+    setIdInnerHTML("td_19", hl.get("PTZ"));
+    setIdInnerHTML("td_20", hl.get("CHANGE_OWN_PASSWORD"));
+
+    setIdValue("btn_Save", hl.get("SAVE"));
+}
+//-->
+</script>
+</head>
+<body onload="init();">
+	<div class="ClientFrame">
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td style=" width:500px;"></td>
+				<td id="td_Admin" style="text-align:center; width:100px;"></td>
+				<td id="td_Manager" style="text-align:center;width:100px;"></td>
+				<td id="td_Operator" style="text-align:center;width:100px;"></td>
+			</tr>
+			<tr>
+				<td colspan="4" valign="top">
+					<div style="width: auto;height: 620px;border: solid 1px #CCCCCC;">
+						<table id="tbl_list" border="0" cellspacing="0" cellpadding="0"></table>
+					</div>
+				</td>
+			</tr>
+		</table>
+    </div>
+    <div class="applyFrm" style="top: 710px; left: 920px;">
+		<input type="button" id="btn_Save" class="btnStyle" value="" style="width: 120px;" onclick="SetXML();" />
+	</div>
+</body>
+</html>

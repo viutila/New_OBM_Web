@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html />
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Pragma" content="no-store, no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate">
+<link rel="stylesheet" type="text/css" href="../include/css/subMenu.css">
+<script type="text/javascript" src="../include/js/utility.js"></script>
+<script type="text/javascript" src="../include/js/AjaxClass.js"></script>
+<script type="text/javascript" src="../include/js/HandleXml.js"></script>
+<script type="text/javascript">
+var hl = parent.hl;
+var ajax = new AjaxClass();
+var actFlag = 0;
+var tiltPanFlag = 0;
+var enableFlag = 0;
+var total_CH_Num = parent.g_total_ch_num;
+var chnAccesCtrl = chAccessHandle(parent.RemoteCtrlPTZChnmap.toInt().toString(2));
+var EKB_Connect = 0;
+var setHx = new HandleXml();
+
+function init() {
+    if (parent.ifrm_View.selCam != null) {
+        enableFlag = chnAccesCtrl.substr(parent.g_total_ch_num - 1 - parent.ifrm_View.selCam, 1);
+    } else {
+        enableFlag = chnAccesCtrl.substr(parent.g_total_ch_num - 1, 1);
+    }
+    setHx.setUrl("../" + parent.g_device_xml_name);
+    clearTable();
+    initAllBtn();
+    setLanguage();
+}
+function chAccessHandle(p) {
+    var str = p;
+    if (str.length < total_CH_Num) {
+        var lenth = str.length;
+        for (var i = 1; i <= total_CH_Num - lenth; i++) {
+            str = "0" + str;
+        }
+    }
+    return str;
+}
+function clearTable() {
+    var ht1 = new HandleTable("PanelTable1");
+    ht1.clear();
+    var ht2 = new HandleTable("PanelTable2");
+    ht2.clear();
+    var ht3 = new HandleTable("PanelTable3");
+    ht3.clear();
+}
+function initAllBtn(){
+	var path = parent.g_imgPtzPath;
+	EFDEF_("leftup_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZleftup();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function() {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_left_up.png";
+        })
+		.onmouseout(function () {
+		    stopMove();
+		    EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+		});
+
+	EFDEF_("left_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZleft();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_left.png";
+        })
+	    .onmouseout(function () {
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	        stopMove();
+        });
+
+    EFDEF_("leftdown_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZleftdown();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_left_down.png";
+        })
+	    .onmouseout(function () {
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	        stopMove();
+	    });
+
+	EFDEF_("down_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZdown();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_down.png";
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	EFDEF_("rightdown_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZrightdown();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_right_down.png";
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	EFDEF_("right_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZright();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_right.png";
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	    EFDEF_("rightup_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZrightup();
+        })
+        .onmouseup(function () {
+            PTZstop();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_right_up.png";
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	    EFDEF_("up_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            PTZup();
+        })
+        .onmouseup(function () {
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_up.png";
+        })
+	    .onmouseout(function () {
+	        stopMove();
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	EFDEF_("stop_PTZ")
+        .onmousedown(function () {
+            tiltPanFlag = 1;
+            stopMove();
+        })
+        .onmouseup(function () {
+            tiltPanFlag = 1;
+            stopMove();
+        })
+        .onmouseover(function () {
+            setIdCursor(this, "pointer");
+            EFDEF_id("img_PTZ").src = "../img/ptz/PTZ_stop.png";
+        })
+	    .onmouseout(function () {
+	        EFDEF_id("img_PTZ").src = "../img/ptz/PTZ.png";
+	    });
+
+	    initPanelTable1();
+	    initPanelTable2();
+	    initPanelTable3();
+}
+function initPanelTable1() {
+    var ht = new HandleTable("PanelTable1");
+    ht.insertRow();
+    ht.insertCell().id("td_zoom_btn1")
+					.width(25)
+					.height(26)
+					.textAlign("center")
+                    .bgImage("../img/menu/add.png")
+                    .bgRepeat("no")
+					.onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZzoomin();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/addover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+                    .onmouseout(function () {
+                        stopMove();
+                        EFDEF_(this).bgImage("../img/menu/add.png");
+                    });
+                    ht.insertCell().id("td_zoom").fontSize(15).textAlign("center");
+                    ht.insertCell().id("td_zoom_btn2")
+					.width(25)
+					.height(26)
+					.textAlign("center")
+                    .bgImage("../img/menu/minus.png")
+                    .bgRepeat("no")
+					.onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZzoomout();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/minusover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+			        .onmouseout(function () {
+			            stopMove();
+			            EFDEF_(this).bgImage("../img/menu/minus.png");
+			        });
+
+    ht.insertRow();
+    ht.insertCell().id("td_focus_btn1")
+					.width(25)
+					.height(26)
+					.textAlign("center")
+                    .bgImage("../img/menu/add.png")
+                    .bgRepeat("no")
+					.onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZfocusNear();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/addover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+			        .onmouseout(function () {
+			            stopMove();
+			            EFDEF_(this).bgImage("../img/menu/add.png");
+			        });
+			        ht.insertCell().id("td_focus").fontSize(15).textAlign("center");
+			        ht.insertCell().id("td_focus_btn2")
+					.width(25)
+					.height(26)
+					.textAlign("center")
+                    .bgImage("../img/menu/minus.png")
+                    .bgRepeat("no")
+					.onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZfocusFar();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/minusover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+			        .onmouseout(function () {
+			            stopMove();
+			            EFDEF_(this).bgImage("../img/menu/minus.png");
+			        });
+
+	ht.insertRow();
+	ht.insertCell().id("td_iris_btn1")
+					.width(25)
+					.height(26)
+					.textAlign("center")
+                    .bgImage("../img/menu/add.png")
+                    .bgRepeat("no")
+					.onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZirisClose();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/addover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+			        .onmouseout(function () {
+			            stopMove();
+			            EFDEF_(this).bgImage("../img/menu/add.png");
+			        });
+			        ht.insertCell().id("td_iris").fontSize(15).textAlign("center");
+			        ht.insertCell().id("td_iris_btn2")
+	                .width(25)
+	                .height(26)
+	                .textAlign("center")
+                    .bgImage("../img/menu/minus.png")
+                    .bgRepeat("no")
+	                .onmousedown(
+						function () {
+						    tiltPanFlag = 1;
+						    PTZirisOpen();
+						})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/minusover.png");
+                    })
+                    .onmouseup(function () {
+                        stopMove();
+                    })
+			        .onmouseout(function () {
+			            stopMove();
+			            EFDEF_(this).bgImage("../img/menu/minus.png");
+			        });
+}
+function initPanelTable2() {
+    var ht = new HandleTable("PanelTable2");
+    for (var i = 1; i <= 9; i++) {
+        if (i % 3 == 1)
+            ht.insertRow();
+
+        ht.insertCell().id("tdnum_" + i)
+                        .width(31)
+	                    .height(33)
+                        .bgImage("../img/ptz/number"+i+".png")
+                        .fontSize(25)
+                        .bgRepeat("no")
+                        .onclick(
+						    function () {
+						        var tmpNo = this.id.split("_")[1];
+						        if (actFlag == 0) {
+						            setIdInnerHTML("div_digi", tmpNo);
+						            PTZpresetGo();
+						        } else {
+						            var tmpValue = (getIdInnerHTML("div_digi") + tmpNo).toInt();
+						            if (tmpValue < 10000 && tmpValue > 0) {
+						                setIdInnerHTML("div_digi", tmpValue);
+						            }
+						        }
+						    })
+                        .onmouseover(
+                            function () {
+                                var tmpNo = this.id.split("_")[1];
+                                setIdCursor(this, "pointer");
+                                EFDEF_(this).bgImage("../img/ptz/number" + tmpNo + "over.png");
+                            })
+                        .onmouseout(
+                            function () {
+                                var tmpNo = this.id.split("_")[1];
+                                EFDEF_(this).bgImage("../img/ptz/number" + tmpNo + ".png");
+                            });
+
+    }
+
+    ht.insertRow();
+    ht.insertCell().id("td_c")
+                    .width(31)
+	                .height(33)
+                    .bgImage("../img/ptz/c.png")
+                    .fontSize(25)
+                    .bgRepeat("no")
+                    .onclick(
+						function () {
+                            actFlag = 0;
+                            setIdInnerHTML("div_digi", 0);
+                            tiltPanFlag = 1;
+                            stopMove();
+						})
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                            EFDEF_(this).bgImage("../img/ptz/cover.png");
+                        })
+                    .onmouseout(
+                        function () {
+                            EFDEF_(this).bgImage("../img/ptz/c.png");
+                        });
+
+    ht.insertCell().id("tdnum_0")
+                    .width(31)
+	                .height(33)
+                    .bgImage("../img/ptz/number0.png")
+                    .fontSize(25)
+                    .bgRepeat("no")
+                    .onclick(
+						function () {
+						    var tmpNo = this.id.split("_")[1];
+						    if (actFlag == 0) {
+						        setIdInnerHTML("div_digi", tmpNo);
+						        PTZpresetGo();
+						    } else {
+						        var tmpValue = (getIdInnerHTML("div_digi") + tmpNo).toInt();
+						        if (tmpValue < 10000 && tmpValue > 0) {
+						            setIdInnerHTML("div_digi", tmpValue);
+						        }
+						    }
+						})
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                            EFDEF_(this).bgImage("../img/ptz/number0over.png");
+                        })
+                    .onmouseout(
+                        function () {
+                            EFDEF_(this).bgImage("../img/ptz/number0.png");
+                        });
+
+    ht.insertCell().id("td_go")
+                    .width(31)
+	                .height(33)
+                    .bgImage("../img/ptz/go.png")
+                    .fontSize(25)
+                    .bgRepeat("no")
+                    .onclick(
+					    function () {
+						    if (actFlag == 1) {
+						        PTZpresetGo();
+						    } else if (actFlag == 2) {
+						        PTZtour();
+						    } else if (actFlag == 3) {
+						        PTZautopanNVR();
+						    } else if (actFlag == 4) {
+						        PTZpatternNVR();
+						    }
+						    actFlag = 0;
+						    setIdInnerHTML("div_digi", 0);
+					    })
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                            EFDEF_(this).bgImage("../img/ptz/goover.png");
+                        })
+                    .onmouseout(
+                        function () {
+                            EFDEF_(this).bgImage("../img/ptz/go.png");
+                        });
+}
+function subStrTitle(str){
+	var rst;
+	if (str.length > 6) {
+        rst = str.substr(0, 4) + "...";
+    } else {
+        rst = str;
+    }
+	return rst;
+}
+function initPanelTable3() {
+    var ht = new HandleTable("PanelTable3");
+    ht.insertRow();
+    ht.insertCell().id("td_set")
+                    .width(59)
+                    .height(35)
+                    .fontSize(16)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("SET")))
+                    .title(hl.get("SET"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(function(){
+					    if(getIdInnerHTML("div_digi") != "0"){
+                            PTZSet();
+					    }else{
+						    alert("Please input a number!");
+					    }
+					    actFlag = 0;
+					    setIdInnerHTML("div_digi",0);
+					})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    }) 
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+                        
+
+    ht.insertCell().id("td_delete")
+                    .width(59)
+                    .height(35)
+                    .fontSize(16)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("DELETE")))
+                    .title(hl.get("DELETE"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(
+                        function(){
+                            if(getIdInnerHTML("div_digi") != "0"){
+                                PTZpresetDelete();
+						        actFlag = 0;
+						        setIdInnerHTML("div_digi", 0);
+					        }else{
+						        alert("Please input a number!");
+					        }
+                        }
+                    )
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    })
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+
+    ht.insertRow();
+    ht.insertCell().id("td_autopan")
+                    .width(59)
+                    .height(35)
+                    .fontSize(14)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("AUTOPAN")))
+                    .title(hl.get("AUTOPAN"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(
+                        function() {
+                            if (parent.g_model_name_int == 0) {
+                                PTZautopan();
+                            } else {
+                                actFlag = 3;
+                            }
+					        setIdInnerHTML("div_digi",0);
+					    })
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    })
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+
+    ht.insertCell().id("td_preset")
+                    .width(59)
+                    .height(35)
+                    .fontSize(16)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("PRESET")))
+                    .title(hl.get("PRESET"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(function(){
+					    actFlag = 1;
+					    setIdInnerHTML("div_digi","0");
+					})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    })
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+
+    ht.insertRow();
+    ht.insertCell().id("td_tour")
+                    .width(59)
+                    .height(35)
+                    .fontSize(16)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("TOUR")))
+                    .title(hl.get("TOUR"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(function(){
+					    actFlag = 2;
+					    setIdInnerHTML("div_digi", "0");
+
+					})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    })
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+
+    ht.insertCell().id("td_pattern")
+                    .width(59)
+                    .height(35)
+                    .fontSize(16)
+                    .textAlign("center")
+                    .bgImage("../img/menu/button04.png")
+                    .bgRepeat("no")
+                    .innerHTML(subStrTitle(hl.get("PATTERN")))
+                    .title(hl.get("PATTERN"))
+                    .onmouseover(
+                        function () {
+                            setIdCursor(this, "pointer");
+                        })
+                    .onclick(function(){
+                        if (parent.g_model_name_int == 0) {
+                            PTZpattern();
+                        } else {
+                            actFlag = 4;
+                        }
+					    setIdInnerHTML("div_digi",0);
+					})
+                    .onmouseover(function () {
+                        setIdCursor(this, "pointer");
+                        EFDEF_(this).bgImage("../img/menu/button04over.png");
+                    })
+                    .onmouseout(function () {
+                        EFDEF_(this).bgImage("../img/menu/button04.png");
+                    });
+	
+	//****************** for ENVR and X86NVR add 1.Tracking 2.Object
+    if (parent.g_model_name_int == 1 || parent.g_model_name_int == 2) { //******* X86NVR & ENVR
+		ht.insertRow();
+		ht.insertCell().id("td_tracking")
+						.width(59)
+						.height(35)
+						.fontSize(16)
+						.textAlign("center")
+						.bgImage("../img/menu/button04.png")
+						.bgRepeat("no")
+						.innerHTML(subStrTitle(hl.get("TRACKING")))
+						.title(hl.get("TRACKING"))
+						.onmouseover(
+						function () {
+							setIdCursor(this, "pointer");
+						})
+						.onclick(function () {
+							PTZtracking();
+							setIdInnerHTML("div_digi", "0");
+						})
+						.onmouseover(function () {
+							setIdCursor(this, "pointer");
+							EFDEF_(this).bgImage("../img/menu/button04over.png");
+						})
+						.onmouseout(function () {
+							EFDEF_(this).bgImage("../img/menu/button04.png");
+						});
+
+		ht.insertCell().id("td_object")
+						.width(59)
+						.height(35)
+						.fontSize(16)
+						.textAlign("center")
+						.bgImage("../img/menu/button04.png")
+						.bgRepeat("no")
+						.innerHTML(subStrTitle("Object"))
+						.title("Object")
+						.onmouseover(
+						function () {
+							setIdCursor(this, "pointer");
+						})
+						.onclick(function () {
+							PTZobjectSelect();
+							setIdInnerHTML("div_digi", "0");
+						})
+						.onmouseover(function () {
+							setIdCursor(this, "pointer");
+							EFDEF_(this).bgImage("../img/menu/button04over.png");
+						})
+						.onmouseout(function () {
+							EFDEF_(this).bgImage("../img/menu/button04.png");
+						});
+	}
+	
+	if (setHx.getNode("EKB200")) {
+		ht.insertRow();
+		ht.insertCell().id("td_EKB")
+			.width(59)
+			.height(35)
+			.attr("colSpan", "2")
+			.fontSize(14)
+			.textAlign("center")
+			.bgImage("../img/menu/button04.png")
+			.bgRepeat("no")
+			.bgPosition("center", "center")
+			.innerHTML(subStrTitle(hl.get("CONNECT")))
+			.title(hl.get("CONNECT"))
+			.onmouseover(
+				function () {
+					setIdCursor(this, "pointer");
+				})
+			.onclick(function () {
+				if (EKB_Connect) {
+					disconnectEKB200();
+				} else {
+					connectEKB200();
+
+				}
+			})
+			.onmouseover(function () {
+				setIdCursor(this, "pointer");
+				EFDEF_(this).bgImage("../img/menu/button04over.png");
+			})
+			.onmouseout(function () {
+				EFDEF_(this).bgImage("../img/menu/button04.png");
+			});
+	}
+                        
+	
+    
+    
+}
+function setLanguage() {
+	setIdInnerHTML("td_zoom"	,hl.get("ZOOM"));
+	setIdInnerHTML("td_focus"	,hl.get("FOCUS"));
+	setIdInnerHTML("td_iris"	,hl.get("IRIS"));
+}
+function PTZup() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(11, parent.cgi.step);
+    }
+}
+function PTZdown() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(12, parent.cgi.step);
+    }
+    
+}
+function PTZleft() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(13, parent.cgi.step);
+    }
+}
+function PTZright() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(14, parent.cgi.step);
+    }
+}
+function PTZleftup() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(42, parent.cgi.step);
+    }
+}
+function PTZleftdown() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(43, parent.cgi.step);
+    }
+}
+function PTZrightup() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(44, parent.cgi.step);
+    }
+}
+function PTZrightdown() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(45, parent.cgi.step);
+    }
+}
+function PTZstop() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(10, parent.cgi.step);
+    }
+}
+function PTZzoomin() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(15, parent.cgi.step);
+    }
+}
+function PTZzoomout() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(16, parent.cgi.step);
+    }
+}
+function PTZfocusNear() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(17, parent.cgi.step);
+    }
+}
+function PTZfocusFar() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(18, parent.cgi.step);
+    }
+}
+function PTZirisOpen() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(19, parent.cgi.step);
+    }
+}
+function PTZirisClose() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(20, parent.cgi.step);
+    }
+}
+function PTZautopan() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(21, parent.cgi.step);
+    }
+}
+function PTZSet() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(27, getIdInnerHTML("div_digi"));
+    }
+}
+function PTZpresetGo() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(26, getIdInnerHTML("div_digi"));
+    }
+}
+function PTZpresetDelete() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(28, getIdInnerHTML("div_digi"));
+    }
+}
+
+function PTZtour() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(24, getIdInnerHTML("div_digi"));
+    }
+}
+
+function PTZpattern() {
+    if (enableFlag == 1) {
+        var userDecode = parent.applet.doPTZControl(23, getIdInnerHTML("div_digi"));
+    }
+}
+function PTZautopanNVR() {
+    if (enableFlag == 1) {
+        var n = parseInt(getIdInnerHTML("div_digi"));
+        if (n == 1 || n == 2) {
+            var userDecode = parent.applet.doPTZControl(53, getIdInnerHTML("div_digi"));
+        }
+    }
+}
+function PTZpatternNVR() {
+    if (enableFlag == 1) {
+        var n = parseInt(getIdInnerHTML("div_digi"));
+        if (n >= 1 && n <= 4) {
+            var userDecode = parent.applet.doPTZControl(52, getIdInnerHTML("div_digi"));
+        }
+    }
+}
+function PTZobjectSelect() {
+    var userDecod = parent.applet.doObjectSelect();
+}
+function PTZtracking() {
+    var userDecod = parent.applet.doPTZControl(66, 0);
+}
+function stopMove() {
+    if (tiltPanFlag == 1) {
+        PTZstop();
+        tiltPanFlag = 0;
+    }
+}
+function connectEKB200() {
+    var rst = parent.applet.connectEKB200();
+    if (rst == "success") {
+        setIdInnerHTML("td_EKB", hl.get("DISCONNECT"));
+        EKB_Connect = 1;
+        alert(hl.get("SUCCESS"));
+    } else if (rst == "fail") {
+        setIdInnerHTML("td_EKB", hl.get("CONNECT"));
+        EKB_Connect = 0;
+        alert(hl.get("FAIL"));
+    }
+}
+function disconnectEKB200() {
+    var rst = parent.applet.disconnectEKB200();
+    if (rst == "success") {
+        setIdInnerHTML("td_EKB", hl.get("CONNECT"));
+        EKB_Connect = 0;
+        alert(hl.get("SUCCESS"));
+    } else if (rst == "fail") {
+        setIdInnerHTML("td_EKB", hl.get("DISCONNECT"));
+        EKB_Connect = 1;
+        alert(hl.get("FAIL"));
+    }
+}
+</script>
+</head>
+<body onload="init();">
+	<table id="tbl1" border="0" cellSpacing="4" cellpadding="0" align="center">
+		<tr>
+            <td>
+                <img  id="img_PTZ" src="../img/ptz/PTZ.png" usemap="#map_PTZ" border="0" />
+                    <map id="map_PTZ" name="map_PTZ">
+                       <area id="leftup_PTZ" shape="poly" coords="67,67, 75,61, 55,13, 35,27, 18,53, 63,74, 67,67" />
+                       <area id="left_PTZ" shape="poly" coords="60,81, 63,72, 18,53, 13,81, 19,110, 63,93, 62,81" />
+                       <area id="leftdown_PTZ" shape="poly" coords="67,99, 63,93, 19,110, 33,135, 57,150, 76,106, 67,99" />
+                       <area id="down_PTZ" shape="poly" coords="85,108, 76,106, 57,150, 85,156, 114,151, 96,107, 85,108" />
+                       <area id="rightdown_PTZ" shape="poly" coords="105,100, 96,107, 114,151, 139,132, 153,111, 110,92, 105,100" />
+                       <area id="right_PTZ" shape="poly" coords="112,81, 110,92, 153,111, 159,81, 153,55 110,73, 112,81" />
+                       <area id="rightup_PTZ" shape="poly" coords="105,63, 110,73, 153,55, 136,28, 115,15, 97,58, 105,63" />
+                       <area id="up_PTZ" shape="poly" coords="86,57, 97,58, 115,15, 86,10, 55,13, 75,61, 86,57" />
+                       <area id="stop_PTZ" shape="circle" coords="86,82, 30" />
+                    </map>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <table id="PanelTable1" border="0" cellspacing="8" cellpadding="0" align="center">
+                </table>
+            </td>
+        </tr>
+
+		<tr>
+			<td align="center"><div id="div_digi" style="background-color: #3E3E3E;border:solid 2px #276EA1;text-align: right;color: #FFFFFF;width: 70%;height: 100%;">0</div></td>
+		</tr>
+        <tr>
+            <td>
+                <table id="PanelTable2" border="0" cellspacing="10" cellpadding="0" align="center">
+	            </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="PanelTable3" border="0" cellspacing="8" cellpadding="0" align="center">
+	            </table>
+            </td>
+        </tr>
+	</table>
+</body>
+</html>
